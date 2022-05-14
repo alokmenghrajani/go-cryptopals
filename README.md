@@ -4,3 +4,4 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 ## Set 1
 - [Convert hex to base64](set1/challenge1.go)
 - [Fixed XOR](set1/challenge2.go)
+- [Single-byte XOR cipher](set1/challenge3.go)
