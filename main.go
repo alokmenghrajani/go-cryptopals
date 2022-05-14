@@ -6,4 +6,5 @@ import (
 
 func main() {
 	set1.Challenge1()
+	set1.Challenge2()
 }
