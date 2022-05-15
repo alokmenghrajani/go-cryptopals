@@ -6,3 +6,4 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 - [Fixed XOR](set1/challenge2.go)
 - [Single-byte XOR cipher](set1/challenge3.go)
 - [Detect single-character XOR](set1/challenge4.go)
+- [Implement repeating-key XOR](set1/challenge5.go)
