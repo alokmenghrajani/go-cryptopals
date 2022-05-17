@@ -10,3 +10,6 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 - [Break repeating-key XOR](set1/challenge6.go)
 - [AES in ECB mode](set1/challenge7.go)
 - [Detect AES in ECB mode](set1/challenge8.go)
+
+## Set 2
+- [Implement PKCS#7 padding](set2/challenge9.go)

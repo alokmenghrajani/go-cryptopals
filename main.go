@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/alokmenghrajani/go-cryptopals/set1"
+	"github.com/alokmenghrajani/go-cryptopals/set2"
 )
 
 func main() {
@@ -13,4 +14,5 @@ func main() {
 	set1.Challenge6()
 	set1.Challenge7()
 	set1.Challenge8()
+	set2.Challenge9()
 }
