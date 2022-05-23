@@ -14,3 +14,4 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 ## Set 2
 - [Implement PKCS#7 padding](set2/challenge9.go)
 - [Implement CBC mode](set2/challenge10.go)
+- [An ECB/CBC detection oracle](set2/challenge11.go)
