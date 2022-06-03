@@ -17,4 +17,5 @@ func main() {
 	set2.Challenge9()
 	set2.Challenge10()
 	set2.Challenge11()
+	set2.Challenge12()
 }

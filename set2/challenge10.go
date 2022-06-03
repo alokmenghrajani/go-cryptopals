@@ -19,6 +19,7 @@ func Challenge10() {
 	buf = aesCbcDecrypt(buf, []byte("YELLOW SUBMARINE"), make([]byte, 16))
 	buf = unpad(buf, 16)
 	fmt.Println(string(buf))
+	fmt.Println()
 }
 
 func aesCbcDecrypt(buf, key, iv []byte) []byte {

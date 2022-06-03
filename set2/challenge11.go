@@ -39,6 +39,7 @@ func Challenge11() {
 	if correct != total {
 		panic("failed")
 	}
+	fmt.Println()
 }
 
 func encryptionOracle(data, key []byte) ([]byte, int) {
