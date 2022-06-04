@@ -16,3 +16,4 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 - [Implement CBC mode](set2/challenge10.go)
 - [An ECB/CBC detection oracle](set2/challenge11.go)
 - [Byte-at-a-time ECB decryption (Simple)](set2/challenge12.go)
+- [ECB cut-and-paste](set2/challenge13.go)

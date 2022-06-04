@@ -277,3 +277,6 @@ The girlies on standby waving just to say hi
 Did you stop? No, I just drove by
 
 
+[0;31mSet 2, challenge 13:[m
+role: admin
+
