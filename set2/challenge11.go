@@ -58,7 +58,8 @@ func encryptionOracle(data, key []byte) ([]byte, int) {
 	switch mode {
 	case CBC:
 		iv := make([]byte, 16)
-		rand.Read(iv)
+		_, err := rand.Read(iv)
+		utils.PanicOnErr(err)
 		ciphertext := aesCbcEncrypt(buf, key, iv)
 		return ciphertext, mode
 	case ECB:
