@@ -17,5 +17,4 @@ func TestEncode(t *testing.T) {
 
 	r = encode(map[string]string{"email": "foo@bar.com&role=admin"})
 	require.Equal(t, r, "email=foo@bar.com_role_admin&uid=&role=")
-
 }
