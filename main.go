@@ -26,4 +26,5 @@ func main() {
 	set2.Challenge16()
 
 	set3.Challenge17()
+	set3.Challenge18()
 }
