@@ -1,6 +1,7 @@
 package set2
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
@@ -27,13 +28,19 @@ func pad(buf []byte, blockSize int) []byte {
 }
 
 // assumes buffer is padded with pkcs#7 and strips the padding
-func unpad(buf []byte, blockSize int) []byte {
+func unpad(buf []byte, blockSize int) ([]byte, error) {
 	if blockSize < 1 || blockSize > 255 {
-		panic("invalid blocksize")
+		return nil, errors.New("invalid blocksize")
 	}
 	paddingSize := int(buf[len(buf)-1])
 	if paddingSize == 0 || paddingSize > blockSize {
-		panic("invalid padding")
+		return nil, errors.New("invalid padding")
 	}
-	return buf[0 : len(buf)-paddingSize]
+	for i := len(buf) - paddingSize; i < len(buf); i++ {
+		if buf[i] != byte(paddingSize) {
+			return nil, errors.New("invalid padding")
+		}
+	}
+
+	return buf[0 : len(buf)-paddingSize], nil
 }

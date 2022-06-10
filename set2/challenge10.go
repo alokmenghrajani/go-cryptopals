@@ -17,7 +17,8 @@ func Challenge10() {
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
 	buf = aesCbcDecrypt(buf, []byte("YELLOW SUBMARINE"), make([]byte, 16))
-	buf = unpad(buf, 16)
+	buf, err = unpad(buf, 16)
+	utils.PanicOnErr(err)
 	fmt.Println(string(buf))
 	fmt.Println()
 }

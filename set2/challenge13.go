@@ -58,7 +58,8 @@ func profileFor(email string, aesKey []byte) []byte {
 
 func role(ciphertext, aesKey []byte) string {
 	data := aesEcbDecrypt(ciphertext, aesKey)
-	data = unpad(data, 16)
+	data, err := unpad(data, 16)
+	utils.PanicOnErr(err)
 	profile := parseString(string(data))
 	return profile["role"]
 }
