@@ -24,3 +24,4 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 ## Set 3
 - [The CBC padding oracle](set3/challenge17.go)
 - [Implement CTR, the stream cipher mode](set3/challenge18.go)
+- [Break fixed-nonce CTR mode using substitutions](set3/challenge19.go)
