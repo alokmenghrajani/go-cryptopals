@@ -16,14 +16,14 @@ func Challenge10() {
 	}
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
-	buf = aesCbcDecrypt(buf, []byte("YELLOW SUBMARINE"), make([]byte, 16))
-	buf, err = unpad(buf, 16)
+	buf = AesCbcDecrypt(buf, []byte("YELLOW SUBMARINE"), make([]byte, 16))
+	buf, err = Unpad(buf, 16)
 	utils.PanicOnErr(err)
 	fmt.Println(string(buf))
 	fmt.Println()
 }
 
-func aesCbcDecrypt(buf, key, iv []byte) []byte {
+func AesCbcDecrypt(buf, key, iv []byte) []byte {
 	plaintext := []byte{}
 
 	aes := utils.NewAes(key)
@@ -50,7 +50,7 @@ func aesCbcDecrypt(buf, key, iv []byte) []byte {
 	return plaintext
 }
 
-func aesCbcEncrypt(buf, key, iv []byte) []byte {
+func AesCbcEncrypt(buf, key, iv []byte) []byte {
 	ciphertext := []byte{}
 
 	aes := utils.NewAes(key)

@@ -20,3 +20,6 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 - [Byte-at-a-time ECB decryption (Harder)](set2/challenge14.go)
 - [PKCS#7 padding validation](set2/challenge15.go)
 - [CBC bitflipping attacks](set2/challenge16.go)
+
+## Set 3
+- [The CBC padding oracle](set3/challenge17.go)

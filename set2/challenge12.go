@@ -117,5 +117,5 @@ func (c chall12) encrypt(data []byte) []byte {
 	buf := make([]byte, 0, len(data)+len(unknownBuf))
 	buf = append(buf, data...)
 	buf = append(buf, unknownBuf...)
-	return aesEcbEncrypt(pad(buf, 16), c.aesKey)
+	return aesEcbEncrypt(Pad(buf, 16), c.aesKey)
 }

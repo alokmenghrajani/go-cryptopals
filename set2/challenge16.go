@@ -36,13 +36,13 @@ func encrypt(s string, aesKey []byte) []byte {
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
 
-	return append(iv, aesCbcEncrypt(pad([]byte(s), 16), aesKey, iv)...)
+	return append(iv, AesCbcEncrypt(Pad([]byte(s), 16), aesKey, iv)...)
 }
 
 func decrypt(buf, aesKey []byte) bool {
 	iv := buf[0:16]
 	ciphertext := buf[16:]
-	s := string(aesCbcDecrypt(ciphertext, aesKey, iv))
+	s := string(AesCbcDecrypt(ciphertext, aesKey, iv))
 
 	pieces := strings.Split(s, ";")
 	for _, piece := range pieces {

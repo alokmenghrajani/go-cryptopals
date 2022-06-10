@@ -20,9 +20,10 @@ func TestPadding(t *testing.T) {
 			buf := make([]byte, 0, i)
 			rand.Read(buf)
 
-			buf2 := pad(buf, blockSize)
+			buf2 := Pad(buf, blockSize)
 			require.Equal(t, 0, len(buf2)%blockSize, fmt.Sprintf("seed=%d, blockSize=%d, i=%d", seed, blockSize, i))
-			buf2 = unpad(buf2, blockSize)
+			buf2, err := Unpad(buf2, blockSize)
+			require.Nil(t, err)
 			require.Equal(t, buf, buf2, fmt.Sprintf("seed=%d, blockSize=%d, i=%d", seed, blockSize, i))
 		}
 	}

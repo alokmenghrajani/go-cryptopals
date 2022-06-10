@@ -9,14 +9,14 @@ import (
 
 func Challenge9() {
 	utils.PrintTitle(2, 9)
-	fmt.Printf("%q\n", string(pad([]byte("YELLOW SUBMARINE"), 20)))
+	fmt.Printf("%q\n", string(Pad([]byte("YELLOW SUBMARINE"), 20)))
 	fmt.Println()
 }
 
 // pad buffer using pkcs#7
 // the padding scheme is documented here:
 // https://datatracker.ietf.org/doc/html/rfc2315#section-10.3
-func pad(buf []byte, blockSize int) []byte {
+func Pad(buf []byte, blockSize int) []byte {
 	if blockSize < 1 || blockSize > 255 {
 		panic("invalid blocksize")
 	}
@@ -28,7 +28,7 @@ func pad(buf []byte, blockSize int) []byte {
 }
 
 // assumes buffer is padded with pkcs#7 and strips the padding
-func unpad(buf []byte, blockSize int) ([]byte, error) {
+func Unpad(buf []byte, blockSize int) ([]byte, error) {
 	if blockSize < 1 || blockSize > 255 {
 		return nil, errors.New("invalid blocksize")
 	}
