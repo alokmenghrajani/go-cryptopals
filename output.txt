@@ -431,3 +431,7 @@ actual seed: 762
 [0;31mSet 3, challenge 23:[m
 10000 / 10000
 
+[0;31mSet 3, challenge 24:[m
+seed: 42583
+possible seed: 42583
+
