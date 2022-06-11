@@ -428,3 +428,6 @@ And we outta here / Yo, what happened to peace? / Peace
 possible seed: 762
 actual seed: 762
 
+[0;31mSet 3, challenge 23:[m
+10000 / 10000
+
