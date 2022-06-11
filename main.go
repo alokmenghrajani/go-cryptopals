@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	// Set 1: Basics
 	set1.Challenge1()
 	set1.Challenge2()
 	set1.Challenge3()
@@ -16,6 +17,7 @@ func main() {
 	set1.Challenge7()
 	set1.Challenge8()
 
+	// Set 2: Block crypto
 	set2.Challenge9()
 	set2.Challenge10()
 	set2.Challenge11()
@@ -25,7 +27,9 @@ func main() {
 	set2.Challenge15()
 	set2.Challenge16()
 
+	// Set 3: Block & stream crypto
 	set3.Challenge17()
 	set3.Challenge18()
 	set3.Challenge19()
+	set3.Challenge20()
 }
