@@ -27,3 +27,4 @@ Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in
 - [Break fixed-nonce CTR mode using substitutions](set3/challenge19.go)
 - [Break fixed-nonce CTR statistically](set3/challenge20.go)
 - [Implement the MT19937 Mersenne Twister RNG](set3/challenge21.go)
+- [Crack an MT19937 seed](set3/challenge22.go)
