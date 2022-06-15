@@ -37,3 +37,4 @@ Everything is implemented from scratch (hex, base64, AES, SHA1) for lolz.
 - [Break "random access read/write" AES CTR](set4/challenge25.go)
 - [CTR bitflipping](set4/challenge26.go)
 - [Recover the key from CBC with IV=Key](set4/challenge27.go)
+- [Implement a SHA-1 keyed MAC](set4/challenge28.go)

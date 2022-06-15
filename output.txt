@@ -524,3 +524,6 @@ true
 original key: 47db1f302e2e685851c8c3ac23c6934e
 cracked key:  47db1f302e2e685851c8c3ac23c6934e
 
+[0;31mSet 4, challenge 28:[m
+b2426e180537cd69f57b2636e4991d857559dc9e
+
