@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 const (
@@ -70,7 +71,7 @@ func encryptionOracle(data, key []byte) ([]byte, int) {
 }
 
 func aesEcbEncrypt(buf, key []byte) []byte {
-	cipher := utils.NewAes(key)
+	cipher := aes.NewAes(key)
 	output := []byte{}
 	t := make([]byte, 16)
 	for i := 0; i < len(buf); i += 16 {

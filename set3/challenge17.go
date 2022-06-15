@@ -110,7 +110,7 @@ func crack(buf, iv, aesKey []byte) []byte {
 		}
 
 		// validPadding xor previousBlock is the plaintext for this block
-		plaintext = append(plaintext, xor(validPadding, previousBlock)...)
+		plaintext = append(plaintext, utils.Xor(validPadding, previousBlock)...)
 		previousBlock = block
 	}
 
@@ -138,15 +138,4 @@ func findValidPadding(offset int, block, iv, aesKey []byte) (int, int, error) {
 		return -1, -1, errors.New("found no values")
 	}
 	return r1, r2, nil
-}
-
-func xor(buf1, buf2 []byte) []byte {
-	if len(buf1) != len(buf2) {
-		panic("invalid inputs")
-	}
-	r := []byte{}
-	for i := 0; i < len(buf1); i++ {
-		r = append(r, buf1[i]^buf2[i])
-	}
-	return r
 }

@@ -22,3 +22,15 @@ func Remaining(n, m int) int {
 	}
 	return m - t
 }
+
+// returns new buffer with content set to buf1 xor buf2
+func Xor(buf1, buf2 []byte) []byte {
+	if len(buf1) != len(buf2) {
+		panic("invalid inputs")
+	}
+	r := []byte{}
+	for i := 0; i < len(buf1); i++ {
+		r = append(r, buf1[i]^buf2[i])
+	}
+	return r
+}

@@ -1,4 +1,4 @@
-package set3
+package aes
 
 import (
 	"crypto/rand"
@@ -23,10 +23,10 @@ func TestAesCtr(t *testing.T) {
 	nonce := insecureRand.Uint64()
 
 	aesCtr := NewAesCtr(aesKey, nonce)
-	ciphertext := aesCtr.process([]byte(plaintext))
+	ciphertext := aesCtr.Process([]byte(plaintext))
 
 	aesCtr = NewAesCtr(aesKey, nonce)
-	plaintext2 := string(aesCtr.process(ciphertext))
+	plaintext2 := string(aesCtr.Process(ciphertext))
 
 	require.Equal(t, plaintext, plaintext2, seed)
 }

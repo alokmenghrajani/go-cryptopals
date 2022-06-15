@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 // My solution for challenge20 is identical as for challenge19. The ends of the strings
@@ -76,8 +77,8 @@ func getCiphertextsFromFile() [][]byte {
 	_, err = rand.Read(aesKey)
 	utils.PanicOnErr(err)
 	for _, plaintext := range plaintexts {
-		aesCtr := NewAesCtr(aesKey, 0)
-		ciphertexts = append(ciphertexts, aesCtr.process(utils.Base64ToByteSlice(plaintext)))
+		aesCtr := aes.NewAesCtr(aesKey, 0)
+		ciphertexts = append(ciphertexts, aesCtr.Process(utils.Base64ToByteSlice(plaintext)))
 	}
 
 	return ciphertexts

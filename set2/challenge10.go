@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 func Challenge10() {
@@ -26,7 +27,7 @@ func Challenge10() {
 func AesCbcDecrypt(buf, key, iv []byte) []byte {
 	plaintext := []byte{}
 
-	aes := utils.NewAes(key)
+	aes := aes.NewAes(key)
 
 	prev := iv
 	for i := 0; i < len(buf); i += 16 {
@@ -53,7 +54,7 @@ func AesCbcDecrypt(buf, key, iv []byte) []byte {
 func AesCbcEncrypt(buf, key, iv []byte) []byte {
 	ciphertext := []byte{}
 
-	aes := utils.NewAes(key)
+	aes := aes.NewAes(key)
 
 	prev := iv
 	for i := 0; i < len(buf); i += 16 {

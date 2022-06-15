@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 func Challenge7() {
@@ -17,7 +18,7 @@ func Challenge7() {
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
 
-	cipher := utils.NewAes([]byte("YELLOW SUBMARINE"))
+	cipher := aes.NewAes([]byte("YELLOW SUBMARINE"))
 	output := []byte{}
 	t := make([]byte, cipher.BlockSize())
 	for i := 0; i < len(buf); i += cipher.BlockSize() {
