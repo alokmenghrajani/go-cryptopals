@@ -19,7 +19,7 @@ func Challenge8() {
 	bestScore := -1
 	bestInput := ""
 	for i := 0; i < len(inputs); i++ {
-		score := aesEcb(hexToByteSlice(inputs[i]))
+		score := aesEcb(utils.HexToByteSlice(inputs[i]))
 		if score > bestScore {
 			bestScore = score
 			bestInput = inputs[i]

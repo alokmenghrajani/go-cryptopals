@@ -71,13 +71,13 @@ func craft(aesKey []byte) []byte {
 	// such that BBBBB is a block with "_admin_true_x_"
 	// which will later become ";admin=true;x="
 	prefix := "comment1=cooking%20MCs;userdata="
-	l1 := remaining(len(prefix), 16)
+	l1 := utils.Remaining(len(prefix), 16)
 	input := strings.Repeat("_", l1)
 	s1 := strings.Repeat("_", 16)
 	input += s1
 	s2 := "_admin_true_x_"
 	input += s2
-	l2 := remaining(len(s2), 16)
+	l2 := utils.Remaining(len(s2), 16)
 	input += strings.Repeat("_", l2)
 	buf := encrypt(input, aesKey)
 

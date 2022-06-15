@@ -87,26 +87,17 @@ func craftAdminProfile(aesKey []byte) []byte {
 	// step 3. overwrite step2's last block with the ciphertext for the admin block.
 
 	len1 := len("email=")
-	l := remaining(len1, 16)
+	l := utils.Remaining(len1, 16)
 	string1 := strings.Repeat("x", l)
 	string1 += string(Pad([]byte("admin"), 16))
 	ciphertext1 := profileFor(string1, aesKey)
 
 	len2 := len("email=&uid=10&role=")
-	l = remaining(len2, 16)
+	l = utils.Remaining(len2, 16)
 	string2 := strings.Repeat("x", l)
 	ciphertext2 := profileFor(string2, aesKey)
 
 	// copy 2nd block of ciphertext1 into ciphertext2's last block
 	copy(ciphertext2[len(ciphertext2)-16:], ciphertext1[16:32])
 	return ciphertext2
-}
-
-// returns the smallest non-negative x such that (n+x)%m equals 0.
-func remaining(n, m int) int {
-	t := n % m
-	if t == 0 {
-		return 0
-	}
-	return m - t
 }

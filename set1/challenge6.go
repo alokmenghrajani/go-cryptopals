@@ -30,7 +30,7 @@ func Challenge6() {
 			finalKey = append(finalKey, key)
 		}
 		// apply the repreated XOR and compare english score
-		t := hexToByteSlice(encryptRepeatedXor(buf, finalKey))
+		t := utils.HexToByteSlice(encryptRepeatedXor(buf, finalKey))
 		v := english(t)
 		if v > bestScore {
 			// store the best result

@@ -27,5 +27,5 @@ func encryptRepeatedXor(buf, key []byte) string {
 	for i := 0; i < len(buf); i++ {
 		r = append(r, buf[i]^key[i%len(key)])
 	}
-	return byteSliceToHex(r)
+	return utils.ByteSliceToHex(r)
 }

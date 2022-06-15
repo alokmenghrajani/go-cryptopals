@@ -21,7 +21,7 @@ func Challenge4() {
 	bestScore := -1
 	bestResult := []byte{}
 	for i := 0; i < len(inputs); i++ {
-		buf := hexToByteSlice(inputs[i])
+		buf := utils.HexToByteSlice(inputs[i])
 		for b := 0; b < 256; b++ {
 			t := singleByteXor(buf, byte(b))
 			score := english(t)

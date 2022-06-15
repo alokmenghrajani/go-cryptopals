@@ -1,6 +1,8 @@
 # go-cryptopals
 Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in well commented Golang.
 
+Everything is implemented from scratch (hex, base64, AES, SHA1) for lolz.
+
 ## Set 1
 - [Convert hex to base64](set1/challenge1.go)
 - [Fixed XOR](set1/challenge2.go)

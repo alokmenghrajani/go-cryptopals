@@ -9,7 +9,7 @@ import (
 func Challenge3() {
 	utils.PrintTitle(1, 3)
 	input := "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-	_, r := crackSingleByteXor(hexToByteSlice(input))
+	_, r := crackSingleByteXor(utils.HexToByteSlice(input))
 	fmt.Printf("CrackSingleByteXor(%q) = %q\n", input, r)
 	fmt.Println()
 }

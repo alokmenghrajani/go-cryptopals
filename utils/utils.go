@@ -13,3 +13,12 @@ func PanicOnErr(err error) {
 		panic(err)
 	}
 }
+
+// returns the smallest non-negative x such that (n+x)%m equals 0.
+func Remaining(n, m int) int {
+	t := n % m
+	if t == 0 {
+		return 0
+	}
+	return m - t
+}

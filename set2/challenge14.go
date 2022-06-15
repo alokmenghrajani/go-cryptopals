@@ -83,7 +83,7 @@ func (c chall14) encryptHard(data []byte) []byte {
 
 // Knowing the prefixLength puts us back in the simpler challenge 12 case
 func (c chall14) encrypt(data []byte) []byte {
-	prefixRemaining := remaining(c.prefixLength, 16)
+	prefixRemaining := utils.Remaining(c.prefixLength, 16)
 	firstBlock := (c.prefixLength + prefixRemaining) / 16
 
 	t := make([]byte, prefixRemaining)
