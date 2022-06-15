@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/alokmenghrajani/go-cryptopals/set2"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 func Challenge17() {
@@ -48,14 +48,14 @@ func pick(n int, aesKey []byte) ([]byte, []byte) {
 
 	// base64 decode then encrypt data
 	plaintext := utils.Base64ToByteSlice(inputs[n])
-	plaintext = set2.Pad(plaintext, 16)
-	return set2.AesCbcEncrypt([]byte(plaintext), aesKey, iv), iv
+	plaintext = utils.Pad(plaintext, 16)
+	return aes.AesCbcEncrypt([]byte(plaintext), aesKey, iv), iv
 }
 
 // return true if the data is well padded
 func paddingOracle(buf, iv, aesKey []byte) bool {
-	t := set2.AesCbcDecrypt(buf, aesKey, iv)
-	_, err := set2.Unpad(t, 16)
+	t := aes.AesCbcDecrypt(buf, aesKey, iv)
+	_, err := utils.Unpad(t, 16)
 	return err == nil
 }
 
@@ -114,7 +114,7 @@ func crack(buf, iv, aesKey []byte) []byte {
 		previousBlock = block
 	}
 
-	plaintext, err := set2.Unpad(plaintext, 16)
+	plaintext, err := utils.Unpad(plaintext, 16)
 	utils.PanicOnErr(err)
 	return plaintext
 }

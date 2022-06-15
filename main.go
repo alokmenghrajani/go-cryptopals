@@ -41,4 +41,5 @@ func main() {
 	// Set 4: Stream crypto and randomness
 	set4.Challenge25()
 	set4.Challenge26()
+	set4.Challenge27()
 }

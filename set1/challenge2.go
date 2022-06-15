@@ -25,9 +25,6 @@ func FixedXor(input1, input2 string) string {
 	}
 	buf1 := utils.HexToByteSlice(input1)
 	buf2 := utils.HexToByteSlice(input2)
-	r := make([]byte, 0, len(buf1))
-	for i := 0; i < len(buf1); i++ {
-		r = append(r, buf1[i]^buf2[i])
-	}
+	r := utils.Xor(buf1, buf2)
 	return utils.ByteSliceToHex(r)
 }

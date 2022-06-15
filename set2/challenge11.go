@@ -53,7 +53,7 @@ func encryptionOracle(data, key []byte) ([]byte, int) {
 	buf := make([]byte, prependCount+appendCount+len(data))
 	rand.Read(buf)
 	copy(buf[prependCount:prependCount+len(data)], data)
-	buf = Pad(buf, 16)
+	buf = utils.Pad(buf, 16)
 
 	// encrypt the data
 	switch mode {
@@ -61,7 +61,7 @@ func encryptionOracle(data, key []byte) ([]byte, int) {
 		iv := make([]byte, 16)
 		_, err := rand.Read(iv)
 		utils.PanicOnErr(err)
-		ciphertext := AesCbcEncrypt(buf, key, iv)
+		ciphertext := aes.AesCbcEncrypt(buf, key, iv)
 		return ciphertext, mode
 	case ECB:
 		ciphertext := aesEcbEncrypt(buf, key)

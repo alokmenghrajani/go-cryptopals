@@ -1,4 +1,4 @@
-package set2
+package utils
 
 import (
 	"fmt"

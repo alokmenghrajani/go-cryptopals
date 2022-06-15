@@ -520,3 +520,7 @@ Play that funky music
 [0;31mSet 4, challenge 26:[m
 true
 
+[0;31mSet 4, challenge 27:[m
+original key: 47db1f302e2e685851c8c3ac23c6934e
+cracked key:  47db1f302e2e685851c8c3ac23c6934e
+

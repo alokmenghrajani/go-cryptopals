@@ -54,12 +54,12 @@ func profileFor(email string, aesKey []byte) []byte {
 		"role":  "user",
 	}
 	data := encode(profile)
-	return aesEcbEncrypt(Pad([]byte(data), 16), aesKey)
+	return aesEcbEncrypt(utils.Pad([]byte(data), 16), aesKey)
 }
 
 func role(ciphertext, aesKey []byte) string {
 	data := aesEcbDecrypt(ciphertext, aesKey)
-	data, err := Unpad(data, 16)
+	data, err := utils.Unpad(data, 16)
 	utils.PanicOnErr(err)
 	profile := parseString(string(data))
 	return profile["role"]
@@ -90,7 +90,7 @@ func craftAdminProfile(aesKey []byte) []byte {
 	len1 := len("email=")
 	l := utils.Remaining(len1, 16)
 	string1 := strings.Repeat("x", l)
-	string1 += string(Pad([]byte("admin"), 16))
+	string1 += string(utils.Pad([]byte("admin"), 16))
 	ciphertext1 := profileFor(string1, aesKey)
 
 	len2 := len("email=&uid=10&role=")

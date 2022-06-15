@@ -1,4 +1,4 @@
-package set2
+package aes
 
 import (
 	"crypto/rand"
@@ -18,8 +18,8 @@ func TestCbcEncryptionDecryption(t *testing.T) {
 	utils.PanicOnErr(err)
 
 	expected := []byte("hello world")
-	ciphertext := AesCbcEncrypt(Pad(expected, 16), key, iv)
-	plaintext, err := Unpad(AesCbcDecrypt(ciphertext, key, iv), 16)
+	ciphertext := AesCbcEncrypt(utils.Pad(expected, 16), key, iv)
+	plaintext, err := utils.Unpad(AesCbcDecrypt(ciphertext, key, iv), 16)
 	require.Nil(t, err)
 	require.Equal(t, expected, plaintext)
 }

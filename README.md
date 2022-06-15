@@ -32,3 +32,8 @@ Everything is implemented from scratch (hex, base64, AES, SHA1) for lolz.
 - [Crack an MT19937 seed](set3/challenge22.go)
 - [Clone an MT19937 RNG from its output](set3/challenge23.go)
 - [Create the MT19937 stream cipher and break it](set3/challenge24.go)
+
+## Set 4
+- [Break "random access read/write" AES CTR](set4/challenge25.go)
+- [CTR bitflipping](set4/challenge26.go)
+- [Recover the key from CBC with IV=Key](set4/challenge27.go)

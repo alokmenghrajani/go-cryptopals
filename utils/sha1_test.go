@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPadding(t *testing.T) {
+func TestSha1Padding(t *testing.T) {
 	s := NewSha1()
 	s.Update([]byte("abcde"))
 	s.pad()

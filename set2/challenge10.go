@@ -17,63 +17,9 @@ func Challenge10() {
 	}
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
-	buf = AesCbcDecrypt(buf, []byte("YELLOW SUBMARINE"), make([]byte, 16))
-	buf, err = Unpad(buf, 16)
+	buf = aes.AesCbcDecrypt(buf, []byte("YELLOW SUBMARINE"), make([]byte, 16))
+	buf, err = utils.Unpad(buf, 16)
 	utils.PanicOnErr(err)
 	fmt.Println(string(buf))
 	fmt.Println()
-}
-
-func AesCbcDecrypt(buf, key, iv []byte) []byte {
-	plaintext := []byte{}
-
-	aes := aes.NewAes(key)
-
-	prev := iv
-	for i := 0; i < len(buf); i += 16 {
-		ciphertext := buf[i : i+16]
-
-		// Decrypt ciphertext
-		output := make([]byte, 16)
-		aes.Decrypt(output, ciphertext)
-
-		// XOR output with prev
-		t := make([]byte, 0, 16)
-		for i := 0; i < 16; i++ {
-			t = append(t, output[i]^prev[i])
-		}
-		prev = ciphertext
-
-		plaintext = append(plaintext, t...)
-
-	}
-
-	return plaintext
-}
-
-func AesCbcEncrypt(buf, key, iv []byte) []byte {
-	ciphertext := []byte{}
-
-	aes := aes.NewAes(key)
-
-	prev := iv
-	for i := 0; i < len(buf); i += 16 {
-		plaintext := buf[i : i+16]
-
-		// XOR plaintext with prev
-		input := make([]byte, 0, 16)
-		for i := 0; i < 16; i++ {
-			input = append(input, plaintext[i]^prev[i])
-		}
-
-		// Encrypt input
-		output := make([]byte, 16)
-		aes.Encrypt(output, input)
-		prev = output
-
-		ciphertext = append(ciphertext, output...)
-
-	}
-
-	return ciphertext
 }
