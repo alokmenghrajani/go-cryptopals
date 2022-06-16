@@ -32,6 +32,14 @@ func NewSha1() *sha1 {
 	}
 }
 
+func (s *sha1) SetState(h0, h1, h2, h3, h4 uint32) {
+	s.h0 = h0
+	s.h1 = h1
+	s.h2 = h2
+	s.h3 = h3
+	s.h4 = h4
+}
+
 func (s *sha1) Update(buf []byte) {
 	s.buf = append(s.buf, buf...)
 	s.counter += len(buf)
@@ -41,6 +49,9 @@ func (s *sha1) Update(buf []byte) {
 func (s *sha1) Digest() []byte {
 	s.pad()
 	s.process()
+	if len(s.buf) != 0 {
+		panic("left over bytes in buffer")
+	}
 	r := make([]byte, 20)
 	binary.BigEndian.PutUint32(r, s.h0)
 	binary.BigEndian.PutUint32(r[4:], s.h1)
@@ -111,7 +122,7 @@ func (s *sha1) process() {
 
 func (s *sha1) pad() {
 	s.buf = append(s.buf, 0x80)
-	n := Remaining(s.counter+1+8, 64)
+	n := Remaining(len(s.buf)+8, 64)
 	s.buf = append(s.buf, make([]byte, n)...)
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(s.counter*8))

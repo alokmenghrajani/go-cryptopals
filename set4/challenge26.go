@@ -41,14 +41,7 @@ func decrypt(ciphertext, aesKey []byte) bool {
 	aesCtr := aes.NewAesCtr(aesKey, 0)
 	s := string(aesCtr.Process(ciphertext))
 
-	pieces := strings.Split(s, ";")
-	for _, piece := range pieces {
-		tuple := strings.Split(piece, "=")
-		if tuple[0] == "admin" {
-			return tuple[1] == "true"
-		}
-	}
-	return false
+	return utils.IsAdmin(s)
 }
 
 func craft(aesKey []byte) []byte {

@@ -1,6 +1,9 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // print the set and challenge using ansi colors
 func PrintTitle(set, challenge int) {
@@ -33,4 +36,17 @@ func Xor(buf1, buf2 []byte) []byte {
 		r = append(r, buf1[i]^buf2[i])
 	}
 	return r
+}
+
+// Given a string of the form: key1=value1;key2=value2;...
+// returns true if the first "admin" key is "true".
+func IsAdmin(message string) bool {
+	pieces := strings.Split(message, ";")
+	for _, piece := range pieces {
+		tuple := strings.Split(piece, "=")
+		if tuple[0] == "admin" {
+			return tuple[1] == "true"
+		}
+	}
+	return false
 }
