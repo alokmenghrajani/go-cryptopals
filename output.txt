@@ -530,3 +530,6 @@ b2426e180537cd69f57b2636e4991d857559dc9e
 [0;31mSet 4, challenge 29:[m
 admin: true
 
+[0;31mSet 4, challenge 30:[m
+admin: true
+

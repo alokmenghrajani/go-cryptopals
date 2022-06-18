@@ -1,7 +1,7 @@
 # go-cryptopals
 Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in well commented Golang.
 
-Everything is implemented from scratch (hex, base64, AES, SHA1) for lolz.
+Everything is implemented from scratch (hex, base64, AES, SHA1, MD4) for lolz.
 
 ## Set 1
 - [Convert hex to base64](set1/challenge1.go)
@@ -39,3 +39,4 @@ Everything is implemented from scratch (hex, base64, AES, SHA1) for lolz.
 - [Recover the key from CBC with IV=Key](set4/challenge27.go)
 - [Implement a SHA-1 keyed MAC](set4/challenge28.go)
 - [Break a SHA-1 keyed MAC using length extension](set4/challenge29.go)
+- [Break an MD4 keyed MAC using length extension](set4/challenge30.go)

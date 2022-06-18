@@ -44,4 +44,5 @@ func main() {
 	set4.Challenge27()
 	set4.Challenge28()
 	set4.Challenge29()
+	set4.Challenge30()
 }
