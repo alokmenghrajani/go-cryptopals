@@ -20,7 +20,7 @@ func Challenge29() {
 	message, mac := generateSha1Mac(key)
 	message2, mac2 := crackSha1Mac(message, mac)
 
-	validateMac([]byte(message2), mac2, key)
+	validateSha1Mac([]byte(message2), mac2, key)
 	admin := utils.IsAdmin(message2)
 	fmt.Printf("admin: %v\n", admin)
 
@@ -66,7 +66,7 @@ func crackSha1Mac(message string, mac []byte) (string, []byte) {
 	return string(buf), newMac
 }
 
-func validateMac(message, mac, key []byte) {
+func validateSha1Mac(message, mac, key []byte) {
 	sha1 := utils.NewSha1()
 	sha1.Update(key)
 	sha1.Update(message)
