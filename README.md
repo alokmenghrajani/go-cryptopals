@@ -40,3 +40,5 @@ Everything is implemented from scratch (hex, base64, AES, SHA1, MD4) for lolz.
 - [Implement a SHA-1 keyed MAC](set4/challenge28.go)
 - [Break a SHA-1 keyed MAC using length extension](set4/challenge29.go)
 - [Break an MD4 keyed MAC using length extension](set4/challenge30.go)
+- [Implement and break HMAC-SHA1 with an artificial timing leak](set4/challenge31.go)
+- [Break HMAC-SHA1 with a slightly less artificial timing leak](set4/challenge32.go)
