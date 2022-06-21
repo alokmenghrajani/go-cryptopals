@@ -5,6 +5,7 @@ import (
 	"github.com/alokmenghrajani/go-cryptopals/set2"
 	"github.com/alokmenghrajani/go-cryptopals/set3"
 	"github.com/alokmenghrajani/go-cryptopals/set4"
+	"github.com/alokmenghrajani/go-cryptopals/set5"
 )
 
 func main() {
@@ -47,4 +48,7 @@ func main() {
 	set4.Challenge30()
 	set4.Challenge31()
 	set4.Challenge32()
+
+	// Set 5: Diffie-Hellman and friends
+	set5.Challenge33()
 }
