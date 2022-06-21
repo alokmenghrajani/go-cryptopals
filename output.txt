@@ -533,3 +533,15 @@ admin: true
 [0;31mSet 4, challenge 30:[m
 admin: true
 
+[0;31mSet 4, challenge 31:[m
+expected signature:
+33 32 d8 f4 2e
+33 32 d8 f4 2e 
+response code: 200
+
+[0;31mSet 4, challenge 32:[m
+expected signature:
+ff 26 53 1f 9d
+ff 26 53 1f 9d 
+response code: 200
+
