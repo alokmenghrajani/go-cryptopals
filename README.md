@@ -42,3 +42,6 @@ Everything is implemented from scratch (hex, base64, AES, SHA1, MD4) for lolz.
 - [Break an MD4 keyed MAC using length extension](set4/challenge30.go)
 - [Implement and break HMAC-SHA1 with an artificial timing leak](set4/challenge31.go)
 - [Break HMAC-SHA1 with a slightly less artificial timing leak](set4/challenge32.go)
+
+## Set 5
+- [Implement Diffie-Hellman](set5/challenge33.go)
