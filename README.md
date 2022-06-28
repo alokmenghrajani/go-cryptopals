@@ -46,3 +46,4 @@ Everything is implemented from scratch (hex, base64, AES, SHA1, MD4) for lolz.
 ## Set 5
 - [Implement Diffie-Hellman](set5/challenge33.go)
 - [Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection](set5/challenge34.go)
+- [Implement DH with negotiated groups, and break with malicious "g" parameters](set5/challenge35.go)

@@ -582,3 +582,13 @@ hello world
 re: hello world
 
 
+[0;31mSet 5, challenge 35:[m
+re: hello world
+
+hello world 1
+re: hello world 1
+
+hello world 2
+re: hello world 2
+
+
