@@ -1,7 +1,7 @@
 # go-cryptopals
-Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in well commented Golang.
+Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in well<sup>[<i>[citation needed]()</i>]</sup> commented Golang.
 
-Everything is implemented from scratch (hex, base64, AES, SHA1, MD4) for lolz.
+A lot of things are implemented from scratch for lolz: hex, base64, [AES](http://www.moserware.com/assets/stick-figure-guide-to-advanced/aes_act_3_scene_02_agreement_576.png) with various modes (plain, ECB, CBC), SHA-1, SHA-256, MD4, HMAC-SHA1, HMAC-SHA256, etc.
 
 ## Set 1
 - [Convert hex to base64](set1/challenge1.go)
@@ -47,3 +47,4 @@ Everything is implemented from scratch (hex, base64, AES, SHA1, MD4) for lolz.
 - [Implement Diffie-Hellman](set5/challenge33.go)
 - [Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection](set5/challenge34.go)
 - [Implement DH with negotiated groups, and break with malicious "g" parameters](set5/challenge35.go)
+- [Implement Secure Remote Password (SRP)](set5/challenge36.go)
