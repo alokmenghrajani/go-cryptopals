@@ -48,3 +48,4 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 - [Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection](set5/challenge34.go)
 - [Implement DH with negotiated groups, and break with malicious "g" parameters](set5/challenge35.go)
 - [Implement Secure Remote Password (SRP)](set5/challenge36.go)
+- [Break SRP with a zero key](set5/challenge37.go)

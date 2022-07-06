@@ -595,3 +595,8 @@ re: hello world 2
 [0;31mSet 5, challenge 36:[m
 true
 
+[0;31mSet 5, challenge 37:[m
+0*N: true
+1*N: true
+2*N: true
+
