@@ -97,7 +97,9 @@ func main() {
 		set5.Challenge35()
 	case "36":
 		set5.Challenge36()
+	case "37":
+		set5.Challenge37()
 	default:
-		set5.Challenge36()
+		set5.Challenge37()
 	}
 }
