@@ -609,3 +609,7 @@ pa5ta lov3r: false
 plaintext: attack at dawn
 decrypted: attack at dawn
 
+[0;31mSet 5, challenge 40:[m
+plaintext: attack at dawn
+decrypted: attack at dawn
+
