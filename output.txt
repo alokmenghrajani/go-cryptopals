@@ -605,3 +605,7 @@ ba53ba11: false
 sup3r s3cr3t: true
 pa5ta lov3r: false
 
+[0;31mSet 5, challenge 39:[m
+plaintext: attack at dawn
+decrypted: attack at dawn
+

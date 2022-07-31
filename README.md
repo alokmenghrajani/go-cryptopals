@@ -50,3 +50,4 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 - [Implement Secure Remote Password (SRP)](set5/challenge36.go)
 - [Break SRP with a zero key](set5/challenge37.go)
 - [Offline dictionary attack on simplified SRP](set5/challenge38.go)
+- [Implement RSA](set5/challenge39.go)
