@@ -600,3 +600,8 @@ true
 1*N: true
 2*N: true
 
+[0;31mSet 5, challenge 38:[m
+ba53ba11: false
+sup3r s3cr3t: true
+pa5ta lov3r: false
+

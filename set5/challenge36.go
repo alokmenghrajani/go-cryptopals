@@ -19,6 +19,7 @@ type passwordStore struct {
 	v    *big.Int
 	b    *big.Int
 	B    *big.Int
+	u    *big.Int
 }
 
 func Challenge36() {
