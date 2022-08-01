@@ -18,30 +18,40 @@ type PrivKey struct {
 }
 
 func GenerateKeyPair() (PubKey, PrivKey) {
-	p := randomPrime()
-	q := randomPrime()
+	for {
+		p := randomPrime()
+		q := randomPrime()
 
-	n := &big.Int{}
-	n.Mul(p, q)
+		n := &big.Int{}
+		n.Mul(p, q)
 
-	p2 := &big.Int{}
-	p2.Sub(p, big.NewInt(1))
-	q2 := &big.Int{}
-	q2.Sub(q, big.NewInt(1))
-	et := &big.Int{}
-	et.Mul(p2, q2)
+		p2 := &big.Int{}
+		p2.Sub(p, big.NewInt(1))
+		q2 := &big.Int{}
+		q2.Sub(q, big.NewInt(1))
+		et := &big.Int{}
+		et.Mul(p2, q2)
 
-	e := big.NewInt(3)
+		e := big.NewInt(3)
 
-	d := &big.Int{}
-	d.ModInverse(e, et)
+		extraCheck := &big.Int{}
+		extraCheck.GCD(nil, nil, e, et)
+		if extraCheck.Cmp(big.NewInt(1)) == 0 {
+			d := &big.Int{}
+			d.ModInverse(e, et)
 
-	return PubKey{E: e, N: n}, PrivKey{D: d, N: n}
+			return PubKey{E: e, N: n}, PrivKey{D: d, N: n}
+		}
+	}
 }
 
 func (key PubKey) Encrypt(plaintext []byte) []byte {
 	m := &big.Int{}
 	m.SetBytes(plaintext)
+
+	if m.Cmp(key.N) != -1 {
+		panic("message too large for key")
+	}
 
 	c := &big.Int{}
 	c.Exp(m, key.E, key.N)
