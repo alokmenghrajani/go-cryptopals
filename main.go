@@ -8,6 +8,7 @@ import (
 	"github.com/alokmenghrajani/go-cryptopals/set3"
 	"github.com/alokmenghrajani/go-cryptopals/set4"
 	"github.com/alokmenghrajani/go-cryptopals/set5"
+	"github.com/alokmenghrajani/go-cryptopals/set6"
 )
 
 func main() {
@@ -105,7 +106,12 @@ func main() {
 		set5.Challenge39()
 	case "40":
 		set5.Challenge40()
+
+	// Set 6: RSA and DSA
+	case "41":
+		set6.Challenge41()
+
 	default:
-		set5.Challenge40()
+		set6.Challenge41()
 	}
 }
