@@ -613,3 +613,6 @@ decrypted: attack at dawn
 plaintext: attack at dawn
 decrypted: attack at dawn
 
+[0;31mSet 6, challenge 41:[m
+s3cr3t sauc3
+

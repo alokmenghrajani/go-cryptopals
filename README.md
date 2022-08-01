@@ -52,3 +52,6 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 - [Offline dictionary attack on simplified SRP](set5/challenge38.go)
 - [Implement RSA](set5/challenge39.go)
 - [Implement an E=3 RSA Broadcast attack](set5/challenge40.go)
+
+## Set 6
+- [Implement unpadded message recovery oracle](set6/challenge41.go)
