@@ -73,6 +73,33 @@ func (key PrivKey) Decrypt(ciphertext []byte) []byte {
 	return m.Bytes()
 }
 
+func (key PrivKey) Sign(message []byte) []byte {
+
+	m := &big.Int{}
+	m.SetBytes(message)
+
+	if m.Cmp(key.N) != -1 {
+		panic("message too large for key")
+	}
+
+	c := &big.Int{}
+	c.Exp(m, key.D, key.N)
+
+	return c.Bytes()
+}
+
+func (key PubKey) Verify(signature []byte) []byte {
+	c := &big.Int{}
+	c.SetBytes(signature)
+
+	m := &big.Int{}
+	m.Exp(c, key.E, key.N)
+
+	// Since we are dealing with BigInt, we don't have any leading 0x00.
+
+	return m.Bytes()
+}
+
 func randomPrime(keySizeBits int) *big.Int {
 	for {
 		buf := make([]byte, keySizeBits/8)
