@@ -12,9 +12,9 @@ func Challenge40() {
 	utils.PrintTitle(5, 40)
 
 	// create 3 keys
-	pubKey1, _ := rsa.GenerateKeyPair()
-	pubKey2, _ := rsa.GenerateKeyPair()
-	pubKey3, _ := rsa.GenerateKeyPair()
+	pubKey1, _ := rsa.GenerateKeyPair(1024)
+	pubKey2, _ := rsa.GenerateKeyPair(1024)
+	pubKey3, _ := rsa.GenerateKeyPair(1024)
 
 	// encrypt a message 3 times
 	msg := "attack at dawn"

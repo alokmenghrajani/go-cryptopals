@@ -10,7 +10,7 @@ import (
 func Challenge39() {
 	utils.PrintTitle(5, 39)
 
-	pubKey, privKey := rsa.GenerateKeyPair()
+	pubKey, privKey := rsa.GenerateKeyPair(1024)
 
 	// encrypt a message
 	msg := "attack at dawn"
