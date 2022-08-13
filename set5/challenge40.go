@@ -30,7 +30,7 @@ func Challenge40() {
 	// Crack the ciphertexts using CRT
 	solution, err := crt([]*big.Int{c1, c2, c3}, []*big.Int{pubKey1.N, pubKey2.N, pubKey3.N})
 	utils.PanicOnErr(err)
-	s := root(3, solution)
+	s := utils.Root(3, solution)
 
 	fmt.Printf("plaintext: %s\n", msg)
 	fmt.Printf("decrypted: %s\n", string(s.Bytes()))
@@ -55,27 +55,4 @@ func crt(a, n []*big.Int) (*big.Int, error) {
 		x.Add(&x, s.Mul(a[i], s.Mul(&s, &q)))
 	}
 	return x.Mod(&x, p), nil
-}
-
-// root from https://rosettacode.org/wiki/Integer_roots#big.Int
-func root(N int, xx *big.Int) *big.Int {
-	var x, Δr big.Int
-	nn := big.NewInt(int64(N))
-	for r := big.NewInt(1); ; {
-		x.Set(xx)
-		for i := 1; i < N; i++ {
-			x.Quo(&x, r)
-		}
-		// big.Quo performs Go-like truncated division and would allow direct
-		// translation of the int-based solution, but package big also provides
-		// Div which performs Euclidean rather than truncated division.
-		// This gives the desired result for negative x so the int-based
-		// correction is no longer needed and the code here can more directly
-		// follow the Wikipedia article.
-		Δr.Div(x.Sub(&x, r), nn)
-		if len(Δr.Bits()) == 0 {
-			return r
-		}
-		r.Add(r, &Δr)
-	}
 }
