@@ -110,8 +110,10 @@ func main() {
 	// Set 6: RSA and DSA
 	case "41":
 		set6.Challenge41()
+	case "42":
+		set6.Challenge42()
 
 	default:
-		set6.Challenge41()
+		set6.Challenge42()
 	}
 }

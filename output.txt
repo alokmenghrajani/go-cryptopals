@@ -616,3 +616,7 @@ decrypted: attack at dawn
 [0;31mSet 6, challenge 41:[m
 s3cr3t sauc3
 
+[0;31mSet 6, challenge 42:[m
+original signature: true
+forged signature: true
+
