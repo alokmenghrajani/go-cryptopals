@@ -17,13 +17,17 @@ type PrivKey struct {
 	N *big.Int
 }
 
-func GenerateKeyPair() (PubKey, PrivKey) {
+func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
 	for {
-		p := randomPrime()
-		q := randomPrime()
+		p := randomPrime(keySizeBits / 2)
+		q := randomPrime(keySizeBits / 2)
 
 		n := &big.Int{}
 		n.Mul(p, q)
+
+		if n.BitLen() != keySizeBits {
+			panic("n does not have expected bitLen")
+		}
 
 		p2 := &big.Int{}
 		p2.Sub(p, big.NewInt(1))
@@ -69,11 +73,28 @@ func (key PrivKey) Decrypt(ciphertext []byte) []byte {
 	return m.Bytes()
 }
 
-func randomPrime() *big.Int {
+func randomPrime(keySizeBits int) *big.Int {
 	for {
-		buf := make([]byte, 16)
+		buf := make([]byte, keySizeBits/8)
 		_, err := rand.Read(buf)
 		utils.PanicOnErr(err)
+
+		// Set the two most significant bits to 1 to guarantee that the resulting product will
+		// have the right number length.
+		// Looking at how common crypto libraries generate RSA keys is quite terrifying -- I wouldn't use RSA
+		// again for anything :)
+		//
+		// Here is how Golang handles key generation. It's quite more complicated since they handle multi-prime (when
+		// more than two primes are used, see https://datatracker.ietf.org/doc/html/rfc3447#section-3). The two higher bits get set.
+		// https://cs.opensource.google/go/go/+/refs/tags/go1.19:src/crypto/rsa/rsa.go;l=321;drc=de95dca32fb196d5f09bf5db4a6ba592907559c3
+		//
+		// Java Bouncycastle's implementation is here. A bit different from my approach:
+		// https://github.com/bcgit/bc-java/blob/bc3b92f1f0e78b82e2584c5fb4b226a13e7f8b3b/core/src/main/java/org/bouncycastle/crypto/generators/RSAKeyPairGenerator.java#L72
+		//
+		// BoringSSL's implementation is quite readable. I like this comment: "The key generation process is complex and thus error-prone. It could
+		// be disastrous to generate and then use a bad key so double-check that the key makes sense."
+		// https://github.com/google/boringssl/blob/b7d6320be91bdf132349e8384bd779ffcff3f030/crypto/fipsmodule/rsa/rsa_impl.c#L1258
+		buf[0] = buf[0] | 0xc0
 
 		n := &big.Int{}
 		n.SetBytes(buf)

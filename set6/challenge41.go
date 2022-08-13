@@ -13,7 +13,7 @@ func Challenge41() {
 	utils.PrintTitle(6, 41)
 
 	// create public key
-	pubKey, privKey := rsa.GenerateKeyPair()
+	pubKey, privKey := rsa.GenerateKeyPair(1024)
 
 	// encrypt a message
 	originalCiphertext := pubKey.Encrypt([]byte("s3cr3t sauc3"))
