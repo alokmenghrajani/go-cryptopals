@@ -7,22 +7,23 @@ import (
 )
 
 type PubKey struct {
-	p *big.Int
-	q *big.Int
-	g *big.Int
-	y *big.Int
+	P *big.Int
+	Q *big.Int
+	G *big.Int
+	Y *big.Int
 }
 
 type PrivKey struct {
-	p *big.Int
-	q *big.Int
-	g *big.Int
-	x *big.Int
+	P *big.Int
+	Q *big.Int
+	G *big.Int
+	X *big.Int
+	K *big.Int
 }
 
 type Signature struct {
-	r *big.Int
-	s *big.Int
+	R *big.Int
+	S *big.Int
 }
 
 func GenerateKeyPair() (PubKey, PrivKey) {
@@ -39,30 +40,33 @@ func GenerateKeyPair() (PubKey, PrivKey) {
 	// pick x randomly from 1..(q-1)
 	x := utils.Randn(q)
 	privKey := &PrivKey{
-		p: p,
-		q: q,
-		g: g,
-		x: x,
+		P: p,
+		Q: q,
+		G: g,
+		X: x,
+		K: nil,
 	}
 
 	// y = g^x mod p
 	pubKey := &PubKey{
-		p: p,
-		q: q,
-		g: g,
-		y: &big.Int{},
+		P: p,
+		Q: q,
+		G: g,
+		Y: &big.Int{},
 	}
-	pubKey.y.Exp(g, privKey.x, p)
+	pubKey.Y.Exp(g, privKey.X, p)
 
 	return *pubKey, *privKey
 }
 
 func (privKey *PrivKey) Sign(message []byte) Signature {
 	// pick k randomly from 1..(q-1)
-	k := utils.Randn(privKey.q)
+	if privKey.K == nil {
+		privKey.K = utils.Randn(privKey.Q)
+	}
 	r := &big.Int{}
-	r.Exp(privKey.g, k, privKey.p)
-	r.Mod(r, privKey.q)
+	r.Exp(privKey.G, privKey.K, privKey.P)
+	r.Mod(r, privKey.Q)
 	if r.Cmp(big.NewInt(0)) == 0 {
 		panic("todo: start over with different k")
 	}
@@ -75,40 +79,40 @@ func (privKey *PrivKey) Sign(message []byte) Signature {
 	hh.SetBytes(h)
 
 	s := &big.Int{}
-	s.Mul(r, privKey.x)
+	s.Mul(r, privKey.X)
 	hh.Add(hh, s)
 
 	t := &big.Int{}
-	t.ModInverse(k, privKey.q)
+	t.ModInverse(privKey.K, privKey.Q)
 	s.Mul(t, hh)
-	s.Mod(s, privKey.q)
+	s.Mod(s, privKey.Q)
 
 	return Signature{
-		r: r,
-		s: s,
+		R: r,
+		S: s,
 	}
 }
 
 func (pubKey *PubKey) Verify(message []byte, signature Signature) bool {
 	// check 0<r<q
-	if signature.r.Cmp(big.NewInt(0)) != 1 {
+	if signature.R.Cmp(big.NewInt(0)) != 1 {
 		return false
 	}
-	if signature.r.Cmp(pubKey.q) != -1 {
+	if signature.R.Cmp(pubKey.Q) != -1 {
 		return false
 	}
 
 	// check 0<s<q
-	if signature.s.Cmp(big.NewInt(0)) != 1 {
+	if signature.S.Cmp(big.NewInt(0)) != 1 {
 		return false
 	}
-	if signature.s.Cmp(pubKey.q) != -1 {
+	if signature.S.Cmp(pubKey.Q) != -1 {
 		return false
 	}
 
 	// compute w
 	w := &big.Int{}
-	w.ModInverse(signature.s, pubKey.q)
+	w.ModInverse(signature.S, pubKey.Q)
 
 	// compute hash
 	sha1 := utils.NewSha1()
@@ -121,25 +125,25 @@ func (pubKey *PubKey) Verify(message []byte, signature Signature) bool {
 	// compute u1
 	u1 := &big.Int{}
 	u1.Mul(hh, w)
-	u1.Mod(u1, pubKey.q)
+	u1.Mod(u1, pubKey.Q)
 
 	// compute u2
 	u2 := &big.Int{}
-	u2.Mul(signature.r, w)
-	u2.Mod(u2, pubKey.q)
+	u2.Mul(signature.R, w)
+	u2.Mod(u2, pubKey.Q)
 
 	// compute v
 	v1 := &big.Int{}
-	v1.Exp(pubKey.g, u1, pubKey.p)
+	v1.Exp(pubKey.G, u1, pubKey.P)
 
 	v2 := &big.Int{}
-	v2.Exp(pubKey.y, u2, pubKey.p)
+	v2.Exp(pubKey.Y, u2, pubKey.P)
 
 	v := &big.Int{}
 	v.Mul(v1, v2)
-	v.Mod(v, pubKey.p)
-	v.Mod(v, pubKey.q)
+	v.Mod(v, pubKey.P)
+	v.Mod(v, pubKey.Q)
 
 	// check if v == r
-	return v.Cmp(signature.r) == 0
+	return v.Cmp(signature.R) == 0
 }
