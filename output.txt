@@ -620,3 +620,9 @@ s3cr3t sauc3
 original signature: true
 forged signature: true
 
+[0;31mSet 6, challenge 43:[m
+x: 0
+sha1(msg): d2d0714f014a9784047eaeccf956520045c45265
+We found the correct key!
+x: 125489817134406768603130881762531825565433175625
+
