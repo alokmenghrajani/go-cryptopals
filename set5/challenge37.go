@@ -43,7 +43,7 @@ func Challenge37() {
 
 	for i := 0; i < 3; i++ {
 		A := &big.Int{}
-		A.Mul(N, big.NewInt(0))
+		A.Mul(N, big.NewInt(int64(i)))
 		res := authStep2(store, A, N, proof)
 		fmt.Printf("%d*N: %v\n", i, res)
 	}
