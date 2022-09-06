@@ -2,9 +2,9 @@ package set5
 
 import (
 	"fmt"
-	"math/big"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/big"
 	"github.com/alokmenghrajani/go-cryptopals/utils/rsa"
 )
 
@@ -18,19 +18,14 @@ func Challenge40() {
 
 	// encrypt a message 3 times
 	msg := "attack at dawn"
-	c1 := &big.Int{}
-	c1.SetBytes([]byte(pubKey1.Encrypt([]byte(msg))))
-
-	c2 := &big.Int{}
-	c2.SetBytes([]byte(pubKey2.Encrypt([]byte(msg))))
-
-	c3 := &big.Int{}
-	c3.SetBytes([]byte(pubKey3.Encrypt([]byte(msg))))
+	c1 := big.FromBytes([]byte(pubKey1.Encrypt([]byte(msg))))
+	c2 := big.FromBytes([]byte(pubKey2.Encrypt([]byte(msg))))
+	c3 := big.FromBytes([]byte(pubKey3.Encrypt([]byte(msg))))
 
 	// Crack the ciphertexts using CRT
 	solution, err := crt([]*big.Int{c1, c2, c3}, []*big.Int{pubKey1.N, pubKey2.N, pubKey3.N})
 	utils.PanicOnErr(err)
-	s := utils.Root(3, solution)
+	s := solution.Root(3)
 
 	fmt.Printf("plaintext: %s\n", msg)
 	fmt.Printf("decrypted: %s\n", string(s.Bytes()))
@@ -41,18 +36,18 @@ func Challenge40() {
 // Chinese Remainder Theorem code from
 // https://github.com/alokmenghrajani/adventofcode2020/blob/main/day13/day13.go#L61
 func crt(a, n []*big.Int) (*big.Int, error) {
-	p := new(big.Int).Set(n[0])
+	p := n[0]
 	for _, n1 := range n[1:] {
-		p.Mul(p, n1)
+		p = p.Mul(n1)
 	}
-	var x, q, s, z big.Int
+	x := big.Zero
 	for i, n1 := range n {
-		q.Div(p, n1)
-		z.GCD(nil, &s, n1, &q)
-		if z.Cmp(big.NewInt(1)) != 0 {
+		q, _ := p.Div(n1)
+		_, s, z := n1.ExtendedGCD(q)
+		if z.Cmp(big.One) != 0 {
 			return nil, fmt.Errorf("%d not coprime", n1)
 		}
-		x.Add(&x, s.Mul(a[i], s.Mul(&s, &q)))
+		x = x.Add(a[i].Mul(s.Mul(q)))
 	}
-	return x.Mod(&x, p), nil
+	return x.Mod(p), nil
 }

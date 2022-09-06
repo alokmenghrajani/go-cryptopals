@@ -3,9 +3,9 @@ package set6
 import (
 	"bytes"
 	"fmt"
-	"math/big"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/big"
 	"github.com/alokmenghrajani/go-cryptopals/utils/rsa"
 )
 
@@ -25,10 +25,7 @@ func Challenge42() {
 		E: big.NewInt(3),
 		N: &big.Int{},
 	}
-	_, ok := pubKey.N.SetString("00d3a75c230ccb7b69f8f10d478588309d96bdef1b7042db4a587a4fd1dca880726d5674adb5ace47782ff0e8fdf73be141997a0f69ac598d873179e3e70d728831e4f7a4af9de4635422abc2943b14dafc5fd037e65c573937989c2d763ca08982d0fabf103f0c59045d3dc1d5cb3e994096fe7cb1607f9e3efbe71c71afbfe69", 16)
-	if !ok {
-		panic("SetString failed")
-	}
+	pubKey.N = big.FromBytes(utils.HexToByteSlice("00d3a75c230ccb7b69f8f10d478588309d96bdef1b7042db4a587a4fd1dca880726d5674adb5ace47782ff0e8fdf73be141997a0f69ac598d873179e3e70d728831e4f7a4af9de4635422abc2943b14dafc5fd037e65c573937989c2d763ca08982d0fabf103f0c59045d3dc1d5cb3e994096fe7cb1607f9e3efbe71c71afbfe69"))
 
 	// verify signature
 	fmt.Printf("original signature: %v\n", verify(pubKey, signature))
@@ -107,12 +104,10 @@ func forge(pubKey rsa.PubKey) []byte {
 	for i := 0; i < 200; i++ {
 		// keep adding garbage until ^3 returns the original data
 		forged = append(forged, 0x01)
-		n := &big.Int{}
-		n.SetBytes(forged)
+		n := big.FromBytes(forged)
 
-		r := utils.Root(3, n)
-		t := &big.Int{}
-		t.Exp(r, big.NewInt(3), pubKey.N)
+		r := n.Root(3)
+		t := r.ExpMod(big.NewInt(3), pubKey.N)
 		buf := t.Bytes()
 		if bytes.Equal(buf[0:goal], forged[0:goal]) {
 			return r.Bytes()

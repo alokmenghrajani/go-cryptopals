@@ -2,9 +2,9 @@ package rsa
 
 import (
 	"crypto/rand"
-	"math/big"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/big"
 )
 
 type PubKey struct {
@@ -22,27 +22,21 @@ func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
 		p := randomPrime(keySizeBits / 2)
 		q := randomPrime(keySizeBits / 2)
 
-		n := &big.Int{}
-		n.Mul(p, q)
+		n := p.Mul(q)
 
-		if n.BitLen() != keySizeBits {
+		if n.Msb() != keySizeBits {
 			panic("n does not have expected bitLen")
 		}
 
-		p2 := &big.Int{}
-		p2.Sub(p, big.NewInt(1))
-		q2 := &big.Int{}
-		q2.Sub(q, big.NewInt(1))
-		et := &big.Int{}
-		et.Mul(p2, q2)
+		p2 := p.Sub(big.NewInt(1))
+		q2 := q.Sub(big.NewInt(1))
+		et := p2.Mul(q2)
 
 		e := big.NewInt(3)
 
-		extraCheck := &big.Int{}
-		extraCheck.GCD(nil, nil, e, et)
-		if extraCheck.Cmp(big.NewInt(1)) == 0 {
-			d := &big.Int{}
-			d.ModInverse(e, et)
+		_, _, extraCheck := e.ExtendedGCD(et)
+		if extraCheck.Cmp(big.One) == 0 {
+			d := e.ModInverse(et)
 
 			return PubKey{E: e, N: n}, PrivKey{D: d, N: n}
 		}
@@ -50,52 +44,36 @@ func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
 }
 
 func (key PubKey) Encrypt(plaintext []byte) []byte {
-	m := &big.Int{}
-	m.SetBytes(plaintext)
-
+	m := big.FromBytes(plaintext)
 	if m.Cmp(key.N) != -1 {
 		panic("message too large for key")
 	}
 
-	c := &big.Int{}
-	c.Exp(m, key.E, key.N)
-
+	c := m.ExpMod(key.E, key.N)
 	return c.Bytes()
 }
 
 func (key PrivKey) Decrypt(ciphertext []byte) []byte {
-	c := &big.Int{}
-	c.SetBytes(ciphertext)
-
-	m := &big.Int{}
-	m.Exp(c, key.D, key.N)
-
+	c := big.FromBytes(ciphertext)
+	m := c.ExpMod(key.D, key.N)
 	return m.Bytes()
 }
 
 func (key PrivKey) Sign(message []byte) []byte {
-
-	m := &big.Int{}
-	m.SetBytes(message)
-
+	m := big.FromBytes(message)
 	if m.Cmp(key.N) != -1 {
 		panic("message too large for key")
 	}
 
-	c := &big.Int{}
-	c.Exp(m, key.D, key.N)
-
+	c := m.ExpMod(key.D, key.N)
 	return c.Bytes()
 }
 
 func (key PubKey) Verify(signature []byte) []byte {
-	c := &big.Int{}
-	c.SetBytes(signature)
+	c := big.FromBytes(signature)
+	m := c.ExpMod(key.E, key.N)
 
-	m := &big.Int{}
-	m.Exp(c, key.E, key.N)
-
-	// Since we are dealing with BigInt, we don't have any leading 0x00.
+	// Keep in mind that since we are dealing with big.Int, there won't be any leading 0x00.
 
 	return m.Bytes()
 }
@@ -123,9 +101,8 @@ func randomPrime(keySizeBits int) *big.Int {
 		// https://github.com/google/boringssl/blob/b7d6320be91bdf132349e8384bd779ffcff3f030/crypto/fipsmodule/rsa/rsa_impl.c#L1258
 		buf[0] = buf[0] | 0xc0
 
-		n := &big.Int{}
-		n.SetBytes(buf)
-		if n.ProbablyPrime(20) {
+		n := big.FromBytes(buf)
+		if n.ProbablyPrime() {
 			return n
 		}
 	}

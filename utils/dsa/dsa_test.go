@@ -1,9 +1,9 @@
 package dsa
 
 import (
-	"math/big"
 	"testing"
 
+	"github.com/alokmenghrajani/go-cryptopals/utils/big"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,10 +14,10 @@ func TestDsaSigning(t *testing.T) {
 	signature := privKey.Sign(msg)
 	assert.True(t, pubKey.Verify(msg, signature))
 
-	signature.R.Add(signature.R, big.NewInt(1))
+	signature.R = signature.R.Add(big.One)
 	assert.False(t, pubKey.Verify(msg, signature))
 
-	signature.R.Sub(signature.R, big.NewInt(1))
-	signature.S.Add(signature.R, big.NewInt(1))
+	signature.R = signature.R.Sub(big.One)
+	signature.S = signature.S.Add(big.One)
 	assert.False(t, pubKey.Verify(msg, signature))
 }

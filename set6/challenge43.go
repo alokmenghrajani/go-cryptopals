@@ -3,9 +3,9 @@ package set6
 import (
 	"bytes"
 	"fmt"
-	"math/big"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/big"
 	"github.com/alokmenghrajani/go-cryptopals/utils/dsa"
 )
 
@@ -23,15 +23,15 @@ func Challenge43() {
 	fmt.Printf("x: %d\n", x.Cmp(privKey.X))
 
 	// Bruteforce private key
-	pubKey.Y.SetString("84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17", 16)
+	pubKey.Y = big.FromBytes(utils.HexToByteSlice("84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17"))
 
 	msg = []byte("For those that envy a MC it can be hazardous to your health\nSo be friendly, a matter of life and death, just like a etch-a-sketch\n")
 	signature = dsa.Signature{
 		R: &big.Int{},
 		S: &big.Int{},
 	}
-	signature.R.SetString("548099063082341131477253921760299949438196259240", 10)
-	signature.S.SetString("857042759984254168557880549501802188789837994940", 10)
+	signature.R = big.FromBytes(utils.HexToByteSlice("60019cacdc56eedf8e080984bfa898c8c5c419a8"))
+	signature.S = big.FromBytes(utils.HexToByteSlice("961f2062efc3c68db965a90c924cf76580ec1bbc"))
 
 	privKey = recoverPrivKey(pubKey, msg, signature)
 	fmt.Printf("x: %s\n", privKey.X.String())
@@ -40,18 +40,15 @@ func Challenge43() {
 }
 
 func recoverX(pubKey dsa.PubKey, h []byte, signature dsa.Signature, k *big.Int) *big.Int {
-	x := &big.Int{}
-	x.Mul(signature.S, k)
+	x := signature.S.Mul(k)
 
-	hh := &big.Int{}
-	hh.SetBytes(h)
+	hh := big.FromBytes(h)
 
-	x.Sub(x, hh)
+	x = x.Sub(hh)
 
-	t := &big.Int{}
-	t.ModInverse(signature.R, pubKey.Q)
-	x.Mul(x, t)
-	x.Mod(x, pubKey.Q)
+	t := signature.R.ModInverse(pubKey.Q)
+	x = x.Mul(t)
+	x = x.Mod(pubKey.Q)
 
 	return x
 }
