@@ -56,7 +56,7 @@ func Challenge44() {
 	}
 
 	// create pubkey
-	pubKey, _ := dsa.GenerateKeyPair()
+	pubKey, _ := dsa.GenerateKeyPair(dsa.DefaultParams())
 	pubKey.Y.SetString("2d026f4bf30195ede3a088da85e398ef869611d0f68f0713d51c9c1a3a26c95105d915e2d8cdf26d056b86b8a7b85519b1c23cc3ecdc6062650462e3063bd179c2a6581519f674a61f1d89a1fff27171ebc1b93d4dc57bceb7ae2430f98a6a4d83d8279ee65d71c1203d2c96d65ebbf7cce9d32971c3de5084cce04a2e147821", 16)
 
 	// Find which pairs re-used the same k
@@ -87,18 +87,18 @@ func checkPair(pubKey dsa.PubKey, left data, right data) *dsa.PrivKey {
 	// compute k
 	d := &big.Int{}
 	d.Sub(left.signature.S, right.signature.S)
-	d.Mod(d, pubKey.Q)
+	d.Mod(d, pubKey.Params.Q)
 
-	d = d.ModInverse(d, pubKey.Q)
+	d = d.ModInverse(d, pubKey.Params.Q)
 	if d == nil {
 		return nil
 	}
 
 	k := &big.Int{}
 	k.Sub(left.m, right.m)
-	k.Mod(k, pubKey.Q)
+	k.Mod(k, pubKey.Params.Q)
 	k.Mul(k, d)
-	k.Mod(k, pubKey.Q)
+	k.Mod(k, pubKey.Params.Q)
 
 	// check if k works
 	left.signature.K = k
@@ -116,18 +116,16 @@ func recoverFromData(pubKey dsa.PubKey, d data) *dsa.PrivKey {
 	x.Sub(x, d.m)
 
 	t := &big.Int{}
-	t = t.ModInverse(d.signature.R, pubKey.Q)
+	t = t.ModInverse(d.signature.R, pubKey.Params.Q)
 	if t == nil {
 		return nil
 	}
 	x.Mul(x, t)
-	x.Mod(x, pubKey.Q)
+	x.Mod(x, pubKey.Params.Q)
 
 	privKey := &dsa.PrivKey{
-		P: pubKey.P,
-		Q: pubKey.Q,
-		G: pubKey.G,
-		X: x,
+		Params: pubKey.Params,
+		X:      x,
 	}
 	if checkKey(*privKey, &d.signature, d.msg) {
 		return privKey

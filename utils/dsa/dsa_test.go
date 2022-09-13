@@ -8,7 +8,7 @@ import (
 )
 
 func TestDsaSigning(t *testing.T) {
-	pubKey, privKey := GenerateKeyPair()
+	pubKey, privKey := GenerateKeyPair(DefaultParams())
 	msg := []byte("hello world")
 
 	signature := privKey.Sign(nil, msg)
