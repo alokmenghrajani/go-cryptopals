@@ -13,7 +13,7 @@ func Challenge43() {
 	utils.PrintTitle(6, 43)
 
 	// part 1: recover x by using a known k
-	pubKey, privKey := dsa.GenerateKeyPair()
+	pubKey, privKey := dsa.GenerateKeyPair(dsa.DefaultParams())
 	msg := []byte("hello world")
 	signature := privKey.Sign(nil, msg)
 	if signature == nil {
@@ -73,12 +73,12 @@ func recoverX(pubKey dsa.PubKey, h []byte, signature *dsa.Signature) *big.Int {
 	x.Sub(x, hh)
 
 	t := &big.Int{}
-	t = t.ModInverse(signature.R, pubKey.Q)
+	t = t.ModInverse(signature.R, pubKey.Params.Q)
 	if t == nil {
 		return nil
 	}
 	x.Mul(x, t)
-	x.Mod(x, pubKey.Q)
+	x.Mod(x, pubKey.Params.Q)
 
 	return x
 }
@@ -97,10 +97,8 @@ func bruteforceK(pubKey dsa.PubKey, msg []byte, signature *dsa.Signature) dsa.Pr
 		signature.K = kk
 		potentialX := recoverX(pubKey, h, signature)
 		privKey := dsa.PrivKey{
-			P: pubKey.P,
-			Q: pubKey.Q,
-			G: pubKey.G,
-			X: potentialX,
+			Params: pubKey.Params,
+			X:      potentialX,
 		}
 		if checkKey(privKey, signature, msg) {
 			return privKey
