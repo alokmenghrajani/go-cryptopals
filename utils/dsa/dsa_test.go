@@ -11,7 +11,7 @@ func TestDsaSigning(t *testing.T) {
 	pubKey, privKey := GenerateKeyPair()
 	msg := []byte("hello world")
 
-	signature := privKey.Sign(msg)
+	signature := privKey.Sign(nil, msg)
 	assert.True(t, pubKey.Verify(msg, signature))
 
 	signature.R.Add(signature.R, big.NewInt(1))

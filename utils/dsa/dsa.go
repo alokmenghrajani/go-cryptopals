@@ -18,10 +18,10 @@ type PrivKey struct {
 	Q *big.Int
 	G *big.Int
 	X *big.Int
-	K *big.Int
 }
 
 type Signature struct {
+	K *big.Int
 	R *big.Int
 	S *big.Int
 }
@@ -44,7 +44,6 @@ func GenerateKeyPair() (PubKey, PrivKey) {
 		Q: q,
 		G: g,
 		X: x,
-		K: nil,
 	}
 
 	// y = g^x mod p
@@ -59,13 +58,13 @@ func GenerateKeyPair() (PubKey, PrivKey) {
 	return *pubKey, *privKey
 }
 
-func (privKey *PrivKey) Sign(message []byte) Signature {
+func (privKey *PrivKey) Sign(k *big.Int, message []byte) *Signature {
 	// pick k randomly from 1..(q-1)
-	if privKey.K == nil {
-		privKey.K = utils.Randn(privKey.Q)
+	if k == nil {
+		k = utils.Randn(privKey.Q)
 	}
 	r := &big.Int{}
-	r.Exp(privKey.G, privKey.K, privKey.P)
+	r.Exp(privKey.G, k, privKey.P)
 	r.Mod(r, privKey.Q)
 	if r.Cmp(big.NewInt(0)) == 0 {
 		panic("todo: start over with different k")
@@ -83,17 +82,26 @@ func (privKey *PrivKey) Sign(message []byte) Signature {
 	hh.Add(hh, s)
 
 	t := &big.Int{}
-	t.ModInverse(privKey.K, privKey.Q)
+	t = t.ModInverse(k, privKey.Q)
+	if t == nil {
+		// probably a bad private key, which can happen while crafting keys
+		return nil
+	}
 	s.Mul(t, hh)
 	s.Mod(s, privKey.Q)
 
-	return Signature{
+	return &Signature{
+		K: k,
 		R: r,
 		S: s,
 	}
 }
 
-func (pubKey *PubKey) Verify(message []byte, signature Signature) bool {
+func (pubKey *PubKey) Verify(message []byte, signature *Signature) bool {
+	if signature == nil {
+		return false
+	}
+
 	// check 0<r<q
 	if signature.R.Cmp(big.NewInt(0)) != 1 {
 		return false
