@@ -12,9 +12,7 @@ import (
 func Challenge7() {
 	utils.PrintTitle(1, 7)
 	file, err := os.ReadFile("set1/7.txt")
-	if err != nil {
-		panic(err)
-	}
+	utils.PanicOnErr(err)
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
 

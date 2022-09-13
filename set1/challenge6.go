@@ -11,9 +11,7 @@ import (
 func Challenge6() {
 	utils.PrintTitle(1, 6)
 	file, err := os.ReadFile("set1/6.txt")
-	if err != nil {
-		panic(err)
-	}
+	utils.PanicOnErr(err)
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
 

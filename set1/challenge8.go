@@ -12,9 +12,7 @@ import (
 func Challenge8() {
 	utils.PrintTitle(1, 8)
 	file, err := os.ReadFile("set1/8.txt")
-	if err != nil {
-		panic(err)
-	}
+	utils.PanicOnErr(err)
 	inputs := strings.Split(string(file), "\n")
 	bestScore := -1
 	bestInput := ""
