@@ -12,9 +12,7 @@ import (
 func Challenge10() {
 	utils.PrintTitle(2, 10)
 	file, err := os.ReadFile("set2/10.txt")
-	if err != nil {
-		panic(err)
-	}
+	utils.PanicOnErr(err)
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
 	buf = aes.AesCbcDecrypt(buf, []byte("YELLOW SUBMARINE"), make([]byte, 16))

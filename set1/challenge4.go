@@ -11,9 +11,7 @@ import (
 func Challenge4() {
 	utils.PrintTitle(1, 4)
 	file, err := os.ReadFile("set1/4.txt")
-	if err != nil {
-		panic(err)
-	}
+	utils.PanicOnErr(err)
 	inputs := strings.Split(string(file), "\n")
 
 	// same code as challenge 3, but we are now looking for the best score among all the

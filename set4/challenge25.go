@@ -15,9 +15,7 @@ func Challenge25() {
 
 	// copy-pasta from Challenge7()
 	file, err := os.ReadFile("set4/25.txt")
-	if err != nil {
-		panic(err)
-	}
+	utils.PanicOnErr(err)
 	input := strings.Join(strings.Split(string(file), "\n"), "")
 	buf := utils.Base64ToByteSlice(input)
 
