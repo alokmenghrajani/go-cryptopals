@@ -57,3 +57,4 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 - [Implement unpadded message recovery oracle](set6/challenge41.go)
 - [Bleichenbacher's e=3 RSA Attack](set6/challenge42.go)
 - [DSA key recovery from nonce](set6/challenge43.go)
+- [DSA nonce recovery from repeated nonce](set6/challenge44.go)
