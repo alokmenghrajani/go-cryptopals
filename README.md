@@ -59,3 +59,4 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 - [DSA key recovery from nonce](set6/challenge43.go)
 - [DSA nonce recovery from repeated nonce](set6/challenge44.go)
 - [DSA parameter tampering](set6/challenge45.go)
+- [RSA parity oracle](set6/challenge46.go)
