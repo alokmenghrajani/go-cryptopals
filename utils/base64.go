@@ -2,7 +2,7 @@ package utils
 
 import "strings"
 
-// base64 encoding
+// ByteSliceToBase64 base64 encodes buf per https://www.rfc-editor.org/rfc/rfc4648
 func ByteSliceToBase64(buf []byte) string {
 	// calculate how much space we'll need
 	n := int(len(buf) * 4 / 3)
@@ -47,7 +47,7 @@ func bitsToBase64(v byte) byte {
 	panic("something is wrong")
 }
 
-// base64 decoding
+// Base64ToByteSlice base64 decodes input
 func Base64ToByteSlice(input string) []byte {
 	if (len(input) % 4) != 0 {
 		panic("invalid input")
