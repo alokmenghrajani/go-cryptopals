@@ -64,3 +64,4 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 ## Set 7
 - [CBC-MAC Message Forgery](set7/challenge49.go)
 - [Hashing with CBC-MAC](set7/challenge50.go)
+- [Compression Ratio Side-Channel Attacks](set7/challenge51.go)
