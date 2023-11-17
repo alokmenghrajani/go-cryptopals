@@ -78,7 +78,7 @@ func (m *md4) process() {
 		}
 		ff := func(a, b, c, d uint32, k, s int) uint32 {
 			t := f(b, c, d)
-			return shiftleft(a+t+x[k], s)
+			return rotateLeft(a+t+x[k], s)
 		}
 		m.a = ff(m.a, m.b, m.c, m.d, 0, 3)
 		m.d = ff(m.d, m.a, m.b, m.c, 1, 7)
@@ -102,7 +102,7 @@ func (m *md4) process() {
 			return (x & y) | (x & z) | (y & z)
 		}
 		gg := func(a, b, c, d uint32, k, s int) uint32 {
-			return shiftleft(a+g(b, c, d)+x[k]+0x5A827999, s)
+			return rotateLeft(a+g(b, c, d)+x[k]+0x5A827999, s)
 		}
 		m.a = gg(m.a, m.b, m.c, m.d, 0, 3)
 		m.d = gg(m.d, m.a, m.b, m.c, 4, 5)
@@ -126,7 +126,7 @@ func (m *md4) process() {
 			return x ^ y ^ z
 		}
 		hh := func(a, b, c, d uint32, k, s int) uint32 {
-			return shiftleft(a+h(b, c, d)+x[k]+0x6ED9EBA1, s)
+			return rotateLeft(a+h(b, c, d)+x[k]+0x6ED9EBA1, s)
 		}
 		m.a = hh(m.a, m.b, m.c, m.d, 0, 3)
 		m.d = hh(m.d, m.a, m.b, m.c, 8, 9)
