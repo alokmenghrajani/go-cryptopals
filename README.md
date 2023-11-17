@@ -60,8 +60,27 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 - [DSA nonce recovery from repeated nonce](set6/challenge44.go)
 - [DSA parameter tampering](set6/challenge45.go)
 - [RSA parity oracle](set6/challenge46.go)
+- Bleichenbacher's PKCS 1.5 Padding Oracle (Simple Case)
+- Bleichenbacher's PKCS 1.5 Padding Oracle (Complete Case)
 
 ## Set 7
 - [CBC-MAC Message Forgery](set7/challenge49.go)
 - [Hashing with CBC-MAC](set7/challenge50.go)
 - [Compression Ratio Side-Channel Attacks](set7/challenge51.go)
+- [Iterated Hash Function Multicollisions](set7/challenge52.go)
+- Kelsey and Schneier's Expandable Messages
+- Kelsey and Kohno's Nostradamus Attack
+- [MD4 Collisions](set7/challenge55.go)
+- RC4 Single-Byte Biases
+
+## Set 8
+- Diffie-Hellman Revisited: Small Subgroup Confinement
+- Pollard's Method for Catching Kangaroos
+- Elliptic Curve Diffie-Hellman and Invalid-Curve Attacks
+- Single-Coordinate Ladders and Insecure Twists
+- Duplicate-Signature Key Selection in ECDSA (and RSA)
+- Key-Recovery Attacks on ECDSA with Biased Nonces
+- Key-Recovery Attacks on GCM with Repeated Nonces
+- Key-Recovery Attacks on GCM with a Truncated MAC
+- Truncated-MAC GCM Revisited: Improving the Key-Recovery Attack via Ciphertext Length Extension
+- Exploiting Implementation Errors in Diffie-Hellman

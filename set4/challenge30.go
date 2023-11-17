@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/utils/md4"
 )
 
 func Challenge30() {
@@ -29,10 +30,10 @@ func Challenge30() {
 
 func generateMd4Mac(key []byte) (string, []byte) {
 	message := "comment1=cooking%20MCs;userdata=foo;comment2=%20like%20a%20pound%20of%20bacon"
-	md4 := utils.NewMd4()
-	md4.Update(key)
-	md4.Update([]byte(message))
-	return message, md4.Digest()
+	hasher := md4.NewMd4()
+	hasher.Update(key)
+	hasher.Update([]byte(message))
+	return message, hasher.Digest()
 }
 
 func crackMd4Mac(message string, mac []byte) (string, []byte) {
@@ -53,12 +54,12 @@ func crackMd4Mac(message string, mac []byte) (string, []byte) {
 	cc := binary.LittleEndian.Uint32(mac[8:])
 	dd := binary.LittleEndian.Uint32(mac[12:])
 
-	md4 := utils.NewMd4()
-	md4.Update(make([]byte, 16))
-	md4.Update(buf)
-	md4.SetState(aa, bb, cc, dd)
-	md4.Update([]byte(";admin=true"))
-	newMac := md4.Digest()
+	hasher := md4.NewMd4()
+	hasher.Update(make([]byte, 16))
+	hasher.Update(buf)
+	hasher.SetState(aa, bb, cc, dd)
+	hasher.Update([]byte(";admin=true"))
+	newMac := hasher.Digest()
 
 	// Return the forged message and new md4
 	buf = append(buf, []byte(";admin=true")...)
@@ -66,10 +67,10 @@ func crackMd4Mac(message string, mac []byte) (string, []byte) {
 }
 
 func validateMd4Mac(message, mac, key []byte) {
-	md4 := utils.NewMd4()
-	md4.Update(key)
-	md4.Update(message)
-	mac2 := md4.Digest()
+	hasher := md4.NewMd4()
+	hasher.Update(key)
+	hasher.Update(message)
+	mac2 := hasher.Digest()
 	if !bytes.Equal(mac, mac2) {
 		panic("invalid mac")
 	}

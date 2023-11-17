@@ -95,7 +95,7 @@ func (s *sha1) process() {
 
 		// compute W[16]-W[79]
 		for i := 16; i < 80; i++ {
-			w[i] = rotateLeft(w[i-3]^w[i-8]^w[i-14]^w[i-16], 1)
+			w[i] = RotateLeft(w[i-3]^w[i-8]^w[i-14]^w[i-16], 1)
 		}
 
 		a := s.h0
@@ -105,10 +105,10 @@ func (s *sha1) process() {
 		e := s.h4
 
 		for i := 0; i < 80; i++ {
-			t := rotateLeft(a, 5) + f(i, b, c, d) + e + w[i] + k(i)
+			t := RotateLeft(a, 5) + f(i, b, c, d) + e + w[i] + k(i)
 			e = d
 			d = c
-			c = rotateLeft(b, 30)
+			c = RotateLeft(b, 30)
 			b = a
 			a = t
 		}
@@ -127,8 +127,4 @@ func (s *sha1) pad() {
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(s.counter*8))
 	s.buf = append(s.buf, b...)
-}
-
-func rotateLeft(v uint32, n int) uint32 {
-	return (v << n) | (v >> (32 - n))
 }
