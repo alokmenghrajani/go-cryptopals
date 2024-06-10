@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 	"github.com/pkg/errors"
@@ -34,7 +35,7 @@ func Challenge27() {
 		s := err.Error()
 		prefix := "invalid plaintext: "
 		if strings.HasPrefix(s, prefix) {
-			buf2 = utils.HexToByteSlice(s[len(prefix):])
+			buf2 = hex.ToByteSlice(s[len(prefix):])
 		} else {
 			panic(err)
 		}

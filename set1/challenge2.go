@@ -3,6 +3,7 @@ package set1
 import (
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -23,8 +24,8 @@ func FixedXor(input1, input2 string) string {
 	if len(input1) != len(input2) {
 		panic("invalid inputs")
 	}
-	buf1 := utils.HexToByteSlice(input1)
-	buf2 := utils.HexToByteSlice(input2)
+	buf1 := hex.ToByteSlice(input1)
+	buf2 := hex.ToByteSlice(input2)
 	r := utils.Xor(buf1, buf2)
-	return utils.ByteSliceToHex(r)
+	return hex.FromByteSlice(r)
 }

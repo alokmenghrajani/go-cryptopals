@@ -3,6 +3,7 @@ package set1
 import (
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -27,5 +28,5 @@ func encryptRepeatedXor(buf, key []byte) string {
 	for i := 0; i < len(buf); i++ {
 		r = append(r, buf[i]^key[i%len(key)])
 	}
-	return utils.ByteSliceToHex(r)
+	return hex.FromByteSlice(r)
 }

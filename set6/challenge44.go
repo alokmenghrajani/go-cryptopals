@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/dsa"
 )
@@ -72,7 +73,7 @@ func Challenge44() {
 
 	fmt.Printf("recovered key: %s\n", privKey.X.String())
 	sha1 := utils.NewSha1()
-	sha1.Update([]byte(utils.ByteSliceToHex(privKey.X.Bytes())))
+	sha1.Update([]byte(hex.FromByteSlice(privKey.X.Bytes())))
 	d := sha1.Digest()
 	fmt.Printf("hex: %02x\n", d)
 

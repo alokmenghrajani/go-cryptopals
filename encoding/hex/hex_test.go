@@ -1,4 +1,4 @@
-package utils
+package hex
 
 import (
 	"testing"
@@ -18,8 +18,8 @@ func TestHexToByte(t *testing.T) {
 	require.Equal(t, byte(42), hexToByte("2a"))
 }
 
-func TestHexToByteSlice(t *testing.T) {
-	require.Equal(t, []byte{0x49, 0x27, 0x6d, 0x20}, HexToByteSlice("49276d20"))
+func TestToByteSlice(t *testing.T) {
+	require.Equal(t, []byte{0x49, 0x27, 0x6d, 0x20}, ToByteSlice("49276d20"))
 }
 
 func TestNibbleToHex(t *testing.T) {
@@ -34,6 +34,6 @@ func TestByteToHex(t *testing.T) {
 	require.Equal(t, "2a", byteToHex(42))
 }
 
-func TestByteSliceToHex(t *testing.T) {
-	require.Equal(t, "49276d20", ByteSliceToHex([]byte{0x49, 0x27, 0x6d, 0x20}))
+func TestFromByteSlice(t *testing.T) {
+	require.Equal(t, "49276d20", FromByteSlice([]byte{0x49, 0x27, 0x6d, 0x20}))
 }

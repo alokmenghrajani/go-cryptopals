@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"slices"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/md4"
 )
@@ -63,8 +64,8 @@ func Challenge55() {
 		hash2 := hasher.Digest()
 		if slices.Equal(hash1, hash2) {
 			fmt.Printf("\nFound a collision!\n")
-			fmt.Printf("%s\n", utils.ByteSliceToHex(msg1))
-			fmt.Printf("%s\n", utils.ByteSliceToHex(msg2))
+			fmt.Printf("%s\n", hex.FromByteSlice(msg1))
+			fmt.Printf("%s\n", hex.FromByteSlice(msg2))
 			return
 		}
 	}

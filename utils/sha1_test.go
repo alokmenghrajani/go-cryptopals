@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/stretchr/testify/require"
 )
 
@@ -39,36 +40,36 @@ func TestSha1Padding(t *testing.T) {
 func TestSha1(t *testing.T) {
 	s := NewSha1()
 	s.Update([]byte("hello world"))
-	hash := ByteSliceToHex(s.Digest())
+	hash := hex.FromByteSlice(s.Digest())
 	require.Equal(t, "2aae6c35c94fcfb415dbe95f408b9ce91ee846ed", hash)
 
 	s = NewSha1()
 	s.Update([]byte("abc"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "a9993e364706816aba3e25717850c26c9cd0d89d", hash)
 
 	s = NewSha1()
 	s.Update([]byte("x"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "11f6ad8ec52a2984abaafd7c3b516503785c2072", hash)
 
 	s = NewSha1()
 	s.Update([]byte("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "84983e441c3bd26ebaae4aa1f95129e5e54670f1", hash)
 
 	s = NewSha1()
 	for i := 0; i < 1000000; i++ {
 		s.Update([]byte("a"))
 	}
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "34aa973cd4c4daa4f61eeb2bdbad27316534016f", hash)
 
 	s = NewSha1()
 	for i := 0; i < 80; i++ {
 		s.Update([]byte("01234567"))
 	}
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "dea356a2cddd90c7a7ecedc5ebb563934f460452", hash)
 
 	// compare result with crypto/sha1

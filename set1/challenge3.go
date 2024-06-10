@@ -3,13 +3,14 @@ package set1
 import (
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
 func Challenge3() {
 	utils.PrintTitle(1, 3)
 	input := "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-	_, r := crackSingleByteXor(utils.HexToByteSlice(input))
+	_, r := crackSingleByteXor(hex.ToByteSlice(input))
 	fmt.Printf("CrackSingleByteXor(%q) = %q\n", input, r)
 	fmt.Println()
 }

@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -17,7 +18,7 @@ func Challenge8() {
 	bestScore := -1
 	bestInput := ""
 	for i := 0; i < len(inputs); i++ {
-		score := aesEcb(utils.HexToByteSlice(inputs[i]))
+		score := aesEcb(hex.ToByteSlice(inputs[i]))
 		if score > bestScore {
 			bestScore = score
 			bestInput = inputs[i]

@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -28,7 +29,7 @@ func Challenge6() {
 			finalKey = append(finalKey, key)
 		}
 		// apply the repreated XOR and compare english score
-		t := utils.HexToByteSlice(encryptRepeatedXor(buf, finalKey))
+		t := hex.ToByteSlice(encryptRepeatedXor(buf, finalKey))
 		v := english(t)
 		if v > bestScore {
 			// store the best result

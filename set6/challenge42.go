@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/rsa"
 )
@@ -19,7 +20,7 @@ func Challenge42() {
 	// openssl rsa -text -in myprivate.pem
 
 	// load the key and signature
-	signature := utils.HexToByteSlice("420d9e40b0c881520ec8aa5e20338b14e46d2daca185863f6bb27ec3f83aa0d7e3b9352ee6972483911be4592bd403f5b671f84a9ff84e879a45ba56afec8bfe1164cdbf411160c1d34bc31cdf4cdd9700f2e11ca469ab2fa20207170989611af9ec066a68d974986e3a51452ade9a94a9b598f6c84b6d42777cf112a9fb73b8")
+	signature := hex.ToByteSlice("420d9e40b0c881520ec8aa5e20338b14e46d2daca185863f6bb27ec3f83aa0d7e3b9352ee6972483911be4592bd403f5b671f84a9ff84e879a45ba56afec8bfe1164cdbf411160c1d34bc31cdf4cdd9700f2e11ca469ab2fa20207170989611af9ec066a68d974986e3a51452ade9a94a9b598f6c84b6d42777cf112a9fb73b8")
 
 	pubKey := rsa.PubKey{
 		E: big.NewInt(3),

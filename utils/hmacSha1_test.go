@@ -7,12 +7,13 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/stretchr/testify/require"
 )
 
 func TestHmacSha1(t *testing.T) {
 	h := HmacSha1([]byte("key"), []byte("The quick brown fox jumps over the lazy dog"))
-	require.Equal(t, HexToByteSlice("de7c9b85b8b78aa6bc8a7a36f70a90701c9db4d9"), h)
+	require.Equal(t, hex.ToByteSlice("de7c9b85b8b78aa6bc8a7a36f70a90701c9db4d9"), h)
 
 	for i := 1; i < 100; i++ {
 		key := make([]byte, i)

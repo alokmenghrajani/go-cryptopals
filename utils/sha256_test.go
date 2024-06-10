@@ -6,47 +6,48 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSha256(t *testing.T) {
 	s := NewSha256()
 	s.Update([]byte("hello world"))
-	hash := ByteSliceToHex(s.Digest())
+	hash := hex.FromByteSlice(s.Digest())
 	require.Equal(t, "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9", hash)
 
 	s = NewSha256()
 	s.Update([]byte("abc"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", hash)
 
 	s = NewSha256()
 	s.Update([]byte("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1", hash)
 
 	s = NewSha256()
 	for i := 0; i < 1000000; i++ {
 		s.Update([]byte("a"))
 	}
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0", hash)
 
 	s = NewSha256()
 	for i := 0; i < 80; i++ {
 		s.Update([]byte("01234567"))
 	}
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "594847328451bdfa85056225462cc1d867d877fb388df0ce35f25ab5562bfbb5", hash)
 
 	s = NewSha256()
 	s.Update([]byte("\x19"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "68aa2e2ee5dff96e3355e6c7ee373e3d6a4e17f75f9518d843709c0c9bc3e3d4", hash)
 
 	s = NewSha256()
 	s.Update([]byte("\xe3\xd7\x25\x70\xdc\xdd\x78\x7c\xe3\x88\x7a\xb2\xcd\x68\x46\x52"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "175ee69b02ba9b58e2b0a5fd13819cea573f3940a94f825128cf4209beabb4e8", hash)
 
 	s = NewSha256()
@@ -62,7 +63,7 @@ func TestSha256(t *testing.T) {
 			"\xa9\x7d\x13\x8f\x12\x92\x28\x96\x6f\x6c\x0a\xdc\x10\x6a\xad\x5a" +
 			"\x9f\xdd\x30\x82\x57\x69\xb2\xc6\x71\xaf\x67\x59\xdf\x28\xeb\x39" +
 			"\x3d\x54\xd6"))
-	hash = ByteSliceToHex(s.Digest())
+	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "97dbca7df46d62c8a422c941dd7e835b8ad3361763f7e9b2d95f4f0da6e1ccbc", hash)
 
 	// compare result with crypto/sha256

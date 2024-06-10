@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -14,7 +15,7 @@ func Challenge50() {
 	// compute first hash
 	key := []byte("YELLOW SUBMARINE")
 	iv := make([]byte, 16)
-	expectedHash := utils.HexToByteSlice("296b8d7cb78a243dda4d0a61d33bbdd1")
+	expectedHash := hex.ToByteSlice("296b8d7cb78a243dda4d0a61d33bbdd1")
 
 	js := []byte("alert('MZA who was that?');\n")
 	hash := cbcMac(js, iv, key)

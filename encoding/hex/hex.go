@@ -1,7 +1,8 @@
-package utils
+package hex
 
-// converts a hex string to []byte
-func HexToByteSlice(s string) []byte {
+// Converts a hex string to []byte. Panics if the input's length isn't even
+// or if the input contains invalid characters.
+func ToByteSlice(s string) []byte {
 	// check that input is a multiple of two
 	if (len(s) % 2) != 0 {
 		panic("invalid hex")
@@ -33,8 +34,8 @@ func hexToNibble(s byte) byte {
 	panic("invalid hex")
 }
 
-// converts []byte to hex-encoded string.
-func ByteSliceToHex(buf []byte) string {
+// Converts []byte to hex-encoded string.
+func FromByteSlice(buf []byte) string {
 	r := make([]byte, 0, len(buf)*2)
 	for i := 0; i < len(buf); i++ {
 		r = append(r, byteToHex(buf[i])...)

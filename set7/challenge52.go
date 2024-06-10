@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -21,7 +22,7 @@ func Challenge52() {
 	})
 	for i := 0; i < len(msgs); i++ {
 		h1 := MD1(msgs[i])
-		fmt.Printf("%2d %s %s\n", i, utils.ByteSliceToHex(msgs[i]), utils.ByteSliceToHex(h1))
+		fmt.Printf("%2d %s %s\n", i, hex.FromByteSlice(msgs[i]), hex.FromByteSlice(h1))
 	}
 	fmt.Printf("calls to H1: %d\n", cost)
 	fmt.Println()
@@ -31,11 +32,11 @@ func Challenge52() {
 	left, right, cost1, cost2 := findPairCollision()
 	h1 := MD1(left)
 	h2 := MD2(left)
-	fmt.Printf("%s %s %s\n", utils.ByteSliceToHex(left), utils.ByteSliceToHex(h1), utils.ByteSliceToHex(h2))
+	fmt.Printf("%s %s %s\n", hex.FromByteSlice(left), hex.FromByteSlice(h1), hex.FromByteSlice(h2))
 
 	h1 = MD1(right)
 	h2 = MD2(right)
-	fmt.Printf("%s %s %s\n", utils.ByteSliceToHex(right), utils.ByteSliceToHex(h1), utils.ByteSliceToHex(h2))
+	fmt.Printf("%s %s %s\n", hex.FromByteSlice(right), hex.FromByteSlice(h1), hex.FromByteSlice(h2))
 	fmt.Printf("calls to H1: %d\n", cost1)
 	fmt.Printf("calls to H2: %d\n", cost2)
 }

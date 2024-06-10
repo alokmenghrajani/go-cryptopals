@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -32,7 +33,7 @@ func Challenge31() {
 		// truncate expectedSig to speed things up
 		expectedSig = expectedSig[0:5]
 
-		sig := utils.HexToByteSlice(r.URL.Query().Get("signature"))
+		sig := hex.ToByteSlice(r.URL.Query().Get("signature"))
 		if !slowCompare(expectedSig, sig, 50*time.Millisecond) {
 			w.WriteHeader(500)
 			return
@@ -56,7 +57,7 @@ outer:
 		bestValue := 0
 		for b := 0; b < 256; b++ {
 			sig[i] = byte(b)
-			query.Set("signature", utils.ByteSliceToHex(sig))
+			query.Set("signature", hex.FromByteSlice(sig))
 			u.RawQuery = query.Encode()
 			start := time.Now()
 			res, err := client.Get(u.String())
