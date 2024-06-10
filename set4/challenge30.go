@@ -6,8 +6,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/md4"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/md4"
 )
 
 func Challenge30() {

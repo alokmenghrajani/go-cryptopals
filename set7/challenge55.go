@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"slices"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/md4"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/md4"
 )
 
 func Challenge55() {
