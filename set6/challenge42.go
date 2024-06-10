@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/rsa"
@@ -86,7 +87,7 @@ func verify(pubKey rsa.PubKey, signature []byte) bool {
 	}
 
 	// Hash
-	sha1 := utils.NewSha1()
+	sha1 := sha1.New()
 	sha1.Update([]byte("hi mom"))
 	if !expect(sha1.Digest()) {
 		return false

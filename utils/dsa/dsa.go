@@ -3,6 +3,7 @@ package dsa
 import (
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -70,9 +71,9 @@ func (privKey *PrivKey) Sign(k *big.Int, message []byte) *Signature {
 		panic("todo: start over with different k")
 	}
 
-	sha1 := utils.NewSha1()
-	sha1.Update(message)
-	h := sha1.Digest()
+	sha := sha1.New()
+	sha.Update(message)
+	h := sha.Digest()
 
 	hh := &big.Int{}
 	hh.SetBytes(h)
@@ -123,9 +124,9 @@ func (pubKey *PubKey) Verify(message []byte, signature *Signature) bool {
 	w.ModInverse(signature.S, pubKey.Params.Q)
 
 	// compute hash
-	sha1 := utils.NewSha1()
-	sha1.Update(message)
-	h := sha1.Digest()
+	sha := sha1.New()
+	sha.Update(message)
+	h := sha.Digest()
 
 	hh := &big.Int{}
 	hh.SetBytes(h)

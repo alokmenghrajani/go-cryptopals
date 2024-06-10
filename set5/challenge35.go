@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
@@ -50,7 +51,7 @@ func withNegotiatedGroups(p, g *big.Int) {
 	B := bot.PubKey()
 	var s big.Int
 	s.Exp(B, a, p)
-	sha := utils.NewSha1()
+	sha := sha1.New()
 	sha.Update(s.Bytes())
 	key := sha.Digest()[0:16]
 
@@ -86,7 +87,7 @@ func withNegotiatedGroupsMitm(msg string, p, g, g2, expectedS *big.Int) {
 	B := bot.PubKey()
 	var s big.Int
 	s.Exp(B, a, p)
-	sha := utils.NewSha1()
+	sha := sha1.New()
 	sha.Update(s.Bytes())
 	key := sha.Digest()[0:16]
 
@@ -103,7 +104,7 @@ func withNegotiatedGroupsMitm(msg string, p, g, g2, expectedS *big.Int) {
 	responseCiphertext := bot.Echo(bytes)
 
 	// MITM decrypts both ciphertexts
-	sha = utils.NewSha1()
+	sha = sha1.New()
 	sha.Update(expectedS.Bytes())
 	key = sha.Digest()[0:16]
 	plaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(bytes[16:], key, bytes[0:16]), 16)

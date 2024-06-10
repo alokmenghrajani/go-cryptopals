@@ -3,6 +3,7 @@ package set4
 import (
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -16,7 +17,7 @@ func Challenge28() {
 }
 
 func keyedMac(key, message []byte) []byte {
-	sha1 := utils.NewSha1()
+	sha1 := sha1.New()
 	sha1.Update(key)
 	sha1.Update(message)
 	return sha1.Digest()

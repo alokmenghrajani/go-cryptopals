@@ -1,13 +1,15 @@
 package hmacSha1
 
-import "github.com/alokmenghrajani/go-cryptopals/utils"
+import (
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
+)
 
 // See https://en.wikipedia.org/wiki/HMAC
 func Compute(key, msg []byte) []byte {
 	// compute key2 (k')
 	var key2 []byte
 	if len(key) > 64 {
-		s := utils.NewSha1()
+		s := sha1.New()
 		s.Update(key)
 		key2 = s.Digest()
 	} else {
@@ -22,7 +24,7 @@ func Compute(key, msg []byte) []byte {
 	for i := 0; i < 64; i++ {
 		innerKey[i] = key2[i] ^ 0x36
 	}
-	s := utils.NewSha1()
+	s := sha1.New()
 	s.Update(innerKey)
 	s.Update(msg)
 	innerHash := s.Digest()
@@ -32,7 +34,7 @@ func Compute(key, msg []byte) []byte {
 	for i := 0; i < 64; i++ {
 		outerKey[i] = key2[i] ^ 0x5c
 	}
-	s = utils.NewSha1()
+	s = sha1.New()
 	s.Update(outerKey)
 	s.Update(innerHash)
 	return s.Digest()

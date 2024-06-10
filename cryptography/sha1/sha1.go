@@ -1,7 +1,9 @@
-package utils
+package sha1
 
 import (
 	"encoding/binary"
+
+	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
 // Pure Go implementation of sha1 for lolz.
@@ -20,7 +22,7 @@ type sha1 struct {
 	counter int
 }
 
-func NewSha1() *sha1 {
+func New() *sha1 {
 	return &sha1{
 		h0:      0x67452301,
 		h1:      0xEFCDAB89,
@@ -95,7 +97,7 @@ func (s *sha1) process() {
 
 		// compute W[16]-W[79]
 		for i := 16; i < 80; i++ {
-			w[i] = RotateLeft(w[i-3]^w[i-8]^w[i-14]^w[i-16], 1)
+			w[i] = utils.RotateLeft(w[i-3]^w[i-8]^w[i-14]^w[i-16], 1)
 		}
 
 		a := s.h0
@@ -105,10 +107,10 @@ func (s *sha1) process() {
 		e := s.h4
 
 		for i := 0; i < 80; i++ {
-			t := RotateLeft(a, 5) + f(i, b, c, d) + e + w[i] + k(i)
+			t := utils.RotateLeft(a, 5) + f(i, b, c, d) + e + w[i] + k(i)
 			e = d
 			d = c
-			c = RotateLeft(b, 30)
+			c = utils.RotateLeft(b, 30)
 			b = a
 			a = t
 		}
@@ -122,7 +124,7 @@ func (s *sha1) process() {
 
 func (s *sha1) pad() {
 	s.buf = append(s.buf, 0x80)
-	n := Remaining(len(s.buf)+8, 64)
+	n := utils.Remaining(len(s.buf)+8, 64)
 	s.buf = append(s.buf, make([]byte, n)...)
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(s.counter*8))

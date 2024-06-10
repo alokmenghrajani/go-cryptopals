@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -29,7 +30,7 @@ func Challenge29() {
 
 func generateSha1Mac(key []byte) (string, []byte) {
 	message := "comment1=cooking%20MCs;userdata=foo;comment2=%20like%20a%20pound%20of%20bacon"
-	sha1 := utils.NewSha1()
+	sha1 := sha1.New()
 	sha1.Update(key)
 	sha1.Update([]byte(message))
 	return message, sha1.Digest()
@@ -54,7 +55,7 @@ func crackSha1Mac(message string, mac []byte) (string, []byte) {
 	h3 := binary.BigEndian.Uint32(mac[12:])
 	h4 := binary.BigEndian.Uint32(mac[16:])
 
-	sha1 := utils.NewSha1()
+	sha1 := sha1.New()
 	sha1.Update(make([]byte, 16))
 	sha1.Update(buf)
 	sha1.SetState(h0, h1, h2, h3, h4)
@@ -67,7 +68,7 @@ func crackSha1Mac(message string, mac []byte) (string, []byte) {
 }
 
 func validateSha1Mac(message, mac, key []byte) {
-	sha1 := utils.NewSha1()
+	sha1 := sha1.New()
 	sha1.Update(key)
 	sha1.Update(message)
 	mac2 := sha1.Digest()

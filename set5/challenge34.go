@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
@@ -49,7 +50,7 @@ func withoutMitm() {
 	B := bot.PubKey()
 	var s big.Int
 	s.Exp(B, a, &p)
-	sha := utils.NewSha1()
+	sha := sha1.New()
 	sha.Update(s.Bytes())
 	key := sha.Digest()[0:16]
 
@@ -92,7 +93,7 @@ func withMitm() {
 	B := &p                      // MITM replaces B with p
 	var s big.Int
 	s.Exp(B, a, &p)
-	sha := utils.NewSha1()
+	sha := sha1.New()
 	sha.Update(s.Bytes())
 	key := sha.Digest()[0:16]
 
@@ -110,7 +111,7 @@ func withMitm() {
 	responseCiphertext := bot.Echo(bytes)
 
 	// MITM decrypts both ciphertexts
-	sha = utils.NewSha1()
+	sha = sha1.New()
 	sha.Update(big.NewInt(0).Bytes())
 	key = sha.Digest()[0:16]
 	plaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(bytes[16:], key, bytes[0:16]), 16)
@@ -147,7 +148,7 @@ func (bot *echoBot) Echo(ciphertext []byte) []byte {
 	// establish key
 	var s big.Int
 	s.Exp(bot.A, bot.b, bot.p)
-	sha := utils.NewSha1()
+	sha := sha1.New()
 	sha.Update(s.Bytes())
 	key := sha.Digest()[0:16]
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/dsa"
@@ -21,9 +22,9 @@ func Challenge43() {
 		panic("unexpected")
 	}
 
-	sha1 := utils.NewSha1()
-	sha1.Update(msg)
-	x := recoverX(pubKey, sha1.Digest(), signature)
+	sha := sha1.New()
+	sha.Update(msg)
+	x := recoverX(pubKey, sha.Digest(), signature)
 	if x == nil {
 		panic("unexpected")
 	}
@@ -49,9 +50,9 @@ func Challenge43() {
 	privKey = bruteforceK(pubKey, msg, signature)
 	fmt.Printf("recovered key: %s\n", privKey.X.String())
 
-	sha1 = utils.NewSha1()
-	sha1.Update([]byte(hex.FromByteSlice(privKey.X.Bytes())))
-	d := sha1.Digest()
+	sha = sha1.New()
+	sha.Update([]byte(hex.FromByteSlice(privKey.X.Bytes())))
+	d := sha.Digest()
 	fmt.Printf("hex: %02x\n", d)
 
 	if !bytes.Equal(d, []byte{0x09, 0x54, 0xed, 0xd5, 0xe0, 0xaf, 0xe5, 0x54, 0x2a, 0x4a, 0xdf, 0x01, 0x26, 0x11, 0xa9, 0x19, 0x12, 0xa3, 0xec, 0x16}) {
@@ -85,7 +86,7 @@ func recoverX(pubKey dsa.PubKey, h []byte, signature *dsa.Signature) *big.Int {
 }
 
 func bruteforceK(pubKey dsa.PubKey, msg []byte, signature *dsa.Signature) dsa.PrivKey {
-	sha1 := utils.NewSha1()
+	sha1 := sha1.New()
 	sha1.Update(msg)
 	h := sha1.Digest()
 	fmt.Printf("sha1(msg): %02x\n", h)
