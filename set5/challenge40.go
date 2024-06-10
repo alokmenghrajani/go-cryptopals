@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/rsa"
 )
 
 func Challenge40() {

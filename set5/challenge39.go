@@ -3,8 +3,8 @@ package set5
 import (
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/rsa"
 )
 
 func Challenge39() {
