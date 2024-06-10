@@ -66,6 +66,7 @@ func Challenge55() {
 			fmt.Printf("\nFound a collision!\n")
 			fmt.Printf("%s\n", hex.FromByteSlice(msg1))
 			fmt.Printf("%s\n", hex.FromByteSlice(msg2))
+			fmt.Println()
 			return
 		}
 	}

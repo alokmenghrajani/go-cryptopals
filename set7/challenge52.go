@@ -40,6 +40,7 @@ func Challenge52() {
 	fmt.Printf("%s %s %s\n", hex.FromByteSlice(right), hex.FromByteSlice(h1), hex.FromByteSlice(h2))
 	fmt.Printf("calls to H1: %d\n", cost1)
 	fmt.Printf("calls to H2: %d\n", cost2)
+	fmt.Println()
 }
 
 func C1(buf []byte, key []byte) []byte {

@@ -1,5 +1,7 @@
 package hex
 
+import "fmt"
+
 // Converts a hex string to []byte. Panics if the input's length isn't even
 // or if the input contains invalid characters.
 func ToByteSlice(s string) []byte {
@@ -31,7 +33,7 @@ func hexToNibble(s byte) byte {
 	} else if s >= 'a' && s <= 'f' {
 		return s - 'a' + 10
 	}
-	panic("invalid hex")
+	panic(fmt.Errorf("invalid hex: %c", s))
 }
 
 // Converts []byte to hex-encoded string.
