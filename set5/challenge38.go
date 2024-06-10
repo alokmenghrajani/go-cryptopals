@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha256"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -63,7 +64,7 @@ func Challenge38() {
 	K := sha.Digest()
 
 	// Client sends hmac
-	proof := utils.HmacSha256(K, salt)
+	proof := hmacSha256.Compute(K, salt)
 
 	// MITM can crack the password
 	if performMitm {
@@ -83,7 +84,7 @@ func Challenge38() {
 			sha = utils.NewSha256()
 			sha.Update(t2.Bytes())
 			K2 := sha.Digest()
-			proof2 := utils.HmacSha256(K2, salt)
+			proof2 := hmacSha256.Compute(K2, salt)
 			fmt.Printf("%s: %v\n", p, bytes.Equal(proof, proof2))
 		}
 	} else {
@@ -119,6 +120,6 @@ func simplifiedAuthStep2(store *passwordStore, A, N *big.Int, proof []byte) bool
 	sha.Update(S.Bytes())
 	K := sha.Digest()
 
-	expectedProof := utils.HmacSha256(K, store.salt)
+	expectedProof := hmacSha256.Compute(K, store.salt)
 	return bytes.Equal(expectedProof, proof)
 }

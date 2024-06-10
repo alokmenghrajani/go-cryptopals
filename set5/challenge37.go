@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha256"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -39,7 +40,7 @@ func Challenge37() {
 	K := sha.Digest()
 
 	// Client sends hmac
-	proof := utils.HmacSha256(K, salt)
+	proof := hmacSha256.Compute(K, salt)
 
 	for i := 0; i < 3; i++ {
 		A := &big.Int{}

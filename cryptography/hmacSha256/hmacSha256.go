@@ -1,12 +1,14 @@
-package utils
+package hmacSha256
+
+import "github.com/alokmenghrajani/go-cryptopals/utils"
 
 // See https://en.wikipedia.org/wiki/HMAC
 // also https://i.kym-cdn.com/photos/images/newsfeed/000/005/713/copypasta.jpg
-func HmacSha256(key, msg []byte) []byte {
+func Compute(key, msg []byte) []byte {
 	// compute key2 (k')
 	var key2 []byte
 	if len(key) > 64 {
-		s := NewSha256()
+		s := utils.NewSha256()
 		s.Update(key)
 		key2 = s.Digest()
 	} else {
@@ -21,7 +23,7 @@ func HmacSha256(key, msg []byte) []byte {
 	for i := 0; i < 64; i++ {
 		innerKey[i] = key2[i] ^ 0x36
 	}
-	s := NewSha256()
+	s := utils.NewSha256()
 	s.Update(innerKey)
 	s.Update(msg)
 	innerHash := s.Digest()
@@ -31,7 +33,7 @@ func HmacSha256(key, msg []byte) []byte {
 	for i := 0; i < 64; i++ {
 		outerKey[i] = key2[i] ^ 0x5c
 	}
-	s = NewSha256()
+	s = utils.NewSha256()
 	s.Update(outerKey)
 	s.Update(innerHash)
 	return s.Digest()

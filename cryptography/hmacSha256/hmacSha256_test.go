@@ -1,4 +1,4 @@
-package utils
+package hmacSha256
 
 import (
 	"crypto/hmac"
@@ -8,22 +8,23 @@ import (
 	"testing"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/stretchr/testify/require"
 )
 
-func TestHmacSha256(t *testing.T) {
-	h := HmacSha256([]byte("key"), []byte("The quick brown fox jumps over the lazy dog"))
+func TestCompute(t *testing.T) {
+	h := Compute([]byte("key"), []byte("The quick brown fox jumps over the lazy dog"))
 	require.Equal(t, hex.ToByteSlice("f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8"), h)
 
-	h = HmacSha256([]byte("The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog"), []byte("message"))
+	h = Compute([]byte("The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog"), []byte("message"))
 	require.Equal(t, hex.ToByteSlice("5597b93a2843078cbb0c920ae41dfe20f1685e10c67e423c11ab91adfc319d12"), h)
 
 	for i := 1; i < 100; i++ {
 		key := make([]byte, i)
 		_, err := rand.Read(key)
-		PanicOnErr(err)
+		utils.PanicOnErr(err)
 		msg := []byte("hello world")
-		h = HmacSha256(key, msg)
+		h = Compute(key, msg)
 
 		mac := hmac.New(refSha256.New, key)
 		mac.Write(msg)
