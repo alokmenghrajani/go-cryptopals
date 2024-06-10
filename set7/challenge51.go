@@ -8,6 +8,7 @@ import (
 	"math"
 	insecureRand "math/rand"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -185,6 +186,6 @@ func encryptAesCbc(plaintext []byte) []byte {
 	_, err = rand.Read(iv)
 	utils.PanicOnErr(err)
 
-	paddedPlaintext := utils.Pad(plaintext, 16)
+	paddedPlaintext := pkcs7.Pad(plaintext, 16)
 	return aes.AesCbcEncrypt(paddedPlaintext, aesKey, iv)
 }

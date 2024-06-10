@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 	"github.com/pkg/errors"
@@ -56,12 +57,12 @@ func encryptWithIvEquKey(plaintext string, aesKey []byte) []byte {
 			panic("invalid plaintext")
 		}
 	}
-	return aes.AesCbcEncrypt(utils.Pad([]byte(plaintext), 16), aesKey, aesKey)
+	return aes.AesCbcEncrypt(pkcs7.Pad([]byte(plaintext), 16), aesKey, aesKey)
 }
 
 func decryptWithIvEquKey(ciphertext, aesKey []byte) (string, error) {
 	plaintext := aes.AesCbcDecrypt(ciphertext, aesKey, aesKey)
-	plaintext, err := utils.Unpad(plaintext, 16)
+	plaintext, err := pkcs7.Unpad(plaintext, 16)
 	if err != nil {
 		return "", err
 	}

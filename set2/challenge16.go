@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -37,7 +38,7 @@ func encrypt(s string, aesKey []byte) []byte {
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
 
-	return append(iv, aes.AesCbcEncrypt(utils.Pad([]byte(s), 16), aesKey, iv)...)
+	return append(iv, aes.AesCbcEncrypt(pkcs7.Pad([]byte(s), 16), aesKey, iv)...)
 }
 
 func decrypt(buf, aesKey []byte) bool {

@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -139,7 +140,7 @@ func part2Forge(key, interceptedMessage []byte) []byte {
 
 	// and then craft:
 	// plaintext + padding + more data
-	req.message = utils.Pad(req.message, 16)
+	req.message = pkcs7.Pad(req.message, 16)
 	req.message = append(req.message, moreData...)
 	req.mac = req2.mac
 
@@ -175,7 +176,7 @@ func cbcMac(message, iv, key []byte) []byte {
 	// pad the message, but first make a copy so we don't mangle the message
 	paddedMessage := make([]byte, len(message), len(message)+16)
 	copy(paddedMessage, message)
-	paddedMessage = utils.Pad(paddedMessage, 16)
+	paddedMessage = pkcs7.Pad(paddedMessage, 16)
 
 	// AES-CBC encrypt and return last block
 	aesCipher := aes.NewAes(key)

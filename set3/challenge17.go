@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -49,14 +50,14 @@ func pick(n int, aesKey []byte) ([]byte, []byte) {
 
 	// base64 decode then encrypt data
 	plaintext := base64.ToByteSlice(inputs[n])
-	plaintext = utils.Pad(plaintext, 16)
+	plaintext = pkcs7.Pad(plaintext, 16)
 	return aes.AesCbcEncrypt([]byte(plaintext), aesKey, iv), iv
 }
 
 // return true if the data is well padded
 func paddingOracle(buf, iv, aesKey []byte) bool {
 	t := aes.AesCbcDecrypt(buf, aesKey, iv)
-	_, err := utils.Unpad(t, 16)
+	_, err := pkcs7.Unpad(t, 16)
 	return err == nil
 }
 
@@ -115,7 +116,7 @@ func crack(buf, iv, aesKey []byte) []byte {
 		previousBlock = block
 	}
 
-	plaintext, err := utils.Unpad(plaintext, 16)
+	plaintext, err := pkcs7.Unpad(plaintext, 16)
 	utils.PanicOnErr(err)
 	return plaintext
 }

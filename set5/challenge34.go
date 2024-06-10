@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -57,7 +58,7 @@ func withoutMitm() {
 	iv := make([]byte, 16)
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
-	ciphertext := aes.AesCbcEncrypt(utils.Pad([]byte(msg), 16), key, iv)
+	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), 16), key, iv)
 
 	// send ciphertext to bot
 	bytes := []byte{}
@@ -66,7 +67,7 @@ func withoutMitm() {
 	responseCiphertext := bot.Echo(bytes)
 
 	// decrypt response
-	responsePlaintext, err := utils.Unpad(aes.AesCbcDecrypt(responseCiphertext[16:], key, responseCiphertext[0:16]), 16)
+	responsePlaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(responseCiphertext[16:], key, responseCiphertext[0:16]), 16)
 	utils.PanicOnErr(err)
 	fmt.Println(string(responsePlaintext))
 	fmt.Println()
@@ -100,7 +101,7 @@ func withMitm() {
 	iv := make([]byte, 16)
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
-	ciphertext := aes.AesCbcEncrypt(utils.Pad([]byte(msg), 16), key, iv)
+	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), 16), key, iv)
 
 	// send ciphertext to bot
 	bytes := []byte{}
@@ -112,11 +113,11 @@ func withMitm() {
 	sha = utils.NewSha1()
 	sha.Update(big.NewInt(0).Bytes())
 	key = sha.Digest()[0:16]
-	plaintext, err := utils.Unpad(aes.AesCbcDecrypt(bytes[16:], key, bytes[0:16]), 16)
+	plaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(bytes[16:], key, bytes[0:16]), 16)
 	utils.PanicOnErr(err)
 	fmt.Println(string(plaintext))
 
-	plaintext, err = utils.Unpad(aes.AesCbcDecrypt(responseCiphertext[16:], key, responseCiphertext[0:16]), 16)
+	plaintext, err = pkcs7.Unpad(aes.AesCbcDecrypt(responseCiphertext[16:], key, responseCiphertext[0:16]), 16)
 	utils.PanicOnErr(err)
 	fmt.Println(string(plaintext))
 
@@ -152,7 +153,7 @@ func (bot *echoBot) Echo(ciphertext []byte) []byte {
 
 	// decrypt message
 	t := aes.AesCbcDecrypt(ciphertext[16:], key, ciphertext[0:16])
-	plaintext, err := utils.Unpad(t, 16)
+	plaintext, err := pkcs7.Unpad(t, 16)
 	utils.PanicOnErr(err)
 
 	// encrypt response
@@ -161,7 +162,7 @@ func (bot *echoBot) Echo(ciphertext []byte) []byte {
 	iv := make([]byte, 16)
 	_, err = rand.Read(iv)
 	utils.PanicOnErr(err)
-	ciphertext2 := aes.AesCbcEncrypt(utils.Pad(newPlaintext, 16), key, iv)
+	ciphertext2 := aes.AesCbcEncrypt(pkcs7.Pad(newPlaintext, 16), key, iv)
 	bytes := []byte{}
 	bytes = append(bytes, iv...)
 	bytes = append(bytes, ciphertext2...)

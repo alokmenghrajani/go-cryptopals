@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -119,5 +120,5 @@ func (c chall12) encrypt(data []byte) []byte {
 	buf := make([]byte, 0, len(data)+len(unknownBuf))
 	buf = append(buf, data...)
 	buf = append(buf, unknownBuf...)
-	return aesEcbEncrypt(utils.Pad(buf, 16), c.aesKey)
+	return aesEcbEncrypt(pkcs7.Pad(buf, 16), c.aesKey)
 }

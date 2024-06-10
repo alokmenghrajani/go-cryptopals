@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"testing"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/stretchr/testify/require"
 )
@@ -18,8 +19,8 @@ func TestCbcEncryptionDecryption(t *testing.T) {
 	utils.PanicOnErr(err)
 
 	expected := []byte("hello world")
-	ciphertext := AesCbcEncrypt(utils.Pad(expected, 16), key, iv)
-	plaintext, err := utils.Unpad(AesCbcDecrypt(ciphertext, key, iv), 16)
+	ciphertext := AesCbcEncrypt(pkcs7.Pad(expected, 16), key, iv)
+	plaintext, err := pkcs7.Unpad(AesCbcDecrypt(ciphertext, key, iv), 16)
 	require.Nil(t, err)
 	require.Equal(t, expected, plaintext)
 }

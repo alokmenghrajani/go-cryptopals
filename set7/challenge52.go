@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -53,7 +54,7 @@ func C1(buf []byte, key []byte) []byte {
 }
 
 func MD1(msg []byte) []byte {
-	msg = utils.Pad(msg, aes.BlockSize)
+	msg = pkcs7.Pad(msg, aes.BlockSize)
 	h := []byte{0x35, 0xca}
 	for i := 0; i < len(msg); i += aes.BlockSize {
 		h = C1(msg[i:i+aes.BlockSize], h)
@@ -140,7 +141,7 @@ func findMultiCollisions(n int) ([][]byte, int) {
 func C2(buf []byte, key []byte) []byte {
 	aesKey := []byte{}
 	aesKey = append(aesKey, key...)
-	aesKey = utils.Pad(aesKey, aes.BlockSize)
+	aesKey = pkcs7.Pad(aesKey, aes.BlockSize)
 	aesCipher := aes.NewAes(aesKey)
 	r := make([]byte, aes.BlockSize)
 	aesCipher.Encrypt(r, buf)
@@ -148,7 +149,7 @@ func C2(buf []byte, key []byte) []byte {
 }
 
 func MD2(msg []byte) []byte {
-	msg = utils.Pad(msg, aes.BlockSize)
+	msg = pkcs7.Pad(msg, aes.BlockSize)
 	h := []byte{0x35, 0xca, 0xe7}
 	for i := 0; i < len(msg); i += aes.BlockSize {
 		h = C2(msg[i:i+aes.BlockSize], h)

@@ -7,6 +7,7 @@ import (
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -28,7 +29,7 @@ func Challenge50() {
 	js2 := []byte("alert('Ayo, the Wu is back!');//")
 	hash2 := cbcMac(js2, iv, key)
 
-	finalJs := utils.Pad(js2, 16)
+	finalJs := pkcs7.Pad(js2, 16)
 
 	xorBlock := utils.Xor(js[0:16], hash2)
 	finalJs = append(finalJs, xorBlock...)

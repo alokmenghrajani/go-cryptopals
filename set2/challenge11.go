@@ -7,6 +7,7 @@ import (
 	insecureRand "math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -53,7 +54,7 @@ func encryptionOracle(data, key []byte) ([]byte, int) {
 	buf := make([]byte, prependCount+appendCount+len(data))
 	rand.Read(buf)
 	copy(buf[prependCount:prependCount+len(data)], data)
-	buf = utils.Pad(buf, 16)
+	buf = pkcs7.Pad(buf, 16)
 
 	// encrypt the data
 	switch mode {
