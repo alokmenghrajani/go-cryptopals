@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
@@ -20,7 +21,7 @@ func Challenge31() {
 	_, err := rand.Read(key)
 	utils.PanicOnErr(err)
 
-	fmt.Printf("expected signature:\n% x\n", utils.HmacSha1(key, []byte("foo"))[0:5])
+	fmt.Printf("expected signature:\n% x\n", hmacSha1.Compute(key, []byte("foo"))[0:5])
 
 	// Use httptest as it makes some things simpler
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +30,7 @@ func Challenge31() {
 			w.WriteHeader(404)
 			return
 		}
-		expectedSig := utils.HmacSha1(key, []byte(file))
+		expectedSig := hmacSha1.Compute(key, []byte(file))
 		// truncate expectedSig to speed things up
 		expectedSig = expectedSig[0:5]
 
