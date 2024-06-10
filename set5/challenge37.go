@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha256"
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha256"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -35,7 +36,7 @@ func Challenge37() {
 	S := big.NewInt(0)
 
 	// Derive K
-	sha := utils.NewSha256()
+	sha := sha256.New()
 	sha.Update(S.Bytes())
 	K := sha.Digest()
 

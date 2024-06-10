@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha256"
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha256"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -46,7 +47,7 @@ func Challenge38() {
 	}
 
 	// Client computes K
-	sha := utils.NewSha256()
+	sha := sha256.New()
 	sha.Update(salt)
 	sha.Update([]byte(P))
 
@@ -59,7 +60,7 @@ func Challenge38() {
 	t.Add(a, t)
 	S.Exp(B, t, N)
 
-	sha = utils.NewSha256()
+	sha = sha256.New()
 	sha.Update(S.Bytes())
 	K := sha.Digest()
 
@@ -70,7 +71,7 @@ func Challenge38() {
 	if performMitm {
 		dictionnary := []string{"ba53ba11", "sup3r s3cr3t", "pa5ta lov3r"}
 		for _, p := range dictionnary {
-			sha := utils.NewSha256()
+			sha := sha256.New()
 			sha.Update(salt)
 			sha.Update([]byte(p))
 			xH2 := sha.Digest()
@@ -81,7 +82,7 @@ func Challenge38() {
 			t2.Mul(t2, &A)
 			t2.Mod(t2, N)
 
-			sha = utils.NewSha256()
+			sha = sha256.New()
 			sha.Update(t2.Bytes())
 			K2 := sha.Digest()
 			proof2 := hmacSha256.Compute(K2, salt)
@@ -116,7 +117,7 @@ func simplifiedAuthStep2(store *passwordStore, A, N *big.Int, proof []byte) bool
 	S.Mul(&S, A)
 	S.Exp(&S, store.b, N)
 
-	sha := utils.NewSha256()
+	sha := sha256.New()
 	sha.Update(S.Bytes())
 	K := sha.Digest()
 

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha256"
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha256"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -49,14 +50,14 @@ func Challenge36() {
 	salt, B := authStep1(store, I, N, g, k)
 
 	// Client computes K
-	sha := utils.NewSha256()
+	sha := sha256.New()
 	sha.Update(A.Bytes())
 	sha.Update(B.Bytes())
 
 	uH := sha.Digest()
 	u := byteSliceToBigInt(uH)
 
-	sha = utils.NewSha256()
+	sha = sha256.New()
 	sha.Update(salt)
 	sha.Update([]byte(P))
 
@@ -74,7 +75,7 @@ func Challenge36() {
 	t.Add(a, t)
 	S.Exp(S, t, N)
 
-	sha = utils.NewSha256()
+	sha = sha256.New()
 	sha.Update(S.Bytes())
 	K := sha.Digest()
 
@@ -95,7 +96,7 @@ func savePassword(g, N *big.Int, I, P string) *passwordStore {
 	}
 
 	r.salt = []byte(fmt.Sprintf("%d", rand.Int()))
-	sha := utils.NewSha256()
+	sha := sha256.New()
 	sha.Update(r.salt)
 	sha.Update([]byte(P))
 
@@ -127,7 +128,7 @@ func authStep1(store *passwordStore, I string, N, g, k *big.Int) ([]byte, *big.I
 }
 
 func authStep2(store *passwordStore, A, N *big.Int, proof []byte) bool {
-	sha := utils.NewSha256()
+	sha := sha256.New()
 	sha.Update(A.Bytes())
 	sha.Update(store.B.Bytes())
 
@@ -139,7 +140,7 @@ func authStep2(store *passwordStore, A, N *big.Int, proof []byte) bool {
 	S.Mul(&S, A)
 	S.Exp(&S, store.b, N)
 
-	sha = utils.NewSha256()
+	sha = sha256.New()
 	sha.Update(S.Bytes())
 	K := sha.Digest()
 

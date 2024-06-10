@@ -1,4 +1,4 @@
-package utils
+package sha256
 
 import (
 	refSha "crypto/sha256"
@@ -7,50 +7,51 @@ import (
 	"testing"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSha256(t *testing.T) {
-	s := NewSha256()
+	s := New()
 	s.Update([]byte("hello world"))
 	hash := hex.FromByteSlice(s.Digest())
 	require.Equal(t, "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9", hash)
 
-	s = NewSha256()
+	s = New()
 	s.Update([]byte("abc"))
 	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", hash)
 
-	s = NewSha256()
+	s = New()
 	s.Update([]byte("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"))
 	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1", hash)
 
-	s = NewSha256()
+	s = New()
 	for i := 0; i < 1000000; i++ {
 		s.Update([]byte("a"))
 	}
 	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0", hash)
 
-	s = NewSha256()
+	s = New()
 	for i := 0; i < 80; i++ {
 		s.Update([]byte("01234567"))
 	}
 	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "594847328451bdfa85056225462cc1d867d877fb388df0ce35f25ab5562bfbb5", hash)
 
-	s = NewSha256()
+	s = New()
 	s.Update([]byte("\x19"))
 	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "68aa2e2ee5dff96e3355e6c7ee373e3d6a4e17f75f9518d843709c0c9bc3e3d4", hash)
 
-	s = NewSha256()
+	s = New()
 	s.Update([]byte("\xe3\xd7\x25\x70\xdc\xdd\x78\x7c\xe3\x88\x7a\xb2\xcd\x68\x46\x52"))
 	hash = hex.FromByteSlice(s.Digest())
 	require.Equal(t, "175ee69b02ba9b58e2b0a5fd13819cea573f3940a94f825128cf4209beabb4e8", hash)
 
-	s = NewSha256()
+	s = New()
 	s.Update([]byte(
 		"\x83\x26\x75\x4e\x22\x77\x37\x2f\x4f\xc1\x2b\x20\x52\x7a\xfe\xf0" +
 			"\x4d\x8a\x05\x69\x71\xb1\x1a\xd5\x71\x23\xa7\xc1\x37\x76\x00\x00" +
@@ -70,9 +71,9 @@ func TestSha256(t *testing.T) {
 	for i := 0; i < 10000; i++ {
 		buf := make([]byte, i)
 		_, err := rand.Read(buf)
-		PanicOnErr(err)
+		utils.PanicOnErr(err)
 
-		s = NewSha256()
+		s = New()
 		s.Update(buf)
 		r := refSha.Sum256(buf)
 		require.Equal(t, r[:], s.Digest(), fmt.Sprintf("i=%q", buf))

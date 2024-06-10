@@ -1,7 +1,9 @@
-package utils
+package sha256
 
 import (
 	"encoding/binary"
+
+	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
 // Pure Go implementation of sha256 for lolz.
@@ -23,7 +25,7 @@ type sha256 struct {
 	counter int
 }
 
-func NewSha256() *sha256 {
+func New() *sha256 {
 	return &sha256{
 		h0:      0x6a09e667,
 		h1:      0xbb67ae85,
@@ -120,7 +122,7 @@ func (s *sha256) process() {
 
 func (s *sha256) pad() {
 	s.buf = append(s.buf, 0x80)
-	n := Remaining(len(s.buf)+8, 64)
+	n := utils.Remaining(len(s.buf)+8, 64)
 	s.buf = append(s.buf, make([]byte, n)...)
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(s.counter*8))
