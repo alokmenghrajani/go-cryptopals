@@ -5,10 +5,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 func Challenge10() {

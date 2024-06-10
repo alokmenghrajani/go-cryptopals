@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 func Challenge26() {

@@ -6,10 +6,10 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 type echoBot struct {

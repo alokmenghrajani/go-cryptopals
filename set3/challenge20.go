@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
-	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
 
 // My solution for challenge20 is identical as for challenge19. The ends of the strings
