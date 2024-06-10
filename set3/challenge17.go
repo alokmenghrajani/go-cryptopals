@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -47,7 +48,7 @@ func pick(n int, aesKey []byte) ([]byte, []byte) {
 	utils.PanicOnErr(err)
 
 	// base64 decode then encrypt data
-	plaintext := utils.Base64ToByteSlice(inputs[n])
+	plaintext := base64.ToByteSlice(inputs[n])
 	plaintext = utils.Pad(plaintext, 16)
 	return aes.AesCbcEncrypt([]byte(plaintext), aesKey, iv), iv
 }

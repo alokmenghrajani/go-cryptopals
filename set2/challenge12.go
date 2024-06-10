@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -32,7 +33,8 @@ func (c *chall12) genAesKey() {
 }
 
 // step 1: keep prepending bytes until we get a new block. We'll then know how much plaintext
-//         we have.
+//
+//	we have.
 func (c chall12) findPlaintextSize() int {
 	prefix := []byte{}
 	r1 := c.encrypt(prefix)
@@ -113,7 +115,7 @@ func (c chall12) crack(plainttextSize int) []byte {
 
 func (c chall12) encrypt(data []byte) []byte {
 	unknownString := "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
-	unknownBuf := utils.Base64ToByteSlice(unknownString)
+	unknownBuf := base64.ToByteSlice(unknownString)
 	buf := make([]byte, 0, len(data)+len(unknownBuf))
 	buf = append(buf, data...)
 	buf = append(buf, unknownBuf...)

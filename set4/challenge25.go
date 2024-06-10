@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -17,7 +18,7 @@ func Challenge25() {
 	file, err := os.ReadFile("set4/25.txt")
 	utils.PanicOnErr(err)
 	input := strings.Join(strings.Split(string(file), "\n"), "")
-	buf := utils.Base64ToByteSlice(input)
+	buf := base64.ToByteSlice(input)
 
 	cipher := aes.NewAes([]byte("YELLOW SUBMARINE"))
 	plaintext := []byte{}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
@@ -40,7 +41,7 @@ func Challenge50() {
 	encodedJs := []byte("<html><body><script>")
 	encodedJs = append(encodedJs, finalJs...)
 	encodedJs = append(encodedJs, []byte("</script></body></html>")...)
-	fmt.Println(utils.ByteSliceToBase64(encodedJs))
+	fmt.Println(base64.FromByteSlice(encodedJs))
 
 	file, err := os.Create("50.html")
 	utils.PanicOnErr(err)

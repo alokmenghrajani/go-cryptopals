@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
@@ -14,7 +15,7 @@ func Challenge6() {
 	file, err := os.ReadFile("set1/6.txt")
 	utils.PanicOnErr(err)
 	input := strings.Join(strings.Split(string(file), "\n"), "")
-	buf := utils.Base64ToByteSlice(input)
+	buf := base64.ToByteSlice(input)
 
 	// taking a shortcut here by not trying to guess the keysize
 	bestScore := -1

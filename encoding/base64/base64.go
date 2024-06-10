@@ -1,9 +1,13 @@
-package utils
+package base64
 
-import "strings"
+import (
+	"strings"
 
-// ByteSliceToBase64 base64 encodes buf per https://www.rfc-editor.org/rfc/rfc4648
-func ByteSliceToBase64(buf []byte) string {
+	"github.com/alokmenghrajani/go-cryptopals/utils"
+)
+
+// base64 encodes buf per https://www.rfc-editor.org/rfc/rfc4648
+func FromByteSlice(buf []byte) string {
 	// calculate how much space we'll need
 	n := int(len(buf) * 4 / 3)
 	var extra int
@@ -14,10 +18,10 @@ func ByteSliceToBase64(buf []byte) string {
 
 	// convert bytes to base64
 	output := make([]byte, 0, n)
-	bitBuffer := newBitBuffer(buf)
+	bitBuffer := utils.NewBitBuffer(buf)
 	for i := 0; i < len(buf)*8; i += 6 {
 		// read 6 bits
-		t := bitBuffer.read(6)
+		t := bitBuffer.Read(6)
 		output = append(output, bitsToBase64(t))
 	}
 	for i := 0; i < extra; i++ {
@@ -47,8 +51,8 @@ func bitsToBase64(v byte) byte {
 	panic("something is wrong")
 }
 
-// Base64ToByteSlice base64 decodes input
-func Base64ToByteSlice(input string) []byte {
+// base64 decodes input
+func ToByteSlice(input string) []byte {
 	if (len(input) % 4) != 0 {
 		panic("invalid input")
 	}
@@ -59,20 +63,20 @@ func Base64ToByteSlice(input string) []byte {
 			finalLen--
 		}
 	}
-	bitBuffer := newEmptyBitBuffer(finalLen)
+	bitBuffer := utils.NewEmptyBitBuffer(finalLen)
 
 	// iterate over the input and emit 6 bits for every byte
 	for i := 0; i < len(input); i++ {
 		if input[i] >= 'A' && input[i] <= 'Z' {
-			bitBuffer.write(input[i]-'A', 6)
+			bitBuffer.Write(input[i]-'A', 6)
 		} else if input[i] >= 'a' && input[i] <= 'z' {
-			bitBuffer.write(input[i]-'a'+26, 6)
+			bitBuffer.Write(input[i]-'a'+26, 6)
 		} else if input[i] >= '0' && input[i] <= '9' {
-			bitBuffer.write(input[i]-'0'+52, 6)
+			bitBuffer.Write(input[i]-'0'+52, 6)
 		} else if input[i] == '+' {
-			bitBuffer.write(62, 6)
+			bitBuffer.Write(62, 6)
 		} else if input[i] == '/' {
-			bitBuffer.write(63, 6)
+			bitBuffer.Write(63, 6)
 		} else if input[i] == '=' {
 			break
 		} else {
@@ -80,5 +84,5 @@ func Base64ToByteSlice(input string) []byte {
 		}
 	}
 
-	return bitBuffer.buf[0:finalLen]
+	return bitBuffer.Buffer[0:finalLen]
 }

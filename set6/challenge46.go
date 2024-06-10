@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/rsa"
 )
@@ -13,7 +14,7 @@ func Challenge46() {
 	utils.PrintTitle(6, 46)
 
 	pubKey, privKey := rsa.GenerateKeyPair(1024)
-	plaintext := utils.Base64ToByteSlice("VGhhdCdzIHdoeSBJIGZvdW5kIHlvdSBkb24ndCBwbGF5IGFyb3VuZCB3aXRoIHRoZSBGdW5reSBDb2xkIE1lZGluYQ==")
+	plaintext := base64.ToByteSlice("VGhhdCdzIHdoeSBJIGZvdW5kIHlvdSBkb24ndCBwbGF5IGFyb3VuZCB3aXRoIHRoZSBGdW5reSBDb2xkIE1lZGluYQ==")
 	ciphertext := pubKey.Encrypt(plaintext)
 
 	// A naive implementation of the binary search will accumulate rounding errors and the

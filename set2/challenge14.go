@@ -7,6 +7,7 @@ import (
 	insecureRand "math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -51,7 +52,8 @@ func Challenge14() {
 // "abcdefghijklm", with a 4-byte block size. Two bytes is the minimum amount of bytes we need
 // to have before zzzz gets repeated:
 // "ab00 zzzz zzzz abcd efgh ijkl m333"
-//    ^^ ^^^^ ^^^^
+//
+//	^^ ^^^^ ^^^^
 func (c chall14) findPrefixLength() int {
 	block := make([]byte, 16)
 	_, err := rand.Read(block)
@@ -73,7 +75,7 @@ func (c chall14) findPrefixLength() int {
 
 func (c chall14) encryptHard(data []byte) []byte {
 	unknownString := "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
-	unknownBuf := utils.Base64ToByteSlice(unknownString)
+	unknownBuf := base64.ToByteSlice(unknownString)
 	buf := make([]byte, 0, len(c.randPrefix)+len(data)+len(unknownBuf))
 	buf = append(buf, c.randPrefix...)
 	buf = append(buf, data...)

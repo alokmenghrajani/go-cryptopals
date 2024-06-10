@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/alokmenghrajani/go-cryptopals/utils/aes"
 )
@@ -112,7 +113,7 @@ func getCiphertexts() [][]byte {
 	utils.PanicOnErr(err)
 	for _, plaintext := range plaintexts {
 		aesCtr := aes.NewAesCtr(aesKey, 0)
-		ciphertexts = append(ciphertexts, aesCtr.Process(utils.Base64ToByteSlice(plaintext)))
+		ciphertexts = append(ciphertexts, aesCtr.Process(base64.ToByteSlice(plaintext)))
 	}
 	return ciphertexts
 }
