@@ -1,7 +1,10 @@
 # go-cryptopals
-Solutions to the [cryptopals crypto challenges](https://cryptopals.com/) 🔒 in well<sup>[<i>[citation needed]()</i>]</sup> commented Golang.
+My solutions to the [Cryptopals cryptography challenges](https://cryptopals.com/) 🔒 in well<sup>[<i>[citation needed]()</i>]</sup> commented Golang.
 
-A lot of things are implemented from scratch for lolz: hex, base64, [AES](http://www.moserware.com/assets/stick-figure-guide-to-advanced/aes_act_3_scene_02_agreement_576.png) with various modes (plain, ECB, CBC), SHA-1, SHA-256, MD4, HMAC-SHA1, HMAC-SHA256, etc.
+A lot of things are implemented from scratch for lolz: [hex](encoding/hex), [base64](encoding/base64), [AES](http://www.moserware.com/assets/stick-figure-guide-to-advanced/aes_act_3_scene_02_agreement_576.png) with various [modes](cryptography/aes) (plain, ECB, CBC, CTR), [SHA-1](cryptography/sha1), [SHA-256](cryptography/sha256), [MD4](cryptography/md4), [HMAC-SHA1](cryptography/hmacSha1), [HMAC-SHA256](cryptography/hmacSha256).
+
+A [branch](https://github.com/alokmenghrajani/go-cryptopals/tree/bigint) implements bigints from
+scratch but is currently too slow to be used to solve all the challenges.
 
 ## Set 1
 - [Convert hex to base64](set1/challenge1.go)
@@ -71,7 +74,7 @@ A lot of things are implemented from scratch for lolz: hex, base64, [AES](http:/
 - Kelsey and Schneier's Expandable Messages
 - Kelsey and Kohno's Nostradamus Attack
 - [MD4 Collisions](set7/challenge55.go)
-- RC4 Single-Byte Biases
+- [RC4 Single-Byte Biases](set7/challenge56.go)
 
 ## Set 8
 - Diffie-Hellman Revisited: Small Subgroup Confinement
