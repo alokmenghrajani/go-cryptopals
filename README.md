@@ -71,7 +71,7 @@ scratch but is currently too slow to be used to solve all the challenges.
 - [Hashing with CBC-MAC](set7/challenge50.go)
 - [Compression Ratio Side-Channel Attacks](set7/challenge51.go)
 - [Iterated Hash Function Multicollisions](set7/challenge52.go)
-- Kelsey and Schneier's Expandable Messages
+- [Kelsey and Schneier's Expandable Messages](set7/challenge53.go)
 - Kelsey and Kohno's Nostradamus Attack
 - [MD4 Collisions](set7/challenge55.go)
 - [RC4 Single-Byte Biases](set7/challenge56.go)
