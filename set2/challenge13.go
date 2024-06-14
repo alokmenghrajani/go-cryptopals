@@ -55,12 +55,12 @@ func profileFor(email string, aesKey []byte) []byte {
 		"role":  "user",
 	}
 	data := encode(profile)
-	return aesEcbEncrypt(pkcs7.Pad([]byte(data), 16), aesKey)
+	return aesEcbEncrypt(pkcs7.Pad([]byte(data), aes.BlockSize), aesKey)
 }
 
 func role(ciphertext, aesKey []byte) string {
 	data := aesEcbDecrypt(ciphertext, aesKey)
-	data, err := pkcs7.Unpad(data, 16)
+	data, err := pkcs7.Unpad(data, aes.BlockSize)
 	utils.PanicOnErr(err)
 	profile := parseString(string(data))
 	return profile["role"]
@@ -69,9 +69,9 @@ func role(ciphertext, aesKey []byte) string {
 func aesEcbDecrypt(buf, key []byte) []byte {
 	cipher := aes.NewAes(key)
 	output := []byte{}
-	t := make([]byte, 16)
-	for i := 0; i < len(buf); i += 16 {
-		cipher.Decrypt(t, buf[i:i+16])
+	t := make([]byte, aes.BlockSize)
+	for i := 0; i < len(buf); i += aes.BlockSize {
+		cipher.Decrypt(t, buf[i:i+aes.BlockSize])
 		output = append(output, t...)
 	}
 	return output
@@ -89,17 +89,17 @@ func craftAdminProfile(aesKey []byte) []byte {
 	// step 3. overwrite step2's last block with the ciphertext for the admin block.
 
 	len1 := len("email=")
-	l := utils.Remaining(len1, 16)
+	l := utils.Remaining(len1, aes.BlockSize)
 	string1 := strings.Repeat("x", l)
-	string1 += string(pkcs7.Pad([]byte("admin"), 16))
+	string1 += string(pkcs7.Pad([]byte("admin"), aes.BlockSize))
 	ciphertext1 := profileFor(string1, aesKey)
 
 	len2 := len("email=&uid=10&role=")
-	l = utils.Remaining(len2, 16)
+	l = utils.Remaining(len2, aes.BlockSize)
 	string2 := strings.Repeat("x", l)
 	ciphertext2 := profileFor(string2, aesKey)
 
 	// copy 2nd block of ciphertext1 into ciphertext2's last block
-	copy(ciphertext2[len(ciphertext2)-16:], ciphertext1[16:32])
+	copy(ciphertext2[len(ciphertext2)-aes.BlockSize:], ciphertext1[aes.BlockSize:32])
 	return ciphertext2
 }

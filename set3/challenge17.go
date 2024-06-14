@@ -44,20 +44,20 @@ func pick(n int, aesKey []byte) ([]byte, []byte) {
 	}
 
 	// generate random IV
-	iv := make([]byte, 16)
+	iv := make([]byte, aes.BlockSize)
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
 
 	// base64 decode then encrypt data
 	plaintext := base64.ToByteSlice(inputs[n])
-	plaintext = pkcs7.Pad(plaintext, 16)
+	plaintext = pkcs7.Pad(plaintext, aes.BlockSize)
 	return aes.AesCbcEncrypt([]byte(plaintext), aesKey, iv), iv
 }
 
 // return true if the data is well padded
 func paddingOracle(buf, iv, aesKey []byte) bool {
 	t := aes.AesCbcDecrypt(buf, aesKey, iv)
-	_, err := pkcs7.Unpad(t, 16)
+	_, err := pkcs7.Unpad(t, aes.BlockSize)
 	return err == nil
 }
 
@@ -67,19 +67,19 @@ func crack(buf, iv, aesKey []byte) []byte {
 	previousBlock := iv
 
 	// crack one block at a time
-	for i := 0; i < len(buf); i += 16 {
-		block := buf[i : i+16]
+	for i := 0; i < len(buf); i += aes.BlockSize {
+		block := buf[i : i+aes.BlockSize]
 
 		// for each block, we'll mess with the previousBlock until we
 		// get valid padding. We record the byte which leads to valid
 		// padding xor the desired padding.
-		validPadding := make([]byte, 16)
+		validPadding := make([]byte, aes.BlockSize)
 		alternate := -1
 		for j := 15; j >= 0; j-- {
-			desiredPadding := 16 - j
+			desiredPadding := aes.BlockSize - j
 			copy := []byte{}
 			copy = append(copy, previousBlock...)
-			for k := j + 1; k < 16; k++ {
+			for k := j + 1; k < aes.BlockSize; k++ {
 				copy[k] = validPadding[k] ^ byte(desiredPadding)
 			}
 			valid1, valid2, err := findValidPadding(j, block, copy, aesKey)
@@ -116,7 +116,7 @@ func crack(buf, iv, aesKey []byte) []byte {
 		previousBlock = block
 	}
 
-	plaintext, err := pkcs7.Unpad(plaintext, 16)
+	plaintext, err := pkcs7.Unpad(plaintext, aes.BlockSize)
 	utils.PanicOnErr(err)
 	return plaintext
 }

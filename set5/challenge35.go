@@ -57,10 +57,10 @@ func withNegotiatedGroups(p, g *big.Int) {
 
 	// encrypt message
 	msg := "hello world"
-	iv := make([]byte, 16)
+	iv := make([]byte, aes.BlockSize)
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
-	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), 16), key, iv)
+	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), aes.BlockSize), key, iv)
 
 	// send ciphertext to bot
 	bytes := []byte{}
@@ -69,7 +69,7 @@ func withNegotiatedGroups(p, g *big.Int) {
 	responseCiphertext := bot.Echo(bytes)
 
 	// decrypt response
-	responsePlaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(responseCiphertext[16:], key, responseCiphertext[0:16]), 16)
+	responsePlaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(responseCiphertext[aes.BlockSize:], key, responseCiphertext[0:aes.BlockSize]), aes.BlockSize)
 	utils.PanicOnErr(err)
 	fmt.Println(string(responsePlaintext))
 	fmt.Println()
@@ -92,10 +92,10 @@ func withNegotiatedGroupsMitm(msg string, p, g, g2, expectedS *big.Int) {
 	key := sha.Digest()[0:16]
 
 	// encrypt message
-	iv := make([]byte, 16)
+	iv := make([]byte, aes.BlockSize)
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
-	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), 16), key, iv)
+	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), aes.BlockSize), key, iv)
 
 	// send ciphertext to bot
 	bytes := []byte{}
@@ -107,11 +107,11 @@ func withNegotiatedGroupsMitm(msg string, p, g, g2, expectedS *big.Int) {
 	sha = sha1.New()
 	sha.Update(expectedS.Bytes())
 	key = sha.Digest()[0:16]
-	plaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(bytes[16:], key, bytes[0:16]), 16)
+	plaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(bytes[aes.BlockSize:], key, bytes[0:aes.BlockSize]), aes.BlockSize)
 	utils.PanicOnErr(err)
 	fmt.Println(string(plaintext))
 
-	plaintext, err = pkcs7.Unpad(aes.AesCbcDecrypt(responseCiphertext[16:], key, responseCiphertext[0:16]), 16)
+	plaintext, err = pkcs7.Unpad(aes.AesCbcDecrypt(responseCiphertext[aes.BlockSize:], key, responseCiphertext[0:aes.BlockSize]), aes.BlockSize)
 	utils.PanicOnErr(err)
 	fmt.Println(string(plaintext))
 

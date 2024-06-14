@@ -15,8 +15,8 @@ func Challenge4() {
 	utils.PanicOnErr(err)
 	inputs := strings.Split(string(file), "\n")
 
-	// same code as challenge 3, but we are now looking for the best score among all the
-	// the inputs.
+	// same code as challenge 3, but we are now looking for the best score among
+	// all the inputs.
 	bestScore := -1
 	bestResult := []byte{}
 	for i := 0; i < len(inputs); i++ {

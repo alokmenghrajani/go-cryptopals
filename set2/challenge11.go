@@ -54,12 +54,12 @@ func encryptionOracle(data, key []byte) ([]byte, int) {
 	buf := make([]byte, prependCount+appendCount+len(data))
 	rand.Read(buf)
 	copy(buf[prependCount:prependCount+len(data)], data)
-	buf = pkcs7.Pad(buf, 16)
+	buf = pkcs7.Pad(buf, aes.BlockSize)
 
 	// encrypt the data
 	switch mode {
 	case CBC:
-		iv := make([]byte, 16)
+		iv := make([]byte, aes.BlockSize)
 		_, err := rand.Read(iv)
 		utils.PanicOnErr(err)
 		ciphertext := aes.AesCbcEncrypt(buf, key, iv)
@@ -74,18 +74,18 @@ func encryptionOracle(data, key []byte) ([]byte, int) {
 func aesEcbEncrypt(buf, key []byte) []byte {
 	cipher := aes.NewAes(key)
 	output := []byte{}
-	t := make([]byte, 16)
-	for i := 0; i < len(buf); i += 16 {
-		cipher.Encrypt(t, buf[i:i+16])
+	t := make([]byte, aes.BlockSize)
+	for i := 0; i < len(buf); i += aes.BlockSize {
+		cipher.Encrypt(t, buf[i:i+aes.BlockSize])
 		output = append(output, t...)
 	}
 	return output
 }
 
 func guessMode(buf []byte) int {
-	for i := 0; i < len(buf); i += 16 {
-		for j := i + 16; j < len(buf); j += 16 {
-			if bytes.Equal(buf[i:i+16], buf[j:j+16]) {
+	for i := 0; i < len(buf); i += aes.BlockSize {
+		for j := i + aes.BlockSize; j < len(buf); j += aes.BlockSize {
+			if bytes.Equal(buf[i:i+aes.BlockSize], buf[j:j+aes.BlockSize]) {
 				return ECB
 			}
 		}

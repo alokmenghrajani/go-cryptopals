@@ -14,13 +14,14 @@ func TestCbcEncryptionDecryption(t *testing.T) {
 	_, err := rand.Read(key)
 	utils.PanicOnErr(err)
 
-	iv := make([]byte, 16)
+	iv := make([]byte, BlockSize)
 	_, err = rand.Read(key)
 	utils.PanicOnErr(err)
 
 	expected := []byte("hello world")
-	ciphertext := AesCbcEncrypt(pkcs7.Pad(expected, 16), key, iv)
-	plaintext, err := pkcs7.Unpad(AesCbcDecrypt(ciphertext, key, iv), 16)
-	require.Nil(t, err)
+	ciphertext := AesCbcEncrypt(pkcs7.Pad(expected, BlockSize), key, iv)
+	plaintext, err := pkcs7.Unpad(AesCbcDecrypt(ciphertext, key, iv), BlockSize)
+	utils.PanicOnErr(err)
+
 	require.Equal(t, expected, plaintext)
 }

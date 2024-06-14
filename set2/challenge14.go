@@ -7,6 +7,7 @@ import (
 	insecureRand "math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
@@ -81,7 +82,7 @@ func (c chall14) encryptHard(data []byte) []byte {
 	buf = append(buf, c.randPrefix...)
 	buf = append(buf, data...)
 	buf = append(buf, unknownBuf...)
-	return aesEcbEncrypt(pkcs7.Pad(buf, 16), c.aesKey)
+	return aesEcbEncrypt(pkcs7.Pad(buf, aes.BlockSize), c.aesKey)
 }
 
 // Knowing the prefixLength puts us back in the simpler challenge 12 case

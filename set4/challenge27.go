@@ -57,12 +57,12 @@ func encryptWithIvEquKey(plaintext string, aesKey []byte) []byte {
 			panic("invalid plaintext")
 		}
 	}
-	return aes.AesCbcEncrypt(pkcs7.Pad([]byte(plaintext), 16), aesKey, aesKey)
+	return aes.AesCbcEncrypt(pkcs7.Pad([]byte(plaintext), aes.BlockSize), aesKey, aesKey)
 }
 
 func decryptWithIvEquKey(ciphertext, aesKey []byte) (string, error) {
 	plaintext := aes.AesCbcDecrypt(ciphertext, aesKey, aesKey)
-	plaintext, err := pkcs7.Unpad(plaintext, 16)
+	plaintext, err := pkcs7.Unpad(plaintext, aes.BlockSize)
 	if err != nil {
 		return "", err
 	}

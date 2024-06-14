@@ -36,7 +36,7 @@ func (a aes) BlockSize() int {
 
 func (a *aes) Encrypt(dst, src []byte) {
 	a.keyExpansion()
-	if len(src) != 16 {
+	if len(src) != BlockSize {
 		panic("invalid input")
 	}
 	copy(a.state[:], src)
@@ -57,7 +57,7 @@ func (a *aes) Encrypt(dst, src []byte) {
 
 func (a *aes) Decrypt(dst, src []byte) {
 	a.keyExpansion()
-	if len(src) != 16 {
+	if len(src) != BlockSize {
 		panic("invalid input")
 	}
 	copy(a.state[:], src)

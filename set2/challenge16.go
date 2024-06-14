@@ -34,16 +34,16 @@ func encrypt(s string, aesKey []byte) []byte {
 	s = "comment1=cooking%20MCs;userdata=" + s
 	s = s + ";comment2=%20like%20a%20pound%20of%20bacon"
 
-	iv := make([]byte, 16)
+	iv := make([]byte, aes.BlockSize)
 	_, err := rand.Read(iv)
 	utils.PanicOnErr(err)
 
-	return append(iv, aes.AesCbcEncrypt(pkcs7.Pad([]byte(s), 16), aesKey, iv)...)
+	return append(iv, aes.AesCbcEncrypt(pkcs7.Pad([]byte(s), aes.BlockSize), aesKey, iv)...)
 }
 
 func decrypt(buf, aesKey []byte) bool {
-	iv := buf[0:16]
-	ciphertext := buf[16:]
+	iv := buf[0:aes.BlockSize]
+	ciphertext := buf[aes.BlockSize:]
 	s := string(aes.AesCbcDecrypt(ciphertext, aesKey, iv))
 	return utils.IsAdmin(s)
 }
@@ -75,7 +75,7 @@ func craft(aesKey []byte) []byte {
 	input += strings.Repeat("_", l2)
 	buf := encrypt(input, aesKey)
 
-	offset := len(prefix) + l1 + 16 // add 16 because of IV
+	offset := len(prefix) + l1 + aes.BlockSize // add one block size because of IV
 
 	// change byte 0 from "_" to ";"
 	if s2[0] != '_' {

@@ -51,7 +51,7 @@ func part1Gen(key []byte) []byte {
 	r := request{}
 	r.message = []byte("from=1111&to=2222&amount=1000000")
 
-	r.iv = make([]byte, 16)
+	r.iv = make([]byte, aes.BlockSize)
 	_, err := rand.Read(r.iv)
 	utils.PanicOnErr(err)
 
@@ -64,7 +64,7 @@ func part1Forge(message1 []byte) []byte {
 	req := part1ParseBuf(message1)
 
 	newMessage := []byte("from=7890&to=2222&amount=1000000")
-	delta := utils.Xor(newMessage[0:16], req.message[0:16])
+	delta := utils.Xor(newMessage[0:aes.BlockSize], req.message[0:aes.BlockSize])
 	req.message = newMessage
 	req.iv = utils.Xor(req.iv, delta)
 	return req.part1ToBuf()
@@ -119,7 +119,7 @@ func part2Gen(key, message []byte) []byte {
 	r := request{}
 	r.message = message
 
-	r.iv = make([]byte, 16)
+	r.iv = make([]byte, aes.BlockSize)
 
 	r.mac = cbcMac(r.message, r.iv, key)
 	return r.part2ToBuf()
@@ -140,7 +140,7 @@ func part2Forge(key, interceptedMessage []byte) []byte {
 
 	// and then craft:
 	// plaintext + padding + more data
-	req.message = pkcs7.Pad(req.message, 16)
+	req.message = pkcs7.Pad(req.message, aes.BlockSize)
 	req.message = append(req.message, moreData...)
 	req.mac = req2.mac
 
@@ -160,7 +160,7 @@ func part2ParseBuf(buf []byte) *request {
 
 	return &request{
 		message: buf[0 : len(buf)-16],
-		iv:      make([]byte, 16),
+		iv:      make([]byte, aes.BlockSize),
 		mac:     buf[len(buf)-16:],
 	}
 }
@@ -174,22 +174,22 @@ func (req request) part2ToBuf() []byte {
 
 func cbcMac(message, iv, key []byte) []byte {
 	// pad the message, but first make a copy so we don't mangle the message
-	paddedMessage := make([]byte, len(message), len(message)+16)
+	paddedMessage := make([]byte, len(message), len(message)+aes.BlockSize)
 	copy(paddedMessage, message)
-	paddedMessage = pkcs7.Pad(paddedMessage, 16)
+	paddedMessage = pkcs7.Pad(paddedMessage, aes.BlockSize)
 
 	// AES-CBC encrypt and return last block
 	aesCipher := aes.NewAes(key)
 
-	prev := make([]byte, 16)
+	prev := make([]byte, aes.BlockSize)
 	copy(prev, iv)
 
-	for i := 0; i < len(paddedMessage); i += 16 {
-		plaintext := paddedMessage[i : i+16]
+	for i := 0; i < len(paddedMessage); i += aes.BlockSize {
+		plaintext := paddedMessage[i : i+aes.BlockSize]
 
 		// XOR plaintext with prev
-		input := make([]byte, 0, 16)
-		for i := 0; i < 16; i++ {
+		input := make([]byte, 0, aes.BlockSize)
+		for i := 0; i < aes.BlockSize; i++ {
 			input = append(input, plaintext[i]^prev[i])
 		}
 

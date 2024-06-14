@@ -102,7 +102,7 @@ func findNextBlockCipherCandidates(candidates []string) []string {
 
 	// We keep increasing the prefix until we hit a block boundary. Only then can we distinguish which
 	// bytes compresses better.
-	prefix := make([]byte, 0, 16)
+	prefix := make([]byte, 0, aes.BlockSize)
 	for {
 		bestScore := math.MaxInt
 		best := []string{}
@@ -182,10 +182,10 @@ func encryptAesCbc(plaintext []byte) []byte {
 	_, err := rand.Read(aesKey)
 	utils.PanicOnErr(err)
 
-	iv := make([]byte, 16)
+	iv := make([]byte, aes.BlockSize)
 	_, err = rand.Read(iv)
 	utils.PanicOnErr(err)
 
-	paddedPlaintext := pkcs7.Pad(plaintext, 16)
+	paddedPlaintext := pkcs7.Pad(plaintext, aes.BlockSize)
 	return aes.AesCbcEncrypt(paddedPlaintext, aesKey, iv)
 }

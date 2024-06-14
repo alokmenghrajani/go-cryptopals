@@ -142,7 +142,7 @@ func findMultiCollisions(n int) ([][]byte, int) {
 func C2(buf []byte, key []byte) []byte {
 	aesKey := []byte{}
 	aesKey = append(aesKey, key...)
-	aesKey = pkcs7.Pad(aesKey, aes.BlockSize)
+	aesKey = pkcs7.Pad(aesKey, 16)
 	aesCipher := aes.NewAes(aesKey)
 	r := make([]byte, aes.BlockSize)
 	aesCipher.Encrypt(r, buf)
