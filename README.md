@@ -6,6 +6,9 @@ A lot of things are implemented from scratch for lolz: [hex](encoding/hex), [bas
 A [branch](https://github.com/alokmenghrajani/go-cryptopals/tree/bigint) implements bigints from
 scratch but is currently too slow to be used to solve all the challenges.
 
+The [references](references/) folder contains a copy of various whitepapers and
+RFCs useful for solving these challenges.
+
 ## Set 1
 - [Convert hex to base64](set1/challenge1.go)
 - [Fixed XOR](set1/challenge2.go)
@@ -72,7 +75,7 @@ scratch but is currently too slow to be used to solve all the challenges.
 - [Compression Ratio Side-Channel Attacks](set7/challenge51.go)
 - [Iterated Hash Function Multicollisions](set7/challenge52.go)
 - [Kelsey and Schneier's Expandable Messages](set7/challenge53.go)
-- Kelsey and Kohno's Nostradamus Attack
+- [Kelsey and Kohno's Nostradamus Attack](set7/challenge54.go)
 - [MD4 Collisions](set7/challenge55.go)
 - [RC4 Single-Byte Biases](set7/challenge56.go)
 
