@@ -8,15 +8,11 @@ import (
 
 // base64 encodes buf per https://www.rfc-editor.org/rfc/rfc4648
 func FromByteSlice(buf []byte) string {
-	// calculate how much space we'll need
-	n := int(len(buf) * 4 / 3)
-	var extra int
-	if (len(buf) % 3) != 0 {
-		extra = 3 - (len(buf) % 3)
-		n += extra
-	}
-
-	// convert bytes to base64
+	// Calculate how much space we'll need. Every 3 characters gets encoded
+	// as 4 characters. The formula is 4 * ceil(buf/3) but we do a +1 and -1
+	// trick so that the whole computation remains integer without having to
+	// deal with floats.
+	n := 4 * (1 + (len(buf)-1)/3)
 	output := make([]byte, 0, n)
 	bitBuffer := utils.NewBitBuffer(buf)
 	for i := 0; i < len(buf)*8; i += 6 {
@@ -24,6 +20,9 @@ func FromByteSlice(buf []byte) string {
 		t := bitBuffer.Read(6)
 		output = append(output, bitsToBase64(t))
 	}
+
+	// Add the padding
+	extra := utils.Remaining(len(buf), 3)
 	for i := 0; i < extra; i++ {
 		output = append(output, '=')
 	}
