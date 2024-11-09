@@ -44,3 +44,19 @@ func Randn(n *big.Int) *big.Int {
 		return x
 	}
 }
+
+func Max(a *big.Int, b *big.Int) *big.Int {
+	t := a.Cmp(b)
+	if t == -1 {
+		return b
+	}
+	return a
+}
+
+func Min(a *big.Int, b *big.Int) *big.Int {
+	t := a.Cmp(b)
+	if t == -1 {
+		return a
+	}
+	return b
+}

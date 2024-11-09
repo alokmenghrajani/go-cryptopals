@@ -8,13 +8,13 @@ import (
 )
 
 type PubKey struct {
-	E *big.Int
-	N *big.Int
+	E *big.Int `json:"E"`
+	N *big.Int `json:"N"`
 }
 
 type PrivKey struct {
-	D *big.Int
-	N *big.Int
+	D *big.Int `json:"D"`
+	N *big.Int `json:"N"`
 }
 
 func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
