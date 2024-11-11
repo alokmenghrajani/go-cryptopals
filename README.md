@@ -9,6 +9,8 @@ scratch but is currently too slow to be used to solve all the challenges.
 The [references](references/) folder contains a copy of various whitepapers and
 RFCs useful for solving these challenges.
 
+I have solved sets 1 through 7. I hope to finish the final set 8 soon 🤞.
+
 ## Set 1
 - [Convert hex to base64](set1/challenge1.go)
 - [Fixed XOR](set1/challenge2.go)
@@ -66,8 +68,8 @@ RFCs useful for solving these challenges.
 - [DSA nonce recovery from repeated nonce](set6/challenge44.go)
 - [DSA parameter tampering](set6/challenge45.go)
 - [RSA parity oracle](set6/challenge46.go)
-- Bleichenbacher's PKCS 1.5 Padding Oracle (Simple Case)
-- Bleichenbacher's PKCS 1.5 Padding Oracle (Complete Case)
+- [Bleichenbacher's PKCS 1.5 Padding Oracle (Simple Case)](set6/challenge47.go)
+- [Bleichenbacher's PKCS 1.5 Padding Oracle (Complete Case)](set6/challenge48.go)
 
 ## Set 7
 - [CBC-MAC Message Forgery](set7/challenge49.go)
