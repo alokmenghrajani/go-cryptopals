@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
 )
 
@@ -59,4 +60,32 @@ func Min(a *big.Int, b *big.Int) *big.Int {
 		return a
 	}
 	return b
+}
+
+func IsZero(a *big.Int) bool {
+	return a.BitLen() == 0
+}
+
+// Crt (Chinese Remainder Theorem) code from
+// https://github.com/alokmenghrajani/adventofcode2020/blob/main/day13/day13.go#L61
+func Crt(a, n []*big.Int) (*big.Int, error) {
+	p := &big.Int{}
+	p.Set(n[0])
+	for _, n1 := range n[1:] {
+		p.Mul(p, n1)
+	}
+	x := &big.Int{}
+	q := &big.Int{}
+	s := &big.Int{}
+	z := &big.Int{}
+	for i, n1 := range n {
+		q.Div(p, n1)
+		z.GCD(nil, s, n1, q)
+		if z.Cmp(big.NewInt(1)) != 0 {
+			return nil, fmt.Errorf("%d not coprime", n1)
+		}
+		x.Add(x, s.Mul(a[i], s.Mul(s, q)))
+		x.Mod(x, p)
+	}
+	return x, nil
 }

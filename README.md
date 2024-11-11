@@ -82,7 +82,7 @@ I have solved sets 1 through 7. I hope to finish the final set 8 soon 🤞.
 - [RC4 Single-Byte Biases](set7/challenge56.go)
 
 ## Set 8
-- Diffie-Hellman Revisited: Small Subgroup Confinement
+- [Diffie-Hellman Revisited: Small Subgroup Confinement](set8/challenge57.go)
 - Pollard's Method for Catching Kangaroos
 - Elliptic Curve Diffie-Hellman and Invalid-Curve Attacks
 - Single-Coordinate Ladders and Insecure Twists

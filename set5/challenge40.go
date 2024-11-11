@@ -28,7 +28,7 @@ func Challenge40() {
 	c3.SetBytes([]byte(pubKey3.Encrypt([]byte(msg))))
 
 	// Crack the ciphertexts using CRT
-	solution, err := crt([]*big.Int{c1, c2, c3}, []*big.Int{pubKey1.N, pubKey2.N, pubKey3.N})
+	solution, err := utils.Crt([]*big.Int{c1, c2, c3}, []*big.Int{pubKey1.N, pubKey2.N, pubKey3.N})
 	utils.PanicOnErr(err)
 	s := utils.Root(3, solution)
 
@@ -36,23 +36,4 @@ func Challenge40() {
 	fmt.Printf("decrypted: %s\n", string(s.Bytes()))
 
 	fmt.Println()
-}
-
-// Chinese Remainder Theorem code from
-// https://github.com/alokmenghrajani/adventofcode2020/blob/main/day13/day13.go#L61
-func crt(a, n []*big.Int) (*big.Int, error) {
-	p := new(big.Int).Set(n[0])
-	for _, n1 := range n[1:] {
-		p.Mul(p, n1)
-	}
-	var x, q, s, z big.Int
-	for i, n1 := range n {
-		q.Div(p, n1)
-		z.GCD(nil, &s, n1, &q)
-		if z.Cmp(big.NewInt(1)) != 0 {
-			return nil, fmt.Errorf("%d not coprime", n1)
-		}
-		x.Add(&x, s.Mul(a[i], s.Mul(&s, &q)))
-	}
-	return x.Mod(&x, p), nil
 }
