@@ -18,6 +18,10 @@ type PrivKey struct {
 }
 
 func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
+	if keySizeBits%16 != 0 {
+		panic("invalid keySizeBits (must be multiple of 16)")
+	}
+
 	for {
 		p := randomPrime(keySizeBits / 2)
 		q := randomPrime(keySizeBits / 2)
@@ -101,6 +105,9 @@ func (key PubKey) Verify(signature []byte) []byte {
 }
 
 func randomPrime(keySizeBits int) *big.Int {
+	if keySizeBits%8 != 0 {
+		panic("invalid keySizeBits (must be multiple of 8)")
+	}
 	for {
 		buf := make([]byte, keySizeBits/8)
 		_, err := rand.Read(buf)

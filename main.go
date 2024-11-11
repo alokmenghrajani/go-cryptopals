@@ -123,6 +123,8 @@ func main() {
 		set6.Challenge46()
 	case "47":
 		set6.Challenge47()
+	case "48":
+		set6.Challenge48()
 
 	// Set 7: Hashes
 	case "49":
@@ -143,6 +145,6 @@ func main() {
 		set7.Challenge56()
 
 	default:
-		set6.Challenge47()
+		set6.Challenge48()
 	}
 }

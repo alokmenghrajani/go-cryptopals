@@ -46,7 +46,7 @@ func Challenge47() {
 	threeBMinusOne.Sub(threeB, one)
 
 	// find s
-	s := step2a(pubKey, privKey, ciphertext, ceil(pubKey.N, threeB))
+	s := step2a(pubKey, privKey, keySizeBytes, ciphertext, ceil(pubKey.N, threeB))
 	m := intervalAppend([]Interval{}, twoB, threeBMinusOne)
 	m = step3(pubKey, s, m)
 
@@ -61,7 +61,7 @@ func Challenge47() {
 
 				m[0].low.Mod(m[0].low, pubKey.N)
 				bytes := append([]byte{0x00}, m[0].low.Bytes()...)
-				msg, err := pkcs1_5.Unpad(bytes, 32)
+				msg, err := pkcs1_5.Unpad(bytes, keySizeBytes)
 				utils.PanicOnErr(err)
 				fmt.Printf("%q\n", msg)
 				if string(msg) != shortPlaintext {
@@ -69,12 +69,12 @@ func Challenge47() {
 				}
 				break
 			}
-			s = step2c(pubKey, privKey, ciphertext, m[0], s)
+			s = step2c(pubKey, privKey, keySizeBytes, ciphertext, m[0], s)
 		}
 
 		if len(m) > 1 {
 			s.Add(s, one)
-			s = step2a(pubKey, privKey, ciphertext, s)
+			s = step2a(pubKey, privKey, keySizeBytes, ciphertext, s)
 		}
 
 		// compute intervals
@@ -83,11 +83,11 @@ func Challenge47() {
 	fmt.Println()
 }
 
-func oracle(privKey rsa.PrivKey, ciphertext []byte) bool {
+func oracle(privKey rsa.PrivKey, ciphertext []byte, keySize int) bool {
 	oracleCalled += 1
 	plaintext := privKey.Decrypt(ciphertext)
 	// leading 0x00 needs to be inferred
-	leadingZero := len(plaintext) == 31
+	leadingZero := len(plaintext) == (keySize - 1)
 	return leadingZero && plaintext[0] == 0x02
 }
 
@@ -103,7 +103,7 @@ func ceil(a *big.Int, b *big.Int) *big.Int {
 }
 
 // Find the smallest s, such that c * s^e mod n is conformant
-func step2a(pubKey rsa.PubKey, privKey rsa.PrivKey, ciphertext, lowerBound *big.Int) *big.Int {
+func step2a(pubKey rsa.PubKey, privKey rsa.PrivKey, keySizeBytes int, ciphertext, lowerBound *big.Int) *big.Int {
 	s := &big.Int{}
 	s.Set(lowerBound)
 	for {
@@ -111,14 +111,14 @@ func step2a(pubKey rsa.PubKey, privKey rsa.PrivKey, ciphertext, lowerBound *big.
 		nextCiphertext.Exp(s, pubKey.E, pubKey.N)
 		nextCiphertext.Mul(nextCiphertext, ciphertext)
 		nextCiphertext.Mod(nextCiphertext, pubKey.N)
-		if oracle(privKey, nextCiphertext.Bytes()) {
+		if oracle(privKey, nextCiphertext.Bytes(), keySizeBytes) {
 			return s
 		}
 		s.Add(s, one)
 	}
 }
 
-func step2c(pubKey rsa.PubKey, privKey rsa.PrivKey, ciphertext *big.Int, interval Interval, s *big.Int) *big.Int {
+func step2c(pubKey rsa.PubKey, privKey rsa.PrivKey, keySizeBytes int, ciphertext *big.Int, interval Interval, s *big.Int) *big.Int {
 	ri := &big.Int{}
 	ri.Mul(interval.high, s)
 	ri.Sub(ri, twoB)
@@ -145,7 +145,7 @@ func step2c(pubKey rsa.PubKey, privKey rsa.PrivKey, ciphertext *big.Int, interva
 			nextCiphertext.Exp(nextS, pubKey.E, pubKey.N)
 			nextCiphertext.Mul(nextCiphertext, ciphertext)
 			nextCiphertext.Mod(nextCiphertext, pubKey.N)
-			if oracle(privKey, nextCiphertext.Bytes()) {
+			if oracle(privKey, nextCiphertext.Bytes(), keySizeBytes) {
 				return nextS
 			}
 			nextS.Add(nextS, one)
