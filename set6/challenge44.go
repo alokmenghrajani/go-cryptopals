@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/dsa"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
@@ -39,17 +40,16 @@ func Challenge44() {
 		}
 		d.msg = []byte(strings.SplitN(inputs[i], ": ", 2)[1])
 		t := strings.SplitN(inputs[i+1], ": ", 2)[1]
-		d.signature.S.SetString(t, 10)
+		d.signature.S = bigutils.SetString(t, 10)
 		t = strings.SplitN(inputs[i+2], ": ", 2)[1]
-		d.signature.R.SetString(t, 10)
+		d.signature.R = bigutils.SetString(t, 10)
 		t = strings.SplitN(inputs[i+3], ": ", 2)[1]
-		d.m.SetString(t, 16)
+		d.m = bigutils.SetString(t, 16)
 
 		// verify that d.m=H(msg)
 		sha1 := sha1.New()
 		sha1.Update(d.msg)
-		hex := &big.Int{}
-		hex.SetBytes(sha1.Digest())
+		hex := bigutils.FromBytes(sha1.Digest())
 		if hex.Cmp(d.m) != 0 {
 			panic("meh")
 		}
@@ -59,7 +59,7 @@ func Challenge44() {
 
 	// create pubkey
 	pubKey, _ := dsa.GenerateKeyPair(dsa.DefaultParams())
-	pubKey.Y.SetString("2d026f4bf30195ede3a088da85e398ef869611d0f68f0713d51c9c1a3a26c95105d915e2d8cdf26d056b86b8a7b85519b1c23cc3ecdc6062650462e3063bd179c2a6581519f674a61f1d89a1fff27171ebc1b93d4dc57bceb7ae2430f98a6a4d83d8279ee65d71c1203d2c96d65ebbf7cce9d32971c3de5084cce04a2e147821", 16)
+	pubKey.Y = bigutils.SetString("2d026f4bf30195ede3a088da85e398ef869611d0f68f0713d51c9c1a3a26c95105d915e2d8cdf26d056b86b8a7b85519b1c23cc3ecdc6062650462e3063bd179c2a6581519f674a61f1d89a1fff27171ebc1b93d4dc57bceb7ae2430f98a6a4d83d8279ee65d71c1203d2c96d65ebbf7cce9d32971c3de5084cce04a2e147821", 16)
 
 	// Find which pairs re-used the same k
 	var privKey *dsa.PrivKey

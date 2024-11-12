@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/dsa"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
@@ -36,7 +37,7 @@ func Challenge43() {
 	fmt.Println()
 
 	// part 2: find private key by bruteforcing k
-	pubKey.Y.SetString("84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17", 16)
+	pubKey.Y = bigutils.SetString("84ad4719d044495496a3201c8ff484feb45b962e7302e56a392aee4abab3e4bdebf2955b4736012f21a08084056b19bcd7fee56048e004e44984e2f411788efdc837a0d2e5abb7b555039fd243ac01f0fb2ed1dec568280ce678e931868d23eb095fde9d3779191b8c0299d6e07bbb283e6633451e535c45513b2d33c99ea17", 16)
 
 	msg = []byte("For those that envy a MC it can be hazardous to your health\nSo be friendly, a matter of life and death, just like a etch-a-sketch\n")
 	signature = &dsa.Signature{
@@ -44,8 +45,8 @@ func Challenge43() {
 		R: &big.Int{},
 		S: &big.Int{},
 	}
-	signature.R.SetString("548099063082341131477253921760299949438196259240", 10)
-	signature.S.SetString("857042759984254168557880549501802188789837994940", 10)
+	signature.R = bigutils.SetString("548099063082341131477253921760299949438196259240", 10)
+	signature.S = bigutils.SetString("857042759984254168557880549501802188789837994940", 10)
 
 	privKey = bruteforceK(pubKey, msg, signature)
 	fmt.Printf("recovered key: %s\n", privKey.X.String())
@@ -69,8 +70,7 @@ func recoverX(pubKey dsa.PubKey, h []byte, signature *dsa.Signature) *big.Int {
 	x := &big.Int{}
 	x.Mul(signature.S, signature.K)
 
-	hh := &big.Int{}
-	hh.SetBytes(h)
+	hh := bigutils.FromBytes(h)
 
 	x.Sub(x, hh)
 

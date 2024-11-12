@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
@@ -18,19 +19,16 @@ func Challenge40() {
 
 	// encrypt a message 3 times
 	msg := "attack at dawn"
-	c1 := &big.Int{}
-	c1.SetBytes([]byte(pubKey1.Encrypt([]byte(msg))))
+	c1 := bigutils.FromBytes([]byte(pubKey1.Encrypt([]byte(msg))))
 
-	c2 := &big.Int{}
-	c2.SetBytes([]byte(pubKey2.Encrypt([]byte(msg))))
+	c2 := bigutils.FromBytes([]byte(pubKey2.Encrypt([]byte(msg))))
 
-	c3 := &big.Int{}
-	c3.SetBytes([]byte(pubKey3.Encrypt([]byte(msg))))
+	c3 := bigutils.FromBytes([]byte(pubKey3.Encrypt([]byte(msg))))
 
 	// Crack the ciphertexts using CRT
-	solution, err := utils.Crt([]*big.Int{c1, c2, c3}, []*big.Int{pubKey1.N, pubKey2.N, pubKey3.N})
+	solution, err := bigutils.Crt([]*big.Int{c1, c2, c3}, []*big.Int{pubKey1.N, pubKey2.N, pubKey3.N})
 	utils.PanicOnErr(err)
-	s := utils.Root(3, solution)
+	s := bigutils.Root(3, solution)
 
 	fmt.Printf("plaintext: %s\n", msg)
 	fmt.Printf("decrypted: %s\n", string(s.Bytes()))

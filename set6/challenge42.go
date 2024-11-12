@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
@@ -24,13 +25,9 @@ func Challenge42() {
 	signature := hex.ToByteSlice("420d9e40b0c881520ec8aa5e20338b14e46d2daca185863f6bb27ec3f83aa0d7e3b9352ee6972483911be4592bd403f5b671f84a9ff84e879a45ba56afec8bfe1164cdbf411160c1d34bc31cdf4cdd9700f2e11ca469ab2fa20207170989611af9ec066a68d974986e3a51452ade9a94a9b598f6c84b6d42777cf112a9fb73b8")
 
 	pubKey := rsa.PubKey{
-		E: big.NewInt(3),
-		N: &big.Int{},
+		E: bigutils.Three,
 	}
-	_, ok := pubKey.N.SetString("00d3a75c230ccb7b69f8f10d478588309d96bdef1b7042db4a587a4fd1dca880726d5674adb5ace47782ff0e8fdf73be141997a0f69ac598d873179e3e70d728831e4f7a4af9de4635422abc2943b14dafc5fd037e65c573937989c2d763ca08982d0fabf103f0c59045d3dc1d5cb3e994096fe7cb1607f9e3efbe71c71afbfe69", 16)
-	if !ok {
-		panic("SetString failed")
-	}
+	pubKey.N = bigutils.SetString("00d3a75c230ccb7b69f8f10d478588309d96bdef1b7042db4a587a4fd1dca880726d5674adb5ace47782ff0e8fdf73be141997a0f69ac598d873179e3e70d728831e4f7a4af9de4635422abc2943b14dafc5fd037e65c573937989c2d763ca08982d0fabf103f0c59045d3dc1d5cb3e994096fe7cb1607f9e3efbe71c71afbfe69", 16)
 
 	// verify signature
 	fmt.Printf("original signature: %v\n", verify(pubKey, signature))
@@ -109,12 +106,11 @@ func forge(pubKey rsa.PubKey) []byte {
 	for i := 0; i < 200; i++ {
 		// keep adding garbage until ^3 returns the original data
 		forged = append(forged, 0x01)
-		n := &big.Int{}
-		n.SetBytes(forged)
+		n := bigutils.FromBytes(forged)
 
-		r := utils.Root(3, n)
+		r := bigutils.Root(3, n)
 		t := &big.Int{}
-		t.Exp(r, big.NewInt(3), pubKey.N)
+		t.Exp(r, bigutils.Three, pubKey.N)
 		buf := t.Bytes()
 		if bytes.Equal(buf[0:goal], forged[0:goal]) {
 			return r.Bytes()

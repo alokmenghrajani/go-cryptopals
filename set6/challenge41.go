@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
@@ -19,8 +20,7 @@ func Challenge41() {
 	originalCiphertext := pubKey.Encrypt([]byte("s3cr3t sauc3"))
 
 	// modify the message
-	c := &big.Int{}
-	c.SetBytes(originalCiphertext)
+	c := bigutils.FromBytes(originalCiphertext)
 
 	s := big.NewInt(2)
 	c2 := &big.Int{}
@@ -30,11 +30,9 @@ func Challenge41() {
 
 	// decrypt the ciphertext
 	plaintext2 := decrypt(privKey, originalCiphertext, c2.Bytes())
-	p2 := &big.Int{}
-	p2.SetBytes(plaintext2)
+	p2 := bigutils.FromBytes(plaintext2)
 
-	p := &big.Int{}
-	p.SetBytes([]byte("s3cr3t sauc3"))
+	p := bigutils.FromBytes([]byte("s3cr3t sauc3"))
 	p.Mul(p, s)
 	p.Mod(p, pubKey.N)
 

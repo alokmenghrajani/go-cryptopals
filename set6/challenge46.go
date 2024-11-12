@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
@@ -25,11 +26,10 @@ func Challenge46() {
 	upperBound.Set(pubKey.N)
 	denominator := big.NewInt(1)
 
-	c := &big.Int{}
-	c.SetBytes(ciphertext)
+	c := bigutils.FromBytes(ciphertext)
 
 	facTwo := &big.Int{}
-	facTwo.Exp(big.NewInt(2), pubKey.E, pubKey.N)
+	facTwo.Exp(bigutils.Two, pubKey.E, pubKey.N)
 	delta := &big.Int{}
 	result := &big.Int{}
 
@@ -41,9 +41,9 @@ func Challenge46() {
 		if delta.Cmp(denominator) == -1 {
 			break
 		}
-		lowerBound.Mul(lowerBound, big.NewInt(2))
-		upperBound.Mul(upperBound, big.NewInt(2))
-		denominator.Mul(denominator, big.NewInt(2))
+		lowerBound.Mul(lowerBound, bigutils.Two)
+		upperBound.Mul(upperBound, bigutils.Two)
+		denominator.Mul(denominator, bigutils.Two)
 		if parityOracle(privKey, c.Bytes()) {
 			lowerBound.Add(lowerBound, delta)
 			result.Div(lowerBound, denominator)

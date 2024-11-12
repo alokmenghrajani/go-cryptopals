@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs1_5"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
@@ -23,8 +24,7 @@ func Challenge48() {
 	shortPlaintext := "kick it, CC"
 	shortPlaintextPadded := pkcs1_5.Pad([]byte(shortPlaintext), keySizeBytes)
 	ciphertextBytes := pubKey.Encrypt([]byte(shortPlaintextPadded))
-	ciphertext := &big.Int{}
-	ciphertext.SetBytes(ciphertextBytes)
+	ciphertext := bigutils.FromBytes(ciphertextBytes)
 	fmt.Printf("ciphertext: %d\n", ciphertext)
 
 	twoB = big.NewInt(0x02)
@@ -33,7 +33,7 @@ func Challenge48() {
 	threeB = big.NewInt(0x03)
 	threeB.Lsh(threeB, uint(keySizeBytes-2)*8)
 	threeBMinusOne = &big.Int{}
-	threeBMinusOne.Sub(threeB, one)
+	threeBMinusOne.Sub(threeB, bigutils.One)
 
 	// find s
 	s := step2a(pubKey, privKey, keySizeBytes, ciphertext, ceil(pubKey.N, threeB))
@@ -46,7 +46,7 @@ func Challenge48() {
 		}
 
 		if len(m) == 1 {
-			if m[0].size.Cmp(one) == 0 {
+			if m[0].size.Cmp(bigutils.One) == 0 {
 				fmt.Printf("Found solution after %d calls to oracle.\n", oracleCalled)
 
 				m[0].low.Mod(m[0].low, pubKey.N)
@@ -63,7 +63,7 @@ func Challenge48() {
 		}
 
 		if len(m) > 1 {
-			s.Add(s, one)
+			s.Add(s, bigutils.One)
 			s = step2a(pubKey, privKey, keySizeBytes, ciphertext, s)
 		}
 

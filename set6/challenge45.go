@@ -2,8 +2,8 @@ package set6
 
 import (
 	"fmt"
-	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/dsa"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
@@ -22,7 +22,7 @@ func Challenge45() {
 	// signing will always produce r=1, s=...
 	// verification will always succeed if r=1
 	params := dsa.DefaultParams()
-	params.G.Add(params.P, big.NewInt(1))
+	params.G.Add(params.P, bigutils.One)
 	pubKey, privKey := dsa.GenerateKeyPair(params)
 	fmt.Printf("pubKey=%s\n", pubKey.Y.String())
 

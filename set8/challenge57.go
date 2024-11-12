@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha256"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
@@ -12,40 +13,33 @@ import (
 func Challenge57() {
 	utils.PrintTitle(8, 57)
 
-	p := &big.Int{}
-	p.SetString("7199773997391911030609999317773941274322764333428698921736339643928346453700085358802973900485592910475480089726140708102474957429903531369589969318716771", 10)
-
-	g := &big.Int{}
-	g.SetString("4565356397095740655436854503483826832136106141639563487732438195343690437606117828318042418238184896212352329118608100083187535033402010599512641674644143", 10)
-
-	q := &big.Int{}
-	q.SetString("236234353446506858198510045061214171961", 10)
+	p := bigutils.SetString("7199773997391911030609999317773941274322764333428698921736339643928346453700085358802973900485592910475480089726140708102474957429903531369589969318716771", 10)
+	g := bigutils.SetString("4565356397095740655436854503483826832136106141639563487732438195343690437606117828318042418238184896212352329118608100083187535033402010599512641674644143", 10)
+	q := bigutils.SetString("236234353446506858198510045061214171961", 10)
 
 	// verify that g^q = 1 mod p
 	t := &big.Int{}
 	t.Exp(g, q, p)
-	one := big.NewInt(1)
-
-	if t.Cmp(one) != 0 {
+	if t.Cmp(bigutils.One) != 0 {
 		panic("g^q != 1 mod p")
 	}
 
 	// verify that q divides p-1
 	pMinusOne := &big.Int{}
-	pMinusOne.Sub(p, one)
+	pMinusOne.Sub(p, bigutils.One)
 	t.Mod(pMinusOne, q)
-	if !utils.IsZero(t) {
+	if !bigutils.IsZero(t) {
 		panic("q does not divide p-1")
 	}
 	fmt.Println()
 
 	// generate Alice's keys
-	alicePriv := utils.Randn(q)
+	alicePriv := bigutils.Randn(q)
 	alicePub := &big.Int{}
 	alicePub.Exp(g, alicePriv, p)
 
 	// generate Bob's keys
-	bobPriv := utils.Randn(q)
+	bobPriv := bigutils.Randn(q)
 	bobPub := &big.Int{}
 	bobPub.Exp(g, bobPriv, p)
 
@@ -58,13 +52,9 @@ func Challenge57() {
 		panic("DH failure")
 	}
 
-	// j's factors
-	f1 := &big.Int{}
-	f1.SetString("534232641372537546151", 10)
-	f2 := &big.Int{}
-	f2.SetString("80913087354323463709999234471", 10)
+	// p-1's factors
 	factors := []*big.Int{
-		big.NewInt(2),
+		bigutils.Two,
 		// we skip 3^2
 		big.NewInt(5),
 		big.NewInt(109),
@@ -79,8 +69,8 @@ func Challenge57() {
 		big.NewInt(57529),
 		big.NewInt(96142199),
 		big.NewInt(46323892554437),
-		f1,
-		f2,
+		bigutils.SetString("534232641372537546151", 10),
+		bigutils.SetString("80913087354323463709999234471", 10),
 		q,
 	}
 	t = big.NewInt(9) // because we dropped 3^2
@@ -103,9 +93,9 @@ func Challenge57() {
 		q2.Div(pMinusOne, r)
 		var h *big.Int
 		for {
-			h = utils.Randn(p)
+			h = bigutils.Randn(p)
 			h.Exp(h, q2, p)
-			if h.Cmp(one) == 1 {
+			if h.Cmp(bigutils.One) == 1 {
 				break
 			}
 		}
@@ -115,7 +105,7 @@ func Challenge57() {
 		n = append(n, r)
 	}
 
-	solution, err := utils.Crt(a, n)
+	solution, err := bigutils.Crt(a, n)
 	utils.PanicOnErr(err)
 
 	fmt.Printf("bob's key: %d\n", bobPriv)
@@ -132,8 +122,10 @@ func dh(evePublic, bobPriv, p *big.Int) (string, []byte) {
 	key := &big.Int{}
 	key.Exp(evePublic, bobPriv, p)
 
-	if key.Cmp(big.NewInt(1)) == 0 {
-		fmt.Printf("weird: key=1 when public=%d\n", evePublic)
+	// It seems we often get key=1...
+	if key.Cmp(big.NewInt(1000)) == -1 {
+		fmt.Printf("weird: key=%d when public=%d\n", key, evePublic)
+		fmt.Printf("bob priv: %d\n\n", bobPriv)
 	}
 
 	// note: you shouldn't directly use the output of DH as a key...
@@ -143,7 +135,6 @@ func dh(evePublic, bobPriv, p *big.Int) (string, []byte) {
 }
 
 func findXModR(msg string, t []byte, h, p, r *big.Int) *big.Int {
-	one := big.NewInt(1)
 	i := big.NewInt(0)
 	for i.Cmp(r) != 1 {
 		maybeK := &big.Int{}
@@ -152,7 +143,7 @@ func findXModR(msg string, t []byte, h, p, r *big.Int) *big.Int {
 		if bytes.Equal(t, t2) {
 			return i
 		}
-		i.Add(i, one)
+		i.Add(i, bigutils.One)
 	}
 	panic("failed to find k")
 }

@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -34,17 +35,17 @@ func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
 		}
 
 		p2 := &big.Int{}
-		p2.Sub(p, big.NewInt(1))
+		p2.Sub(p, bigutils.One)
 		q2 := &big.Int{}
-		q2.Sub(q, big.NewInt(1))
+		q2.Sub(q, bigutils.One)
 		et := &big.Int{}
 		et.Mul(p2, q2)
 
-		e := big.NewInt(3)
+		e := bigutils.Three
 
 		extraCheck := &big.Int{}
 		extraCheck.GCD(nil, nil, e, et)
-		if extraCheck.Cmp(big.NewInt(1)) == 0 {
+		if extraCheck.Cmp(bigutils.One) == 0 {
 			d := &big.Int{}
 			d.ModInverse(e, et)
 
@@ -54,8 +55,7 @@ func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
 }
 
 func (key PubKey) Encrypt(plaintext []byte) []byte {
-	m := &big.Int{}
-	m.SetBytes(plaintext)
+	m := bigutils.FromBytes(plaintext)
 
 	if m.Cmp(key.N) != -1 {
 		panic("message too large for key")
@@ -68,8 +68,7 @@ func (key PubKey) Encrypt(plaintext []byte) []byte {
 }
 
 func (key PrivKey) Decrypt(ciphertext []byte) []byte {
-	c := &big.Int{}
-	c.SetBytes(ciphertext)
+	c := bigutils.FromBytes(ciphertext)
 
 	m := &big.Int{}
 	m.Exp(c, key.D, key.N)
@@ -78,9 +77,7 @@ func (key PrivKey) Decrypt(ciphertext []byte) []byte {
 }
 
 func (key PrivKey) Sign(message []byte) []byte {
-
-	m := &big.Int{}
-	m.SetBytes(message)
+	m := bigutils.FromBytes(message)
 
 	if m.Cmp(key.N) != -1 {
 		panic("message too large for key")
@@ -93,8 +90,7 @@ func (key PrivKey) Sign(message []byte) []byte {
 }
 
 func (key PubKey) Verify(signature []byte) []byte {
-	c := &big.Int{}
-	c.SetBytes(signature)
+	c := bigutils.FromBytes(signature)
 
 	m := &big.Int{}
 	m.Exp(c, key.E, key.N)
@@ -130,8 +126,7 @@ func randomPrime(keySizeBits int) *big.Int {
 		// https://github.com/google/boringssl/blob/b7d6320be91bdf132349e8384bd779ffcff3f030/crypto/fipsmodule/rsa/rsa_impl.c#L1258
 		buf[0] = buf[0] | 0xc0
 
-		n := &big.Int{}
-		n.SetBytes(buf)
+		n := bigutils.FromBytes(buf)
 		if n.ProbablyPrime(20) {
 			return n
 		}

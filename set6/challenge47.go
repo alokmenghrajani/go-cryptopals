@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs1_5"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-var one *big.Int = big.NewInt(1)
-var two *big.Int = big.NewInt(2)
 var twoB *big.Int
 var threeB *big.Int
 var threeBMinusOne *big.Int
@@ -33,8 +32,7 @@ func Challenge47() {
 	shortPlaintext := "kick it, CC"
 	shortPlaintextPadded := pkcs1_5.Pad([]byte(shortPlaintext), keySizeBytes)
 	ciphertextBytes := pubKey.Encrypt([]byte(shortPlaintextPadded))
-	ciphertext := &big.Int{}
-	ciphertext.SetBytes(ciphertextBytes)
+	ciphertext := bigutils.FromBytes(ciphertextBytes)
 	fmt.Printf("ciphertext: %d\n", ciphertext)
 
 	twoB = big.NewInt(0x02)
@@ -43,7 +41,7 @@ func Challenge47() {
 	threeB = big.NewInt(0x03)
 	threeB.Lsh(threeB, uint(keySizeBytes-2)*8)
 	threeBMinusOne = &big.Int{}
-	threeBMinusOne.Sub(threeB, one)
+	threeBMinusOne.Sub(threeB, bigutils.One)
 
 	// find s
 	s := step2a(pubKey, privKey, keySizeBytes, ciphertext, ceil(pubKey.N, threeB))
@@ -56,7 +54,7 @@ func Challenge47() {
 		}
 
 		if len(m) == 1 {
-			if m[0].size.Cmp(one) == 0 {
+			if m[0].size.Cmp(bigutils.One) == 0 {
 				fmt.Printf("Found solution after %d calls to oracle.\n", oracleCalled)
 
 				m[0].low.Mod(m[0].low, pubKey.N)
@@ -73,7 +71,7 @@ func Challenge47() {
 		}
 
 		if len(m) > 1 {
-			s.Add(s, one)
+			s.Add(s, bigutils.One)
 			s = step2a(pubKey, privKey, keySizeBytes, ciphertext, s)
 		}
 
@@ -98,7 +96,7 @@ func ceil(a *big.Int, b *big.Int) *big.Int {
 	if m.BitLen() == 0 {
 		return r
 	}
-	r.Add(r, one)
+	r.Add(r, bigutils.One)
 	return r
 }
 
@@ -114,7 +112,7 @@ func step2a(pubKey rsa.PubKey, privKey rsa.PrivKey, keySizeBytes int, ciphertext
 		if oracle(privKey, nextCiphertext.Bytes(), keySizeBytes) {
 			return s
 		}
-		s.Add(s, one)
+		s.Add(s, bigutils.One)
 	}
 }
 
@@ -122,7 +120,7 @@ func step2c(pubKey rsa.PubKey, privKey rsa.PrivKey, keySizeBytes int, ciphertext
 	ri := &big.Int{}
 	ri.Mul(interval.high, s)
 	ri.Sub(ri, twoB)
-	ri.Mul(ri, two)
+	ri.Mul(ri, bigutils.Two)
 	ri = ceil(ri, pubKey.N)
 
 	nextS := &big.Int{}
@@ -135,7 +133,7 @@ func step2c(pubKey rsa.PubKey, privKey rsa.PrivKey, keySizeBytes int, ciphertext
 		lower = ceil(lower, interval.high)
 
 		higher := &big.Int{}
-		higher.Add(threeBMinusOne, one)
+		higher.Add(threeBMinusOne, bigutils.One)
 		higher.Add(higher, rin)
 		higher = ceil(higher, interval.low)
 
@@ -148,9 +146,9 @@ func step2c(pubKey rsa.PubKey, privKey rsa.PrivKey, keySizeBytes int, ciphertext
 			if oracle(privKey, nextCiphertext.Bytes(), keySizeBytes) {
 				return nextS
 			}
-			nextS.Add(nextS, one)
+			nextS.Add(nextS, bigutils.One)
 		}
-		ri.Add(ri, one)
+		ri.Add(ri, bigutils.One)
 	}
 }
 
@@ -177,17 +175,17 @@ func step3(pubKey rsa.PubKey, newS *big.Int, intervals []Interval) []Interval {
 			aa := &big.Int{}
 			aa.Add(twoB, rn)
 			aa = ceil(aa, newS)
-			lower := utils.Max(interval.low, aa)
+			lower := bigutils.Max(interval.low, aa)
 
 			bb := &big.Int{}
 			bb.Add(threeBMinusOne, rn)
 			bb.Div(bb, newS)
-			higher := utils.Min(interval.high, bb)
+			higher := bigutils.Min(interval.high, bb)
 
 			if lower.Cmp(higher) != 1 {
 				newM = intervalAppend(newM, lower, higher)
 			}
-			r.Add(r, one)
+			r.Add(r, bigutils.One)
 		}
 	}
 	return newM
@@ -241,8 +239,8 @@ func intervalAppend(intervals []Interval, newLow, newHigh *big.Int) []Interval {
 
 		// We have an overlap. Remove the element we overlap with and call
 		// intervalAppend recursively.
-		newNewLow := utils.Min(interval.low, newLow)
-		newNewHigh := utils.Max(interval.high, newHigh)
+		newNewLow := bigutils.Min(interval.low, newLow)
+		newNewHigh := bigutils.Max(interval.high, newHigh)
 
 		// TODO: case 3 could be optimzed
 
@@ -253,6 +251,6 @@ func intervalAppend(intervals []Interval, newLow, newHigh *big.Int) []Interval {
 
 	s := &big.Int{}
 	s.Sub(newHigh, newLow)
-	s.Add(s, one)
+	s.Add(s, bigutils.One)
 	return append(intervals, Interval{low: newLow, high: newHigh, size: s})
 }

@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
@@ -33,23 +34,18 @@ func Challenge34() {
 
 func withoutMitm() {
 	// A: generates a key
-	var p big.Int
-	_, ok := p.SetString("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff", 16)
-	if !ok {
-		panic("SetString failed")
-	}
+	p := bigutils.SetString("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff", 16)
 	g := big.NewInt(5)
 
-	a := big.NewInt(int64(rand.Int()))
-	a.Mod(a, &p)
-	var A big.Int
-	A.Exp(g, a, &p)
+	a := bigutils.Randn(p)
+	A := &big.Int{}
+	A.Exp(g, a, p)
 
 	// establish key
-	bot := newEchoBot(&p, g, &A)
+	bot := newEchoBot(p, g, A)
 	B := bot.PubKey()
-	var s big.Int
-	s.Exp(B, a, &p)
+	s := &big.Int{}
+	s.Exp(B, a, p)
 	sha := sha1.New()
 	sha.Update(s.Bytes())
 	key := sha.Digest()[0:16]
@@ -76,23 +72,18 @@ func withoutMitm() {
 
 func withMitm() {
 	// A: generates a key
-	var p big.Int
-	_, ok := p.SetString("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff", 16)
-	if !ok {
-		panic("SetString failed")
-	}
+	p := bigutils.SetString("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff", 16)
 	g := big.NewInt(5)
 
-	a := big.NewInt(int64(rand.Int()))
-	a.Mod(a, &p)
-	var A big.Int
-	A.Exp(g, a, &p)
+	a := bigutils.Randn(p)
+	A := &big.Int{}
+	A.Exp(g, a, p)
 
 	// establish key
-	bot := newEchoBot(&p, g, &p) // MITM replaces A with p
-	B := &p                      // MITM replaces B with p
-	var s big.Int
-	s.Exp(B, a, &p)
+	bot := newEchoBot(p, g, p) // MITM replaces A with p
+	B := p                     // MITM replaces B with p
+	s := &big.Int{}
+	s.Exp(B, a, p)
 	sha := sha1.New()
 	sha.Update(s.Bytes())
 	key := sha.Digest()[0:16]
@@ -112,7 +103,7 @@ func withMitm() {
 
 	// MITM decrypts both ciphertexts
 	sha = sha1.New()
-	sha.Update(big.NewInt(0).Bytes())
+	sha.Update(bigutils.Zero.Bytes())
 	key = sha.Digest()[0:16]
 	plaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(bytes[aes.BlockSize:], key, bytes[0:aes.BlockSize]), aes.BlockSize)
 	utils.PanicOnErr(err)
@@ -126,9 +117,8 @@ func withMitm() {
 }
 
 func newEchoBot(p, g, A *big.Int) *echoBot {
-	b := big.NewInt(int64(rand.Int()))
-	b.Mod(b, p)
-	var B big.Int
+	b := bigutils.Randn(p)
+	B := &big.Int{}
 	B.Exp(g, b, p)
 
 	return &echoBot{
@@ -136,7 +126,7 @@ func newEchoBot(p, g, A *big.Int) *echoBot {
 		g: g,
 		b: b,
 		A: A,
-		B: &B,
+		B: B,
 	}
 }
 
@@ -146,7 +136,7 @@ func (bot *echoBot) PubKey() *big.Int {
 
 func (bot *echoBot) Echo(ciphertext []byte) []byte {
 	// establish key
-	var s big.Int
+	s := &big.Int{}
 	s.Exp(bot.A, bot.b, bot.p)
 	sha := sha1.New()
 	sha.Update(s.Bytes())
