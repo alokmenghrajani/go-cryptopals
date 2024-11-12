@@ -1,0 +1,6 @@
+[0;31mSet 7, challenge 53:[m
+seed: 4982987952755048429
+msg hash: 4635
+msg2 hash: 4635
+cost: 5082
+

@@ -1,0 +1,5 @@
+[0;31mSet 3, challenge 22:[m
+seed: 5305371229778538300
+possible seed: 147
+actual seed: 147
+

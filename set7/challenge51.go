@@ -3,21 +3,20 @@ package set7
 import (
 	"bytes"
 	"compress/flate"
-	"crypto/rand"
 	"fmt"
 	"math"
-	insecureRand "math/rand"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge51() {
+func Challenge51(rng *rng.Rng) {
 	utils.PrintTitle(7, 51)
 
 	fmt.Println("part 1: stream cipher")
-	session := crackStreamCipher()
+	session := crackStreamCipher(rng)
 	fmt.Printf("secret: %s\n", session)
 	if session == "sessionid=TmV2ZXIgcmV2ZWFsIHRoZSBXdS1UYW5nIFNlY3JldCE=" {
 		fmt.Println("success!")
@@ -27,7 +26,7 @@ func Challenge51() {
 	fmt.Println()
 
 	fmt.Println("part 2: block cipher")
-	session = crackBlockCipher()
+	session = crackBlockCipher(rng)
 	fmt.Printf("secret: %s\n", session)
 	if session == "sessionid=TmV2ZXIgcmV2ZWFsIHRoZSBXdS1UYW5nIFNlY3JldCE=" {
 		fmt.Println("success!")
@@ -37,13 +36,13 @@ func Challenge51() {
 	fmt.Println()
 }
 
-func crackStreamCipher() string {
+func crackStreamCipher(rng *rng.Rng) string {
 	// We'll use the knowledge that the session has the format:
 	// "sessionid=" + base64(32 bytes)
 	candidates := []string{"sessionid="}
 
 	for i := 0; i < 43; i++ {
-		candidates = findNextStreamCipherCandidates(candidates)
+		candidates = findNextStreamCipherCandidates(rng, candidates)
 	}
 	if len(candidates) > 1 {
 		panic("found more than 1 candidate")
@@ -53,7 +52,7 @@ func crackStreamCipher() string {
 	return candidate
 }
 
-func findNextStreamCipherCandidates(candidates []string) []string {
+func findNextStreamCipherCandidates(rng *rng.Rng, candidates []string) []string {
 	bestScore := math.MaxInt
 	best := []string{}
 
@@ -64,7 +63,7 @@ func findNextStreamCipherCandidates(candidates []string) []string {
 		copy(newCandidate, []byte(candidate))
 		for i := 0; i < 64; i++ {
 			newCandidate[len(candidate)] = base64[i]
-			score := streamCipherOracle(newCandidate)
+			score := streamCipherOracle(rng, newCandidate)
 			if score < bestScore {
 				bestScore = score
 				best = []string{string(newCandidate)}
@@ -77,17 +76,17 @@ func findNextStreamCipherCandidates(candidates []string) []string {
 	return best
 }
 
-func streamCipherOracle(d []byte) int {
-	return len(encryptAesCtr(compress(formatRequest(d))))
+func streamCipherOracle(rng *rng.Rng, d []byte) int {
+	return len(encryptAesCtr(rng, compress(formatRequest(d))))
 }
 
-func crackBlockCipher() string {
+func crackBlockCipher(rng *rng.Rng) string {
 	// We'll use the knowledge that the session has the format:
 	// "sessionid=" + base64(32 bytes)
 	candidates := []string{"sessionid="}
 
 	for i := 0; i < 43; i++ {
-		candidates = findNextBlockCipherCandidates(candidates)
+		candidates = findNextBlockCipherCandidates(rng, candidates)
 	}
 	if len(candidates) > 1 {
 		panic("found more than 1 candidate")
@@ -97,7 +96,7 @@ func crackBlockCipher() string {
 	return candidate
 }
 
-func findNextBlockCipherCandidates(candidates []string) []string {
+func findNextBlockCipherCandidates(rng *rng.Rng, candidates []string) []string {
 	base64 := []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/")
 
 	// We keep increasing the prefix until we hit a block boundary. Only then can we distinguish which
@@ -113,7 +112,7 @@ func findNextBlockCipherCandidates(candidates []string) []string {
 			copy(newCandidate[len(prefix):], []byte(candidate))
 			for i := 0; i < 64; i++ {
 				newCandidate[len(prefix)+len(candidate)] = base64[i]
-				score := blockCipherOracle(newCandidate)
+				score := blockCipherOracle(rng, newCandidate)
 				if score < bestScore {
 					bestScore = score
 					best = []string{string(newCandidate[len(prefix):])}
@@ -137,8 +136,8 @@ func findNextBlockCipherCandidates(candidates []string) []string {
 	}
 }
 
-func blockCipherOracle(d []byte) int {
-	return len(encryptAesCbc(compress(formatRequest(d))))
+func blockCipherOracle(rng *rng.Rng, d []byte) int {
+	return len(encryptAesCbc(rng, compress(formatRequest(d))))
 }
 
 func formatRequest(p []byte) []byte {
@@ -166,26 +165,16 @@ func compress(d []byte) []byte {
 	return buf.Bytes()
 }
 
-func encryptAesCtr(plaintext []byte) []byte {
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
-
-	nonce := insecureRand.Uint64()
-
+func encryptAesCtr(rng *rng.Rng, plaintext []byte) []byte {
+	aesKey := rng.Bytes(aes.KeySize)
+	nonce := rng.Uint64()
 	aesCtr := aes.NewAesCtr(aesKey, nonce)
 	return aesCtr.Process(plaintext)
 }
 
-func encryptAesCbc(plaintext []byte) []byte {
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
-
-	iv := make([]byte, aes.BlockSize)
-	_, err = rand.Read(iv)
-	utils.PanicOnErr(err)
-
+func encryptAesCbc(rng *rng.Rng, plaintext []byte) []byte {
+	aesKey := rng.Bytes(aes.KeySize)
+	iv := rng.Bytes(aes.BlockSize)
 	paddedPlaintext := pkcs7.Pad(plaintext, aes.BlockSize)
 	return aes.AesCbcEncrypt(paddedPlaintext, aesKey, iv)
 }

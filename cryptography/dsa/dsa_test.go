@@ -4,14 +4,16 @@ import (
 	"testing"
 
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDsaSigning(t *testing.T) {
-	pubKey, privKey := GenerateKeyPair(DefaultParams())
+	rng := rng.New()
+	pubKey, privKey := GenerateKeyPair(rng, DefaultParams())
 	msg := []byte("hello world")
 
-	signature := privKey.Sign(nil, msg)
+	signature := privKey.Sign(rng, nil, msg)
 	assert.True(t, pubKey.Verify(msg, signature))
 
 	signature.R.Add(signature.R, bigutils.One)

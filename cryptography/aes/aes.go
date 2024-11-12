@@ -18,10 +18,11 @@ type aes struct {
 	state             [16]byte
 }
 
+const KeySize = 16
 const BlockSize = 16
 
 func NewAes(key []byte) cipher.Block {
-	if len(key) != 16 {
+	if len(key) != KeySize {
 		panic("only 16-byte keys are implemented")
 	}
 	r := aes{}

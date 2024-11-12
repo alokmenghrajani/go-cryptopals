@@ -1,0 +1,8 @@
+[0;31mSet 5, challenge 34:[m
+seed: 5222019804528015939
+re: hello world
+
+hello world
+re: hello world
+
+

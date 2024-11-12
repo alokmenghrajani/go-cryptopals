@@ -1,0 +1,5 @@
+[0;31mSet 4, challenge 27:[m
+seed: 1813610950272534597
+original key: 71e3f12b454639e7a037abbe4e762171
+cracked key:  71e3f12b454639e7a037abbe4e762171
+

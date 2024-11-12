@@ -1,0 +1,4 @@
+[0;31mSet 5, challenge 36:[m
+seed: 2532630783544710379
+true
+

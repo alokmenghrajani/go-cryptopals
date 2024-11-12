@@ -1,0 +1,7 @@
+[0;31mSet 7, challenge 49:[m
+part 1:
+seed: 2939615650543535157
+"from=7890&to=2222&amount=1000000"
+part 2:
+"from=7890&tx_list=5555:20\a\a\a\a\a\a\a;2222:1000000000"
+

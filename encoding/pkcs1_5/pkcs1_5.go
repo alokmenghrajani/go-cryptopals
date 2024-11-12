@@ -1,16 +1,15 @@
 package pkcs1_5
 
 import (
-	"crypto/rand"
 	"errors"
 
-	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 )
 
 // Pads buffer using pkcs#1.5
 // the padding scheme is documented here:
 // https://datatracker.ietf.org/doc/html/rfc2313#section-8.1
-func Pad(buf []byte, k int) []byte {
+func Pad(rng *rng.Rng, buf []byte, k int) []byte {
 	if k < 12 {
 		panic("k is too small for pkcs v1.5 padding")
 	}
@@ -23,9 +22,7 @@ func Pad(buf []byte, k int) []byte {
 	for i := 0; i < k-3-len(buf); i++ {
 		// generate random padding, but the padding can't contain 0x00
 		for {
-			b := []byte{0x00}
-			_, err := rand.Read(b)
-			utils.PanicOnErr(err)
+			b := rng.Bytes(1)
 			if b[0] != 0x00 {
 				r = append(r, b[0])
 				break

@@ -1,22 +1,20 @@
 package set2
 
 import (
-	"crypto/rand"
 	"fmt"
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge13() {
+func Challenge13(rng *rng.Rng) {
 	utils.PrintTitle(2, 13)
 
 	// generate a global key
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 
 	// craft an admin profile
 	t := craftAdminProfile(aesKey)

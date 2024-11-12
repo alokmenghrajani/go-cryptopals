@@ -2,12 +2,12 @@ package set7
 
 import (
 	"bytes"
-	"crypto/aes"
-	"crypto/rand"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -19,18 +19,16 @@ type expandableMessage struct {
 	cost        int
 }
 
-func Challenge53() {
+func Challenge53(rng *rng.Rng) {
 	utils.PrintTitle(7, 53)
 
 	// Create a long, random, message
-	msg := make([]byte, 5000)
-	_, err := rand.Read(msg)
-	utils.PanicOnErr(err)
+	msg := rng.Bytes(5000)
 	msgHash := MD1(msg)
 	fmt.Printf("msg hash: %s\n", hex.FromByteSlice(msgHash))
 
 	// Initialize the expandable message.
-	em := initExpandableMessage(len(msg))
+	em := initExpandableMessage(rng, len(msg))
 
 	// sanity check by building two prefixes
 	prefixLefts := []byte{}
@@ -46,7 +44,7 @@ func Challenge53() {
 	}
 
 	// Find a bridge block
-	bridge, offset := em.bridge(msg)
+	bridge, offset := em.bridge(rng, msg)
 
 	// Build prefix
 	prefix := em.prefix(offset)
@@ -86,7 +84,7 @@ func MD1noPadding(msg []byte, state []byte) []byte {
 	return state
 }
 
-func initExpandableMessage(msgLen int) expandableMessage {
+func initExpandableMessage(rng *rng.Rng, msgLen int) expandableMessage {
 	r := expandableMessage{}
 
 	// k is the log2(msgLen/blocksize), which is also MSB(msgLen)
@@ -111,7 +109,7 @@ func initExpandableMessage(msgLen int) expandableMessage {
 		// find a collision with hashState as initial hash state
 		var left, right []byte
 		var cost int
-		left, right, hashState, cost = findCollision2(nextHashState, hashState)
+		left, right, hashState, cost = findCollision2(rng, nextHashState, hashState)
 		r.cost += cost
 
 		copy(piece[blocks*aes.BlockSize:], left)
@@ -122,7 +120,7 @@ func initExpandableMessage(msgLen int) expandableMessage {
 	return r
 }
 
-func (em *expandableMessage) bridge(msg []byte) ([]byte, int) {
+func (em *expandableMessage) bridge(rng *rng.Rng, msg []byte) ([]byte, int) {
 	// compute the hash state for every part of msg
 	hashes := map[[2]byte]int{}
 
@@ -135,10 +133,9 @@ func (em *expandableMessage) bridge(msg []byte) ([]byte, int) {
 		hashes[t] = i
 	}
 
-	bridge := make([]byte, aes.BlockSize)
+	var bridge []byte
 	for {
-		_, err := rand.Read(bridge)
-		utils.PanicOnErr(err)
+		bridge = rng.Bytes(aes.BlockSize)
 		h := C1(bridge, em.finalHash)
 		em.cost++
 		t := [2]byte{h[0], h[1]}
@@ -166,15 +163,13 @@ func (em expandableMessage) prefix(offset int) []byte {
 	return r
 }
 
-func findCollision2(leftState []byte, rightState []byte) ([]byte, []byte, []byte, int) {
+func findCollision2(rng *rng.Rng, leftState []byte, rightState []byte) ([]byte, []byte, []byte, int) {
 	foundLeft := map[[2]byte][]byte{}
 	foundRight := map[[2]byte][]byte{}
 	h := [2]byte{}
 	cost := 0
 	for {
-		msgLeft := make([]byte, aes.BlockSize)
-		_, err := rand.Read(msgLeft)
-		utils.PanicOnErr(err)
+		msgLeft := rng.Bytes(aes.BlockSize)
 		h1 := C1(msgLeft, leftState)
 		cost++
 		copy(h[:], h1)
@@ -188,9 +183,7 @@ func findCollision2(leftState []byte, rightState []byte) ([]byte, []byte, []byte
 		}
 		foundLeft[h] = msgLeft
 
-		msgRight := make([]byte, aes.BlockSize)
-		_, err = rand.Read(msgRight)
-		utils.PanicOnErr(err)
+		msgRight := rng.Bytes(aes.BlockSize)
 		h2 := C1(msgRight, rightState)
 		cost++
 		copy(h[:], h2)

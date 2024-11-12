@@ -1,0 +1,5 @@
+[0;31mSet 5, challenge 40:[m
+seed: 1804507494475695050
+plaintext: attack at dawn
+decrypted: attack at dawn
+

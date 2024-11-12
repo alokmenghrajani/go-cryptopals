@@ -1,0 +1,10 @@
+[0;31mSet 7, challenge 51:[m
+part 1: stream cipher
+seed: 6835141084336653362
+secret: sessionid=TmV2ZXIgcmV2ZWFsIHRoZSBXdS1UYW5nIFNlY3JldCE=
+success!
+
+part 2: block cipher
+secret: sessionid=TmV2ZXIgcmV2ZWFsIHRoZSBXdS1UYW5nIFNlY3JldCE=
+success!
+

@@ -1,0 +1,7 @@
+[0;31mSet 6, challenge 45:[m
+seed: 2779379943725435456
+pubKey=1
+signature: r=1, s=1144589110604426392961694979579023762051033447415
+original signature: true
+forged signature: true
+

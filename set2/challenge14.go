@@ -2,14 +2,12 @@ package set2
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
-	insecureRand "math/rand"
-	"time"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -19,20 +17,17 @@ type chall14 struct {
 	prefixLength int
 }
 
-func Challenge14() {
+func Challenge14(rng *rng.Rng) {
 	utils.PrintTitle(2, 14)
 
 	c := chall14{}
-	c.genAesKey()
+	c.aesKey = rng.Bytes(aes.KeySize)
 
 	// generate a random prefix of random length
-	insecureRand.Seed(time.Now().Unix())
-	c.randPrefix = make([]byte, insecureRand.Intn(40)+5)
-	_, err := rand.Read(c.randPrefix)
-	utils.PanicOnErr(err)
+	c.randPrefix = rng.Bytes(rng.Int(40) + 5)
 
 	// step 1: find the prefixLength
-	c.prefixLength = c.findPrefixLength()
+	c.prefixLength = c.findPrefixLength(rng)
 	if c.prefixLength != len(c.randPrefix) {
 		// we aren't supposed to use randPrefix, so this is cheating. Helps figure out if we
 		// messed anything up
@@ -56,10 +51,8 @@ func Challenge14() {
 // "ab00 zzzz zzzz abcd efgh ijkl m333"
 //
 //	^^ ^^^^ ^^^^
-func (c chall14) findPrefixLength() int {
-	block := make([]byte, 16)
-	_, err := rand.Read(block)
-	utils.PanicOnErr(err)
+func (c chall14) findPrefixLength(rng *rng.Rng) int {
+	block := rng.Bytes(aes.BlockSize)
 
 	for i := 0; i < 16; i++ {
 		t := make([]byte, i)
@@ -86,12 +79,12 @@ func (c chall14) encryptHard(data []byte) []byte {
 }
 
 // Knowing the prefixLength puts us back in the simpler challenge 12 case
-func (c chall14) encrypt(data []byte) []byte {
-	prefixRemaining := utils.Remaining(c.prefixLength, 16)
-	firstBlock := (c.prefixLength + prefixRemaining) / 16
+// func (c chall14) encrypt(data []byte) []byte {
+// 	prefixRemaining := utils.Remaining(c.prefixLength, 16)
+// 	firstBlock := (c.prefixLength + prefixRemaining) / 16
 
-	t := make([]byte, prefixRemaining)
-	t = append(t, data...)
-	ciphertext := c.encryptHard(t)
-	return ciphertext[firstBlock*16:]
-}
+// 	t := make([]byte, prefixRemaining)
+// 	t = append(t, data...)
+// 	ciphertext := c.encryptHard(t)
+// 	return ciphertext[firstBlock*16:]
+// }

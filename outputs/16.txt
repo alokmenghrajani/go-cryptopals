@@ -1,0 +1,4 @@
+[0;31mSet 2, challenge 16:[m
+seed: 6720321084798453023
+true
+

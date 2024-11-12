@@ -1,22 +1,22 @@
 package set7
 
 import (
-	"crypto/rand"
 	"encoding/binary"
 	"fmt"
 	"slices"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/md4"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge55() {
+func Challenge55(rng *rng.Rng) {
 	utils.PrintTitle(7, 55)
 
 	extraChecks := false
 	counter := 0
-	msg1 := make([]byte, 64)
+	var msg1 []byte
 	msg2 := make([]byte, 64)
 	for {
 		counter++
@@ -24,8 +24,7 @@ func Challenge55() {
 			fmt.Printf(".")
 		}
 		// Start with a random 512-bit message
-		_, err := rand.Read(msg1)
-		utils.PanicOnErr(err)
+		msg1 = rng.Bytes(64)
 
 		// Fix the message using table 6 from paper
 		_ = fixup(msg1)

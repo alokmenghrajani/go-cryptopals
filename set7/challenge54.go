@@ -3,9 +3,9 @@ package set7
 import (
 	"bytes"
 	"crypto/aes"
-	"crypto/rand"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -22,11 +22,11 @@ type node struct {
 	parent           *node
 }
 
-func Challenge54() {
+func Challenge54(rng *rng.Rng) {
 	utils.PrintTitle(7, 54)
 
 	// Create random hash states
-	n := newNostradamus(5)
+	n := newNostradamus(rng, 5)
 
 	// Hash the padding
 	padding := []byte{}
@@ -39,7 +39,7 @@ func Challenge54() {
 	// Craft a message
 	msg := []byte("Penguins will win the tournament")
 	hashState := MD1noPadding(msg, []byte{0x35, 0xca})
-	bridge, node := n.findCollision(hashState)
+	bridge, node := n.findCollision(rng, hashState)
 	msg = append(msg, bridge...)
 	for node.parent != nil {
 		msg = append(msg, node.data...)
@@ -56,17 +56,15 @@ func Challenge54() {
 	fmt.Println()
 }
 
-func newNostradamus(k int) *nostradamus {
+func newNostradamus(rng *rng.Rng, k int) *nostradamus {
 	r := &nostradamus{
 		k: k,
 	}
 	n := 1 << k
 	for i := 0; i < n; i++ {
 		newNode := &node{
-			hashInitialState: make([]byte, 2),
+			hashInitialState: rng.Bytes(2),
 		}
-		_, err := rand.Read(newNode.hashInitialState)
-		utils.PanicOnErr(err)
 		r.nodes = append(r.nodes, newNode)
 	}
 
@@ -74,7 +72,7 @@ func newNostradamus(k int) *nostradamus {
 	for len(reduce) > 1 {
 		nextReduction := []*node{}
 		for i := 0; i < len(reduce); i += 2 {
-			left, right, hashState, cost := findCollision2(reduce[i].hashInitialState, reduce[i+1].hashInitialState)
+			left, right, hashState, cost := findCollision2(rng, reduce[i].hashInitialState, reduce[i+1].hashInitialState)
 			newNode := &node{
 				hashInitialState: hashState,
 			}
@@ -91,7 +89,7 @@ func newNostradamus(k int) *nostradamus {
 	return r
 }
 
-func (n *nostradamus) findCollision(hashState []byte) ([]byte, *node) {
+func (n *nostradamus) findCollision(rng *rng.Rng, hashState []byte) ([]byte, *node) {
 	found := map[[2]byte]*node{}
 	t := [2]byte{}
 	for i := 0; i < len(n.nodes); i++ {
@@ -100,9 +98,7 @@ func (n *nostradamus) findCollision(hashState []byte) ([]byte, *node) {
 		found[t] = node
 	}
 	for {
-		bridge := make([]byte, aes.BlockSize)
-		_, err := rand.Read(bridge)
-		utils.PanicOnErr(err)
+		bridge := rng.Bytes(aes.BlockSize)
 		h := C1(bridge, hashState)
 		copy(t[:], h)
 		n.cost++

@@ -2,12 +2,12 @@ package set2
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -15,23 +15,17 @@ type chall12 struct {
 	aesKey []byte
 }
 
-func Challenge12() {
+func Challenge12(rng *rng.Rng) {
 	utils.PrintTitle(2, 12)
 
 	c := chall12{}
-	c.genAesKey()
+	c.aesKey = rng.Bytes(aes.KeySize)
 
 	plaintextSize := c.findPlaintextSize()
 	plaintext := c.crack(plaintextSize)
 
 	fmt.Println(string(plaintext))
 	fmt.Println()
-}
-
-func (c *chall12) genAesKey() {
-	c.aesKey = make([]byte, 16)
-	_, err := rand.Read(c.aesKey)
-	utils.PanicOnErr(err)
 }
 
 // step 1: keep prepending bytes until we get a new block. We'll then know how much plaintext

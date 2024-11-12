@@ -2,17 +2,18 @@ package pkcs1_5
 
 import (
 	"fmt"
-	"math/rand"
 	"testing"
-	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPadding(t *testing.T) {
+	rng := rng.New()
+
 	k := 32
 	shortString := "foo bar"
-	shortStringPadded := Pad([]byte(shortString), k)
+	shortStringPadded := Pad(rng, []byte(shortString), k)
 	shortStringRoundtrip, err := Unpad(shortStringPadded, k)
 	require.Nil(t, err)
 	require.Equal(t, shortString, string(shortStringRoundtrip))
@@ -40,19 +41,14 @@ func TestPadding(t *testing.T) {
 	require.NotNil(t, err)
 	require.Equal(t, "padding is too short", err.Error())
 
-	seed := time.Now().Unix()
-	rng := rand.New(rand.NewSource(seed))
-
-	for i := 0; i < 300; i++ {
+	for i := 0; i < 22; i++ {
 		for n := 0; n < 1000; n++ {
-			buf := make([]byte, 0, i)
-			rng.Read(buf)
-
-			buf2 := Pad(buf, k)
-			require.Equal(t, k, len(buf2), fmt.Sprintf("seed=%d, k=%d, i=%d, n=%d", seed, k, i, n))
+			buf := rng.Bytes(i)
+			buf2 := Pad(rng, buf, k)
+			require.Equal(t, k, len(buf2), fmt.Sprintf("k=%d, i=%d, n=%d", k, i, n))
 			buf2, err := Unpad(buf2, k)
 			require.Nil(t, err)
-			require.Equal(t, buf, buf2, fmt.Sprintf("seed=%d, k=%d, i=%d, n=%d", seed, k, i, n))
+			require.Equal(t, buf, buf2, fmt.Sprintf("k=%d, i=%d, n=%d", k, i, n))
 		}
 	}
 }

@@ -2,13 +2,11 @@ package set3
 
 import (
 	"bytes"
-	"crypto/rand"
 	"encoding/binary"
 	"fmt"
-	insecureRand "math/rand"
 	"strings"
-	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -37,10 +35,10 @@ func (mtc *MTCipher) process(buf []byte) []byte {
 	return r
 }
 
-func Challenge24() {
+func Challenge24(rng *rng.Rng) {
 	utils.PrintTitle(3, 24)
 
-	ciphertext := generateCiphertext()
+	ciphertext := generateCiphertext(rng)
 
 	for seed := 0; seed < 0x10000; seed++ {
 		plaintext := NewMTCipher(uint16(seed)).process(ciphertext)
@@ -52,16 +50,13 @@ func Challenge24() {
 	fmt.Println()
 }
 
-func generateCiphertext() []byte {
-	insecureRand.Seed(time.Now().Unix())
-	seed := uint16(insecureRand.Int())
-	fmt.Printf("seed: %d\n", seed)
+func generateCiphertext(rng *rng.Rng) []byte {
+	seed := uint16(rng.Uint64())
+	fmt.Printf("MT seed: %d\n", seed)
 
-	lenPrefix := insecureRand.Intn(20) + 5
-	plaintext := make([]byte, lenPrefix)
-	_, err := rand.Read(plaintext)
-	utils.PanicOnErr(err)
-
+	lenPrefix := rng.Int(20) + 5
+	plaintext := rng.Bytes(lenPrefix)
 	plaintext = append(plaintext, []byte(strings.Repeat("A", 14))...)
+
 	return NewMTCipher(seed).process(plaintext)
 }

@@ -1,21 +1,19 @@
 package set4
 
 import (
-	"crypto/rand"
 	"fmt"
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge26() {
+func Challenge26(rng *rng.Rng) {
 	utils.PrintTitle(4, 26)
 
 	// generate random AES key
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 
 	// craft ciphertext
 	ciphertext := craft(aesKey)

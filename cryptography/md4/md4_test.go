@@ -2,13 +2,12 @@ package md4
 
 import (
 	"fmt"
-	"math/rand"
 	"testing"
 
 	refMd4 "golang.org/x/crypto/md4"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
-	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/stretchr/testify/require"
 )
 
@@ -40,6 +39,8 @@ func TestMd4Padding(t *testing.T) {
 }
 
 func TestMd4(t *testing.T) {
+	rng := rng.New()
+
 	s := NewMd4()
 	s.Update([]byte(""))
 	hash := hex.FromByteSlice(s.Digest())
@@ -77,9 +78,7 @@ func TestMd4(t *testing.T) {
 
 	// compare result with x/crypto/md4
 	for i := 0; i < 10000; i++ {
-		buf := make([]byte, i)
-		_, err := rand.Read(buf)
-		utils.PanicOnErr(err)
+		buf := rng.Bytes(i)
 
 		s = NewMd4()
 		s.Update(buf)

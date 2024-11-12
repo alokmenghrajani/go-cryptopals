@@ -1,0 +1,7 @@
+[0;31mSet 4, challenge 32:[m
+seed: 3603408890140683139
+expected signature:
+05 43 49 51 97
+05 43 49 51 97 
+response code: 200
+

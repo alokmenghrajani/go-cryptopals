@@ -8,13 +8,14 @@ import (
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge46() {
+func Challenge46(rng *rng.Rng) {
 	utils.PrintTitle(6, 46)
 
-	pubKey, privKey := rsa.GenerateKeyPair(1024)
+	pubKey, privKey := rsa.GenerateKeyPair(rng, 1024)
 	plaintext := base64.ToByteSlice("VGhhdCdzIHdoeSBJIGZvdW5kIHlvdSBkb24ndCBwbGF5IGFyb3VuZCB3aXRoIHRoZSBGdW5reSBDb2xkIE1lZGluYQ==")
 	ciphertext := pubKey.Encrypt(plaintext)
 

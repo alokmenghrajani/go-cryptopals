@@ -1,0 +1,6 @@
+[0;31mSet 5, challenge 37:[m
+seed: 6222843302002354132
+0*N: true
+1*N: true
+2*N: true
+

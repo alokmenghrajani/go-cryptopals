@@ -1,11 +1,8 @@
 package bigutils
 
 import (
-	"crypto/rand"
 	"fmt"
 	"math/big"
-
-	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
 // Be careful not to mutate these!
@@ -37,24 +34,6 @@ func Root(N int, xx *big.Int) *big.Int {
 			return r
 		}
 		r.Add(r, Δr)
-	}
-}
-
-// Returns a random number in the range [1, n-1]
-func Randn(n *big.Int) *big.Int {
-	for {
-		buf := make([]byte, n.BitLen()/8)
-		_, err := rand.Read(buf)
-		utils.PanicOnErr(err)
-		x := &big.Int{}
-		x.SetBytes(buf)
-		if x.Cmp(n) != -1 {
-			continue
-		}
-		if IsZero(x) {
-			continue
-		}
-		return x
 	}
 }
 

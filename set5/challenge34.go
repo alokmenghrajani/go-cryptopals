@@ -3,13 +3,12 @@ package set5
 import (
 	"fmt"
 	"math/big"
-	"math/rand"
-	"time"
 
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -21,28 +20,26 @@ type echoBot struct {
 	B *big.Int
 }
 
-func Challenge34() {
+func Challenge34(rng *rng.Rng) {
 	utils.PrintTitle(5, 34)
 
-	rand.Seed(time.Now().Unix())
-
-	withoutMitm()
-	withMitm()
+	withoutMitm(rng)
+	withMitm(rng)
 
 	fmt.Println()
 }
 
-func withoutMitm() {
+func withoutMitm(rng *rng.Rng) {
 	// A: generates a key
 	p := bigutils.SetString("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff", 16)
 	g := big.NewInt(5)
 
-	a := bigutils.Randn(p)
+	a := rng.BigInt(p)
 	A := &big.Int{}
 	A.Exp(g, a, p)
 
 	// establish key
-	bot := newEchoBot(p, g, A)
+	bot := newEchoBot(rng, p, g, A)
 	B := bot.PubKey()
 	s := &big.Int{}
 	s.Exp(B, a, p)
@@ -52,16 +49,14 @@ func withoutMitm() {
 
 	// encrypt message
 	msg := "hello world"
-	iv := make([]byte, aes.BlockSize)
-	_, err := rand.Read(iv)
-	utils.PanicOnErr(err)
+	iv := rng.Bytes(aes.BlockSize)
 	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), aes.BlockSize), key, iv)
 
 	// send ciphertext to bot
 	bytes := []byte{}
 	bytes = append(bytes, iv...)
 	bytes = append(bytes, ciphertext...)
-	responseCiphertext := bot.Echo(bytes)
+	responseCiphertext := bot.Echo(rng, bytes)
 
 	// decrypt response
 	responsePlaintext, err := pkcs7.Unpad(aes.AesCbcDecrypt(responseCiphertext[aes.BlockSize:], key, responseCiphertext[0:aes.BlockSize]), aes.BlockSize)
@@ -70,18 +65,18 @@ func withoutMitm() {
 	fmt.Println()
 }
 
-func withMitm() {
+func withMitm(rng *rng.Rng) {
 	// A: generates a key
 	p := bigutils.SetString("ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff", 16)
 	g := big.NewInt(5)
 
-	a := bigutils.Randn(p)
+	a := rng.BigInt(p)
 	A := &big.Int{}
 	A.Exp(g, a, p)
 
 	// establish key
-	bot := newEchoBot(p, g, p) // MITM replaces A with p
-	B := p                     // MITM replaces B with p
+	bot := newEchoBot(rng, p, g, p) // MITM replaces A with p
+	B := p                          // MITM replaces B with p
 	s := &big.Int{}
 	s.Exp(B, a, p)
 	sha := sha1.New()
@@ -90,16 +85,14 @@ func withMitm() {
 
 	// encrypt message
 	msg := "hello world"
-	iv := make([]byte, aes.BlockSize)
-	_, err := rand.Read(iv)
-	utils.PanicOnErr(err)
+	iv := rng.Bytes(aes.BlockSize)
 	ciphertext := aes.AesCbcEncrypt(pkcs7.Pad([]byte(msg), aes.BlockSize), key, iv)
 
 	// send ciphertext to bot
 	bytes := []byte{}
 	bytes = append(bytes, iv...)
 	bytes = append(bytes, ciphertext...)
-	responseCiphertext := bot.Echo(bytes)
+	responseCiphertext := bot.Echo(rng, bytes)
 
 	// MITM decrypts both ciphertexts
 	sha = sha1.New()
@@ -116,8 +109,8 @@ func withMitm() {
 	fmt.Println()
 }
 
-func newEchoBot(p, g, A *big.Int) *echoBot {
-	b := bigutils.Randn(p)
+func newEchoBot(rng *rng.Rng, p, g, A *big.Int) *echoBot {
+	b := rng.BigInt(p)
 	B := &big.Int{}
 	B.Exp(g, b, p)
 
@@ -134,7 +127,7 @@ func (bot *echoBot) PubKey() *big.Int {
 	return bot.B
 }
 
-func (bot *echoBot) Echo(ciphertext []byte) []byte {
+func (bot *echoBot) Echo(rng *rng.Rng, ciphertext []byte) []byte {
 	// establish key
 	s := &big.Int{}
 	s.Exp(bot.A, bot.b, bot.p)
@@ -150,9 +143,7 @@ func (bot *echoBot) Echo(ciphertext []byte) []byte {
 	// encrypt response
 	newPlaintext := []byte("re: ")
 	newPlaintext = append(newPlaintext, plaintext...)
-	iv := make([]byte, aes.BlockSize)
-	_, err = rand.Read(iv)
-	utils.PanicOnErr(err)
+	iv := rng.Bytes(aes.BlockSize)
 	ciphertext2 := aes.AesCbcEncrypt(pkcs7.Pad(newPlaintext, aes.BlockSize), key, iv)
 	bytes := []byte{}
 	bytes = append(bytes, iv...)

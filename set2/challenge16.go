@@ -1,25 +1,23 @@
 package set2
 
 import (
-	"crypto/rand"
 	"fmt"
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge16() {
+func Challenge16(rng *rng.Rng) {
 	utils.PrintTitle(2, 16)
 
 	// generate random AES key
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 
 	// craft ciphertext
-	ciphertext := craft(aesKey)
+	ciphertext := craft(rng, aesKey)
 
 	// decrypt to check result
 	s2 := decrypt(ciphertext, aesKey)
@@ -28,15 +26,13 @@ func Challenge16() {
 	fmt.Println()
 }
 
-func encrypt(s string, aesKey []byte) []byte {
+func encrypt(rng *rng.Rng, s string, aesKey []byte) []byte {
 	s = strings.ReplaceAll(s, ";", "%3b")
 	s = strings.ReplaceAll(s, "=", "%3d")
 	s = "comment1=cooking%20MCs;userdata=" + s
 	s = s + ";comment2=%20like%20a%20pound%20of%20bacon"
 
-	iv := make([]byte, aes.BlockSize)
-	_, err := rand.Read(iv)
-	utils.PanicOnErr(err)
+	iv := rng.Bytes(aes.BlockSize)
 
 	return append(iv, aes.AesCbcEncrypt(pkcs7.Pad([]byte(s), aes.BlockSize), aesKey, iv)...)
 }
@@ -48,7 +44,7 @@ func decrypt(buf, aesKey []byte) bool {
 	return utils.IsAdmin(s)
 }
 
-func craft(aesKey []byte) []byte {
+func craft(rng *rng.Rng, aesKey []byte) []byte {
 	// if we have a ciphertext "abcdefgh" and assuming a 4-byte block cipher, we can
 	// xor specific bytes in the 2nd block:
 	//
@@ -73,7 +69,7 @@ func craft(aesKey []byte) []byte {
 	input += s2
 	l2 := utils.Remaining(len(s2), 16)
 	input += strings.Repeat("_", l2)
-	buf := encrypt(input, aesKey)
+	buf := encrypt(rng, input, aesKey)
 
 	offset := len(prefix) + l1 + aes.BlockSize // add one block size because of IV
 

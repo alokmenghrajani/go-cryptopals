@@ -1,0 +1,5 @@
+[0;31mSet 3, challenge 24:[m
+seed: 1735460047805492829
+MT seed: 12899
+possible seed: 12899
+

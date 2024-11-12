@@ -1,27 +1,25 @@
 package set3
 
 import (
-	"crypto/rand"
 	"errors"
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge17() {
+func Challenge17(rng *rng.Rng) {
 	utils.PrintTitle(3, 17)
 
 	// generate random AES key
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 
 	// iterate over each ciphertext
 	for i := 0; i < 10; i++ {
-		buf, iv := pick(i, aesKey)
+		buf, iv := pick(rng, i, aesKey)
 		s := crack(buf, iv, aesKey)
 		fmt.Println(string(s))
 	}
@@ -29,7 +27,7 @@ func Challenge17() {
 	fmt.Println()
 }
 
-func pick(n int, aesKey []byte) ([]byte, []byte) {
+func pick(rng *rng.Rng, n int, aesKey []byte) ([]byte, []byte) {
 	inputs := []string{
 		"MDAwMDAwTm93IHRoYXQgdGhlIHBhcnR5IGlzIGp1bXBpbmc=",
 		"MDAwMDAxV2l0aCB0aGUgYmFzcyBraWNrZWQgaW4gYW5kIHRoZSBWZWdhJ3MgYXJlIHB1bXBpbic=",
@@ -44,9 +42,7 @@ func pick(n int, aesKey []byte) ([]byte, []byte) {
 	}
 
 	// generate random IV
-	iv := make([]byte, aes.BlockSize)
-	_, err := rand.Read(iv)
-	utils.PanicOnErr(err)
+	iv := rng.Bytes(aes.BlockSize)
 
 	// base64 decode then encrypt data
 	plaintext := base64.ToByteSlice(inputs[n])

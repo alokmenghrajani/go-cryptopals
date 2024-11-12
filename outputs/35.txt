@@ -1,0 +1,11 @@
+[0;31mSet 5, challenge 35:[m
+seed: 2936136196997565467
+re: hello world
+
+hello world 1
+re: hello world 1
+
+hello world 2
+re: hello world 2
+
+

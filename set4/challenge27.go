@@ -1,24 +1,22 @@
 package set4
 
 import (
-	"crypto/rand"
 	"fmt"
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 	"github.com/pkg/errors"
 )
 
-func Challenge27() {
+func Challenge27(rng *rng.Rng) {
 	utils.PrintTitle(4, 27)
 
 	// generate random AES key
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 
 	// encrypt some random text
 	plaintext := "Beyond the cold winter. A purple dinosaur roars. Melting the snowmen."

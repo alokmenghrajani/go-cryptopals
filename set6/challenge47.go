@@ -7,6 +7,7 @@ import (
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs1_5"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -20,17 +21,17 @@ type Interval struct {
 	size      *big.Int
 }
 
-func Challenge47() {
+func Challenge47(rng *rng.Rng) {
 	utils.PrintTitle(6, 47)
 
 	keySize := 256
 	keySizeBytes := keySize / 8
-	pubKey, privKey := rsa.GenerateKeyPair(keySize)
+	pubKey, privKey := rsa.GenerateKeyPair(rng, keySize)
 	fmt.Printf("n: %d\n", pubKey.N)
 	fmt.Printf("e: %d\n", pubKey.E)
 
 	shortPlaintext := "kick it, CC"
-	shortPlaintextPadded := pkcs1_5.Pad([]byte(shortPlaintext), keySizeBytes)
+	shortPlaintextPadded := pkcs1_5.Pad(rng, []byte(shortPlaintext), keySizeBytes)
 	ciphertextBytes := pubKey.Encrypt([]byte(shortPlaintextPadded))
 	ciphertext := bigutils.FromBytes(ciphertextBytes)
 	fmt.Printf("ciphertext: %d\n", ciphertext)

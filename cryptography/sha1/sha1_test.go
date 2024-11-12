@@ -1,13 +1,12 @@
 package sha1
 
 import (
-	"crypto/rand"
 	refSha "crypto/sha1"
 	"fmt"
 	"testing"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
-	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/stretchr/testify/require"
 )
 
@@ -39,6 +38,8 @@ func TestSha1Padding(t *testing.T) {
 }
 
 func TestSha1(t *testing.T) {
+	rng := rng.New()
+
 	s := New()
 	s.Update([]byte("hello world"))
 	hash := hex.FromByteSlice(s.Digest())
@@ -75,10 +76,7 @@ func TestSha1(t *testing.T) {
 
 	// compare result with crypto/sha1
 	for i := 0; i < 10000; i++ {
-		buf := make([]byte, i)
-		_, err := rand.Read(buf)
-		utils.PanicOnErr(err)
-
+		buf := rng.Bytes(i)
 		s = New()
 		s.Update(buf)
 		r := refSha.Sum(buf)

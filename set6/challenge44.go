@@ -11,6 +11,7 @@ import (
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/dsa"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -21,7 +22,7 @@ type data struct {
 	m         *big.Int
 }
 
-func Challenge44() {
+func Challenge44(rng *rng.Rng) {
 	utils.PrintTitle(6, 44)
 
 	// Read the file
@@ -58,14 +59,14 @@ func Challenge44() {
 	}
 
 	// create pubkey
-	pubKey, _ := dsa.GenerateKeyPair(dsa.DefaultParams())
+	pubKey, _ := dsa.GenerateKeyPair(rng, dsa.DefaultParams())
 	pubKey.Y = bigutils.SetString("2d026f4bf30195ede3a088da85e398ef869611d0f68f0713d51c9c1a3a26c95105d915e2d8cdf26d056b86b8a7b85519b1c23cc3ecdc6062650462e3063bd179c2a6581519f674a61f1d89a1fff27171ebc1b93d4dc57bceb7ae2430f98a6a4d83d8279ee65d71c1203d2c96d65ebbf7cce9d32971c3de5084cce04a2e147821", 16)
 
 	// Find which pairs re-used the same k
 	var privKey *dsa.PrivKey
 	for i := 0; (privKey == nil) && (i < len(datas)); i++ {
 		for j := i + 1; (privKey == nil) && (j < len(datas)); j++ {
-			privKey = checkPair(pubKey, datas[i], datas[j])
+			privKey = checkPair(rng, pubKey, datas[i], datas[j])
 		}
 	}
 	if privKey == nil {
@@ -85,7 +86,7 @@ func Challenge44() {
 	fmt.Println()
 }
 
-func checkPair(pubKey dsa.PubKey, left data, right data) *dsa.PrivKey {
+func checkPair(rng *rng.Rng, pubKey dsa.PubKey, left data, right data) *dsa.PrivKey {
 	// compute k
 	d := &big.Int{}
 	d.Sub(left.signature.S, right.signature.S)
@@ -104,10 +105,10 @@ func checkPair(pubKey dsa.PubKey, left data, right data) *dsa.PrivKey {
 
 	// check if k works
 	left.signature.K = k
-	return recoverFromData(pubKey, left)
+	return recoverFromData(rng, pubKey, left)
 }
 
-func recoverFromData(pubKey dsa.PubKey, d data) *dsa.PrivKey {
+func recoverFromData(rng *rng.Rng, pubKey dsa.PubKey, d data) *dsa.PrivKey {
 	if d.signature.K == nil {
 		panic("signature.K not set")
 	}
@@ -129,7 +130,7 @@ func recoverFromData(pubKey dsa.PubKey, d data) *dsa.PrivKey {
 		Params: pubKey.Params,
 		X:      x,
 	}
-	if checkKey(*privKey, &d.signature, d.msg) {
+	if checkKey(rng, *privKey, &d.signature, d.msg) {
 		return privKey
 	}
 	return nil

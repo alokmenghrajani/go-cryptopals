@@ -2,21 +2,20 @@ package set4
 
 import (
 	"bytes"
-	"crypto/rand"
 	"encoding/binary"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge29() {
+func Challenge29(rng *rng.Rng) {
 	utils.PrintTitle(4, 29)
 
 	// generate random key
-	key := make([]byte, 16)
-	_, err := rand.Read(key)
-	utils.PanicOnErr(err)
+	key := rng.Bytes(aes.KeySize)
 
 	message, mac := generateSha1Mac(key)
 	message2, mac2 := crackSha1Mac(message, mac)

@@ -2,21 +2,20 @@ package set4
 
 import (
 	"bytes"
-	"crypto/rand"
 	"encoding/binary"
 	"fmt"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/md4"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge30() {
+func Challenge30(rng *rng.Rng) {
 	utils.PrintTitle(4, 30)
 
 	// generate random key
-	key := make([]byte, 16)
-	_, err := rand.Read(key)
-	utils.PanicOnErr(err)
+	key := rng.Bytes(aes.KeySize)
 
 	message, mac := generateMd4Mac(key)
 	message2, mac2 := crackMd4Mac(message, mac)

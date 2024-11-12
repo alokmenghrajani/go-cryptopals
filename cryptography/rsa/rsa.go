@@ -1,11 +1,10 @@
 package rsa
 
 import (
-	"crypto/rand"
 	"math/big"
 
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
-	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 )
 
 type PubKey struct {
@@ -18,14 +17,14 @@ type PrivKey struct {
 	N *big.Int `json:"N"`
 }
 
-func GenerateKeyPair(keySizeBits int) (PubKey, PrivKey) {
+func GenerateKeyPair(rng *rng.Rng, keySizeBits int) (PubKey, PrivKey) {
 	if keySizeBits%16 != 0 {
 		panic("invalid keySizeBits (must be multiple of 16)")
 	}
 
 	for {
-		p := randomPrime(keySizeBits / 2)
-		q := randomPrime(keySizeBits / 2)
+		p := randomPrime(rng, keySizeBits/2)
+		q := randomPrime(rng, keySizeBits/2)
 
 		n := &big.Int{}
 		n.Mul(p, q)
@@ -100,14 +99,12 @@ func (key PubKey) Verify(signature []byte) []byte {
 	return m.Bytes()
 }
 
-func randomPrime(keySizeBits int) *big.Int {
+func randomPrime(rng *rng.Rng, keySizeBits int) *big.Int {
 	if keySizeBits%8 != 0 {
 		panic("invalid keySizeBits (must be multiple of 8)")
 	}
 	for {
-		buf := make([]byte, keySizeBits/8)
-		_, err := rand.Read(buf)
-		utils.PanicOnErr(err)
+		buf := rng.Bytes(keySizeBits / 8)
 
 		// Set the two most significant bits to 1 to guarantee that the resulting product will
 		// have the right number length.

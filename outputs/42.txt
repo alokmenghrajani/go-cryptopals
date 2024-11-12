@@ -1,0 +1,4 @@
+[0;31mSet 6, challenge 42:[m
+original signature: true
+forged signature: true
+

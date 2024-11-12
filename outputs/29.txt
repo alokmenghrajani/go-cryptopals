@@ -1,0 +1,4 @@
+[0;31mSet 4, challenge 29:[m
+seed: 6410441156678305191
+admin: true
+

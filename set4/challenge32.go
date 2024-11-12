@@ -1,25 +1,24 @@
 package set4
 
 import (
-	"crypto/rand"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge32() {
+func Challenge32(rng *rng.Rng) {
 	utils.PrintTitle(4, 32)
 
 	// Generate random key
-	key := make([]byte, 16)
-	_, err := rand.Read(key)
-	utils.PanicOnErr(err)
+	key := rng.Bytes(aes.KeySize)
 
 	fmt.Printf("expected signature:\n% x\n", hmacSha1.Compute(key, []byte("foo"))[0:5])
 

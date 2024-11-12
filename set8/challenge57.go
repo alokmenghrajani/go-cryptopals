@@ -7,10 +7,11 @@ import (
 
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/hmacSha256"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge57() {
+func Challenge57(rng *rng.Rng) {
 	utils.PrintTitle(8, 57)
 
 	p := bigutils.SetString("7199773997391911030609999317773941274322764333428698921736339643928346453700085358802973900485592910475480089726140708102474957429903531369589969318716771", 10)
@@ -34,12 +35,12 @@ func Challenge57() {
 	fmt.Println()
 
 	// generate Alice's keys
-	alicePriv := bigutils.Randn(q)
+	alicePriv := rng.BigInt(q)
 	alicePub := &big.Int{}
 	alicePub.Exp(g, alicePriv, p)
 
 	// generate Bob's keys
-	bobPriv := bigutils.Randn(q)
+	bobPriv := rng.BigInt(q)
 	bobPub := &big.Int{}
 	bobPub.Exp(g, bobPriv, p)
 
@@ -93,7 +94,7 @@ func Challenge57() {
 		q2.Div(pMinusOne, r)
 		var h *big.Int
 		for {
-			h = bigutils.Randn(p)
+			h = rng.BigInt(p)
 			h.Exp(h, q2, p)
 			if h.Cmp(bigutils.One) == 1 {
 				break

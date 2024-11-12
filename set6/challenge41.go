@@ -7,14 +7,15 @@ import (
 
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge41() {
+func Challenge41(rng *rng.Rng) {
 	utils.PrintTitle(6, 41)
 
 	// create public key
-	pubKey, privKey := rsa.GenerateKeyPair(1024)
+	pubKey, privKey := rsa.GenerateKeyPair(rng, 1024)
 
 	// encrypt a message
 	originalCiphertext := pubKey.Encrypt([]byte("s3cr3t sauc3"))

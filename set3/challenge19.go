@@ -1,18 +1,18 @@
 package set3
 
 import (
-	"crypto/rand"
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge19() {
+func Challenge19(rng *rng.Rng) {
 	utils.PrintTitle(3, 19)
 
-	ciphertexts := getCiphertexts()
+	ciphertexts := getCiphertexts(rng)
 
 	// calculate longest ciphertext
 	max := 0
@@ -64,7 +64,7 @@ func Challenge19() {
 	fmt.Println()
 }
 
-func getCiphertexts() [][]byte {
+func getCiphertexts(rng *rng.Rng) [][]byte {
 	ciphertexts := [][]byte{}
 	plaintexts := []string{
 		"SSBoYXZlIG1ldCB0aGVtIGF0IGNsb3NlIG9mIGRheQ==",
@@ -108,9 +108,7 @@ func getCiphertexts() [][]byte {
 		"VHJhbnNmb3JtZWQgdXR0ZXJseTo=",
 		"QSB0ZXJyaWJsZSBiZWF1dHkgaXMgYm9ybi4=",
 	}
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 	for _, plaintext := range plaintexts {
 		aesCtr := aes.NewAesCtr(aesKey, 0)
 		ciphertexts = append(ciphertexts, aesCtr.Process(base64.ToByteSlice(plaintext)))

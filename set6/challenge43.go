@@ -9,16 +9,17 @@ import (
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/dsa"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge43() {
+func Challenge43(rng *rng.Rng) {
 	utils.PrintTitle(6, 43)
 
 	// part 1: recover x by using a known k
-	pubKey, privKey := dsa.GenerateKeyPair(dsa.DefaultParams())
+	pubKey, privKey := dsa.GenerateKeyPair(rng, dsa.DefaultParams())
 	msg := []byte("hello world")
-	signature := privKey.Sign(nil, msg)
+	signature := privKey.Sign(rng, nil, msg)
 	if signature == nil {
 		panic("unexpected")
 	}
@@ -48,7 +49,7 @@ func Challenge43() {
 	signature.R = bigutils.SetString("548099063082341131477253921760299949438196259240", 10)
 	signature.S = bigutils.SetString("857042759984254168557880549501802188789837994940", 10)
 
-	privKey = bruteforceK(pubKey, msg, signature)
+	privKey = bruteforceK(rng, pubKey, msg, signature)
 	fmt.Printf("recovered key: %s\n", privKey.X.String())
 
 	sha = sha1.New()
@@ -85,7 +86,7 @@ func recoverX(pubKey dsa.PubKey, h []byte, signature *dsa.Signature) *big.Int {
 	return x
 }
 
-func bruteforceK(pubKey dsa.PubKey, msg []byte, signature *dsa.Signature) dsa.PrivKey {
+func bruteforceK(rng *rng.Rng, pubKey dsa.PubKey, msg []byte, signature *dsa.Signature) dsa.PrivKey {
 	sha1 := sha1.New()
 	sha1.Update(msg)
 	h := sha1.Digest()
@@ -102,18 +103,18 @@ func bruteforceK(pubKey dsa.PubKey, msg []byte, signature *dsa.Signature) dsa.Pr
 			Params: pubKey.Params,
 			X:      potentialX,
 		}
-		if checkKey(privKey, signature, msg) {
+		if checkKey(rng, privKey, signature, msg) {
 			return privKey
 		}
 	}
 	panic("meh")
 }
 
-func checkKey(privKey dsa.PrivKey, signature *dsa.Signature, msg []byte) bool {
+func checkKey(rng *rng.Rng, privKey dsa.PrivKey, signature *dsa.Signature, msg []byte) bool {
 	if signature.K == nil {
 		panic("signature.K is nil")
 	}
-	signature2 := privKey.Sign(signature.K, msg)
+	signature2 := privKey.Sign(rng, signature.K, msg)
 	if signature2 == nil {
 		return false
 	}

@@ -1,0 +1,7 @@
+[0;31mSet 4, challenge 31:[m
+seed: 5507408013148052414
+expected signature:
+3a 38 4a 2b 44
+3a 38 4a 2b 44 
+response code: 200
+

@@ -7,22 +7,23 @@ import (
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rsa"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs1_5"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
 // Simply copy-pasta Challenge 47's code. We already had to handle the
 // multiple ranges case.
-func Challenge48() {
+func Challenge48(rng *rng.Rng) {
 	utils.PrintTitle(6, 48)
 
 	keySize := 768
 	keySizeBytes := keySize / 8
-	pubKey, privKey := rsa.GenerateKeyPair(keySize)
+	pubKey, privKey := rsa.GenerateKeyPair(rng, keySize)
 	fmt.Printf("n: %d\n", pubKey.N)
 	fmt.Printf("e: %d\n", pubKey.E)
 
 	shortPlaintext := "kick it, CC"
-	shortPlaintextPadded := pkcs1_5.Pad([]byte(shortPlaintext), keySizeBytes)
+	shortPlaintextPadded := pkcs1_5.Pad(rng, []byte(shortPlaintext), keySizeBytes)
 	ciphertextBytes := pubKey.Encrypt([]byte(shortPlaintextPadded))
 	ciphertext := bigutils.FromBytes(ciphertextBytes)
 	fmt.Printf("ciphertext: %d\n", ciphertext)

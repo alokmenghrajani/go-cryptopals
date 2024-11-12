@@ -1,0 +1,6 @@
+[0;31mSet 5, challenge 38:[m
+seed: 9178554948008511844
+ba53ba11: false
+sup3r s3cr3t: true
+pa5ta lov3r: false
+

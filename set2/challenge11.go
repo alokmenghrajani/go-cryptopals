@@ -2,13 +2,11 @@ package set2
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
-	insecureRand "math/rand"
-	"time"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -17,20 +15,17 @@ const (
 	ECB = 1
 )
 
-func Challenge11() {
+func Challenge11(rng *rng.Rng) {
 	utils.PrintTitle(2, 11)
 
 	// Generate a random AES key
-	aesKey := make([]byte, 16)
-	_, err := rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 
 	correct := 0
 	total := 1000
-	insecureRand.Seed(time.Now().Unix())
 	for i := 0; i < total; i++ {
 		plaintext := []byte("yellow submarineyellow submarineyellow submarine")
-		ciphertext, mode := encryptionOracle(plaintext, aesKey)
+		ciphertext, mode := encryptionOracle(rng, plaintext, aesKey)
 		mode2 := guessMode(ciphertext)
 		if mode == mode2 {
 			correct++
@@ -44,24 +39,21 @@ func Challenge11() {
 	fmt.Println()
 }
 
-func encryptionOracle(data, key []byte) ([]byte, int) {
+func encryptionOracle(rng *rng.Rng, data, key []byte) ([]byte, int) {
 	// use a RNG to decide number of bytes to prepend, append, and mode.
-	prependCount := insecureRand.Intn(6) + 5
-	appendCount := insecureRand.Intn(6) + 5
-	mode := insecureRand.Intn(2)
+	prependCount := rng.Int(6) + 5
+	appendCount := rng.Int(6) + 5
+	mode := rng.Int(2)
 
 	// prepare buffer
-	buf := make([]byte, prependCount+appendCount+len(data))
-	rand.Read(buf)
+	buf := rng.Bytes(prependCount + appendCount + len(data))
 	copy(buf[prependCount:prependCount+len(data)], data)
 	buf = pkcs7.Pad(buf, aes.BlockSize)
 
 	// encrypt the data
 	switch mode {
 	case CBC:
-		iv := make([]byte, aes.BlockSize)
-		_, err := rand.Read(iv)
-		utils.PanicOnErr(err)
+		iv := rng.Bytes(aes.BlockSize)
 		ciphertext := aes.AesCbcEncrypt(buf, key, iv)
 		return ciphertext, mode
 	case ECB:

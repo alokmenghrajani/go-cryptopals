@@ -5,6 +5,7 @@ import (
 
 	"github.com/alokmenghrajani/go-cryptopals/bigutils"
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/sha1"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 )
 
 type Params struct {
@@ -37,9 +38,9 @@ func DefaultParams() *Params {
 	return params
 }
 
-func GenerateKeyPair(params *Params) (PubKey, PrivKey) {
+func GenerateKeyPair(rng *rng.Rng, params *Params) (PubKey, PrivKey) {
 	// pick x randomly from 1..(q-1)
-	x := bigutils.Randn(params.Q)
+	x := rng.BigInt(params.Q)
 	privKey := &PrivKey{
 		Params: params,
 		X:      x,
@@ -55,10 +56,10 @@ func GenerateKeyPair(params *Params) (PubKey, PrivKey) {
 	return *pubKey, *privKey
 }
 
-func (privKey *PrivKey) Sign(k *big.Int, message []byte) *Signature {
+func (privKey *PrivKey) Sign(rng *rng.Rng, k *big.Int, message []byte) *Signature {
 	// pick k randomly from 1..(q-1)
 	if k == nil {
-		k = bigutils.Randn(privKey.Params.Q)
+		k = rng.BigInt(privKey.Params.Q)
 	}
 	r := &big.Int{}
 	r = r.Exp(privKey.Params.G, k, privKey.Params.P)

@@ -2,11 +2,11 @@ package set7
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/rc4"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -15,14 +15,14 @@ type z16andz32bias struct {
 	z32bias byte
 }
 
-func Challenge56() {
+func Challenge56(rng *rng.Rng) {
 	utils.PrintTitle(7, 56)
 
 	// Track statistics about ciphertext bias at offsets 15 and 31 when encrypting
 	// 0x00 0x00... with random keys. The code is slow because of the rc4
 	// initialization with random keys.
 	fmt.Println("Computing bias")
-	z16bias, z32bias := recover(1<<23, make([]byte, 32))
+	z16bias, z32bias := recover(rng, 1<<23, make([]byte, 32))
 	fmt.Printf("z16 bias: %02x\n", z16bias)
 	fmt.Printf("z32 bias: %02x\n", z32bias)
 
@@ -33,7 +33,7 @@ func Challenge56() {
 	for i := 0; i < 16; i++ {
 		copy(plaintext[i:], cookie)
 		// recover bytes 15-i and 31-i
-		b1, b2 := recover(1<<25, plaintext)
+		b1, b2 := recover(rng, 1<<25, plaintext)
 		if 15-i < len(recovered) {
 			recovered[15-i] = b1 ^ z16bias
 		}
@@ -63,13 +63,11 @@ func max(m map[byte]int) (byte, int) {
 	return maxK, maxV
 }
 
-func recover(rounds int, plaintext []byte) (byte, byte) {
+func recover(rng *rng.Rng, rounds int, plaintext []byte) (byte, byte) {
 	z16counts := map[byte]int{}
 	z32counts := map[byte]int{}
 	for i := 0; i < rounds; i++ {
-		key := make([]byte, 16)
-		_, err := rand.Read(key)
-		utils.PanicOnErr(err)
+		key := rng.Bytes(16)
 		rc4 := rc4.New(key)
 		ciphertext := rc4.Process(plaintext)
 		if len(ciphertext) >= 16 {

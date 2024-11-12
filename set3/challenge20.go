@@ -1,22 +1,22 @@
 package set3
 
 import (
-	"crypto/rand"
 	"fmt"
 	"io/ioutil"
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
 // My solution for challenge20 is identical as for challenge19. The ends of the strings
 // don't come out right...
-func Challenge20() {
+func Challenge20(rng *rng.Rng) {
 	utils.PrintTitle(3, 20)
 
-	ciphertexts := getCiphertextsFromFile()
+	ciphertexts := getCiphertextsFromFile(rng)
 
 	// calculate longest ciphertext
 	max := 0
@@ -68,15 +68,13 @@ func Challenge20() {
 	fmt.Println()
 }
 
-func getCiphertextsFromFile() [][]byte {
+func getCiphertextsFromFile(rng *rng.Rng) [][]byte {
 	ciphertexts := [][]byte{}
 	file, err := ioutil.ReadFile("set3/20.txt")
 	utils.PanicOnErr(err)
 	plaintexts := strings.Split(string(file), "\n")
 
-	aesKey := make([]byte, 16)
-	_, err = rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 	for _, plaintext := range plaintexts {
 		aesCtr := aes.NewAesCtr(aesKey, 0)
 		ciphertexts = append(ciphertexts, aesCtr.Process(base64.ToByteSlice(plaintext)))

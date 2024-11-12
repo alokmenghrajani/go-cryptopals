@@ -2,11 +2,11 @@ package set7
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
@@ -16,25 +16,22 @@ type request struct {
 	mac     []byte
 }
 
-func Challenge49() {
+func Challenge49(rng *rng.Rng) {
 	utils.PrintTitle(7, 49)
 
 	fmt.Println("part 1:")
-	part1()
+	part1(rng)
 
 	fmt.Println("part 2:")
-	part2()
+	part2(rng)
 
 	fmt.Println()
 }
 
 // first part (message || IV || MAC)
-func part1() {
-	key := make([]byte, 16)
-	_, err := rand.Read(key)
-	utils.PanicOnErr(err)
-
-	message1 := part1Gen(key)
+func part1(rng *rng.Rng) {
+	key := rng.Bytes(aes.KeySize)
+	message1 := part1Gen(rng, key)
 	if !part1ValidateMessage(key, message1) {
 		panic("oops")
 	}
@@ -47,14 +44,10 @@ func part1() {
 	fmt.Printf("%q\n", req.message)
 }
 
-func part1Gen(key []byte) []byte {
+func part1Gen(rng *rng.Rng, key []byte) []byte {
 	r := request{}
 	r.message = []byte("from=1111&to=2222&amount=1000000")
-
-	r.iv = make([]byte, aes.BlockSize)
-	_, err := rand.Read(r.iv)
-	utils.PanicOnErr(err)
-
+	r.iv = rng.Bytes(aes.BlockSize)
 	r.mac = cbcMac(r.message, r.iv, key)
 	return r.part1ToBuf()
 }
@@ -97,10 +90,8 @@ func (req request) part1ToBuf() []byte {
 }
 
 // second part (message || MAC)
-func part2() {
-	key := make([]byte, 16)
-	_, err := rand.Read(key)
-	utils.PanicOnErr(err)
+func part2(rng *rng.Rng) {
+	key := rng.Bytes(aes.KeySize)
 
 	interceptedMessage := part2Gen(key, []byte("from=7890&tx_list=5555:20"))
 	if !part2ValidateMessage(key, interceptedMessage) {

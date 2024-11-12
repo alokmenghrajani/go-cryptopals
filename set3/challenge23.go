@@ -2,17 +2,15 @@ package set3
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
 
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge23() {
+func Challenge23(rng *rng.Rng) {
 	utils.PrintTitle(3, 23)
 
-	rand.Seed(time.Now().Unix())
-	seed := uint32(rand.Int())
+	seed := uint32(rng.Uint64())
 
 	rng1 := NewMT(seed)
 	rng2 := clone(rng1)

@@ -3,15 +3,16 @@ package sha256
 import (
 	refSha "crypto/sha256"
 	"fmt"
-	"math/rand"
 	"testing"
 
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
-	"github.com/alokmenghrajani/go-cryptopals/utils"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSha256(t *testing.T) {
+	rng := rng.New()
+
 	s := New()
 	s.Update([]byte("hello world"))
 	hash := hex.FromByteSlice(s.Digest())
@@ -69,9 +70,7 @@ func TestSha256(t *testing.T) {
 
 	// compare result with crypto/sha256
 	for i := 0; i < 10000; i++ {
-		buf := make([]byte, i)
-		_, err := rand.Read(buf)
-		utils.PanicOnErr(err)
+		buf := rng.Bytes(i)
 
 		s = New()
 		s.Update(buf)

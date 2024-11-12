@@ -1,17 +1,17 @@
 package set4
 
 import (
-	"crypto/rand"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/base64"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge25() {
+func Challenge25(rng *rng.Rng) {
 	utils.PrintTitle(4, 25)
 
 	// copy-pasta from Challenge7()
@@ -29,9 +29,7 @@ func Challenge25() {
 	}
 
 	// encrypt output with CTR
-	aesKey := make([]byte, 16)
-	_, err = rand.Read(aesKey)
-	utils.PanicOnErr(err)
+	aesKey := rng.Bytes(aes.KeySize)
 
 	aesCtr := aes.NewAesCtr(aesKey, 0)
 	ciphertext := aesCtr.Process(plaintext)

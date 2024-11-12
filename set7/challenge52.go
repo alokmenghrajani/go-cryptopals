@@ -2,22 +2,22 @@ package set7
 
 import (
 	"bytes"
-	"crypto/rand"
 	"fmt"
 	"sort"
 
 	"github.com/alokmenghrajani/go-cryptopals/cryptography/aes"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/hex"
 	"github.com/alokmenghrajani/go-cryptopals/encoding/pkcs7"
+	"github.com/alokmenghrajani/go-cryptopals/rng"
 	"github.com/alokmenghrajani/go-cryptopals/utils"
 )
 
-func Challenge52() {
+func Challenge52(rng *rng.Rng) {
 	utils.PrintTitle(7, 52)
 
 	fmt.Println("H1 is a 16-bit hash")
 	fmt.Println("demonstration of 32-way collision with ~1280 calls to H.")
-	msgs, cost := findMultiCollisions(5)
+	msgs, cost := findMultiCollisions(rng, 5)
 	sort.Slice(msgs, func(i, j int) bool {
 		return bytes.Compare(msgs[i], msgs[j]) <= 0
 	})
@@ -30,7 +30,7 @@ func Challenge52() {
 
 	fmt.Println("H2 is a 24-bit hash")
 	fmt.Println("demonstration of breaking H1(...) || H2(...)")
-	left, right, cost1, cost2 := findPairCollision()
+	left, right, cost1, cost2 := findPairCollision(rng)
 	h1 := MD1(left)
 	h2 := MD2(left)
 	fmt.Printf("%s %s %s\n", hex.FromByteSlice(left), hex.FromByteSlice(h1), hex.FromByteSlice(h2))
@@ -63,14 +63,12 @@ func MD1(msg []byte) []byte {
 	return h
 }
 
-func findCollision(state []byte) ([]byte, []byte, []byte, int) {
+func findCollision(rng *rng.Rng, state []byte) ([]byte, []byte, []byte, int) {
 	found := map[[2]byte][]byte{}
 	h := [2]byte{}
 	cost := 0
 	for {
-		msg := make([]byte, aes.BlockSize)
-		_, err := rand.Read(msg)
-		utils.PanicOnErr(err)
+		msg := rng.Bytes(aes.BlockSize)
 		h1 := C1(msg, state)
 		cost++
 		copy(h[:], h1)
@@ -97,8 +95,8 @@ type multiCollisions struct {
 	totalCost int
 }
 
-func (mc *multiCollisions) increase() {
-	left, right, hash, cost := findCollision(mc.state)
+func (mc *multiCollisions) increase(rng *rng.Rng) {
+	left, right, hash, cost := findCollision(rng, mc.state)
 	mc.pairs = append(mc.pairs, pair{left: left, right: right})
 	mc.totalCost += cost
 	mc.state = hash
@@ -126,7 +124,7 @@ func (mc *multiCollisions) combine() [][]byte {
 	return msgs
 }
 
-func findMultiCollisions(n int) ([][]byte, int) {
+func findMultiCollisions(rng *rng.Rng, n int) ([][]byte, int) {
 	// find n pairs
 	mc := &multiCollisions{
 		pairs:     []pair{},
@@ -134,7 +132,7 @@ func findMultiCollisions(n int) ([][]byte, int) {
 		totalCost: 0,
 	}
 	for i := 0; i < n; i++ {
-		mc.increase()
+		mc.increase(rng)
 	}
 	return mc.combine(), mc.totalCost
 }
@@ -158,14 +156,14 @@ func MD2(msg []byte) []byte {
 	return h
 }
 
-func findPairCollision() ([]byte, []byte, int, int) {
+func findPairCollision(rng *rng.Rng) ([]byte, []byte, int, int) {
 	mc := &multiCollisions{
 		pairs:     []pair{},
 		state:     []byte{0x35, 0xca},
 		totalCost: 0,
 	}
 	for {
-		mc.increase()
+		mc.increase(rng)
 		msgs := mc.combine()
 		left, right, ok, cost2 := checkCollisions(msgs)
 		if ok {
