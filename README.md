@@ -92,3 +92,6 @@ I have solved sets 1 through 7. I hope to finish the final set 8 soon 🤞.
 - Key-Recovery Attacks on GCM with a Truncated MAC
 - Truncated-MAC GCM Revisited: Improving the Key-Recovery Attack via Ciphertext Length Extension
 - Exploiting Implementation Errors in Diffie-Hellman
+
+## Set 9
+I found an [unofficial set 9](https://ilchen.github.io/cryptopals/newproblems.html) by Andrei Ilchenko.
