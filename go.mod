@@ -1,13 +1,13 @@
 module github.com/alokmenghrajani/go-cryptopals
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.24.1
 
 require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.1
-	golang.org/x/crypto v0.35.0
+	golang.org/x/crypto v0.45.0
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 )
 
